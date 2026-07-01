@@ -317,6 +317,24 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .admin-blocked{text-align:center;padding:60px 24px}
 .admin-blocked-ico{font-size:52px;margin-bottom:12px}
 
+
+/* FULLSCREEN GALLERY */
+.gallery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.gallery-overlay.open{opacity:1;pointer-events:all}
+.gallery-top{position:absolute;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;justify-content:space-between;z-index:1}
+.gallery-back{background:rgba(255,255,255,.15);border:none;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:20px;backdrop-filter:blur(8px)}
+.gallery-back:hover{background:rgba(255,255,255,.25)}
+.gallery-counter{color:rgba(255,255,255,.8);font-size:14px;font-weight:500;font-family:var(--fb)}
+.gallery-img-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:60px 0}
+.gallery-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;user-select:none}
+.gallery-prev,.gallery-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:22px;backdrop-filter:blur(8px);transition:background .15s}
+.gallery-prev{left:12px}
+.gallery-next{right:12px}
+.gallery-prev:hover,.gallery-next:hover{background:rgba(255,255,255,.3)}
+.gallery-dots{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.gallery-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .15s}
+.gallery-dot.on{background:#fff;width:20px;border-radius:4px}
+
 /* TOAST */
 .toast{position:fixed;bottom:calc(var(--bot-h) + 12px);left:50%;transform:translateX(-50%) translateY(16px);background:var(--dark);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;border-left:3px solid var(--red)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -754,7 +772,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <div class="modal-sheet">
     <div class="drag-line"></div>
     <div class="modal-scroll">
-      <div class="m-imgs" id="m-imgs" onclick="nextImg()">
+      <div class="m-imgs" id="m-imgs" onclick="openGallery(detailItem&&detailItem.photos?detailItem.photos:[],imgIdx)" style="cursor:zoom-in">
         <img id="m-img" src="" alt="">
         <div class="m-dots" id="m-dots"></div>
       </div>
@@ -816,6 +834,22 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     </div>
     <div style="height:16px"></div>
   </div>
+</div>
+
+
+<!-- FULLSCREEN GALLERY -->
+<div class="gallery-overlay" id="gallery-overlay">
+  <div class="gallery-top">
+    <button class="gallery-back" onclick="closeGallery()">←</button>
+    <div class="gallery-counter" id="gallery-counter">1 / 1</div>
+    <div style="width:42px"></div>
+  </div>
+  <div class="gallery-img-wrap" id="gallery-img-wrap">
+    <img class="gallery-img" id="gallery-img" src="" alt="">
+  </div>
+  <button class="gallery-prev" onclick="galleryPrev()">‹</button>
+  <button class="gallery-next" onclick="galleryNext()">›</button>
+  <div class="gallery-dots" id="gallery-dots"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1094,6 +1128,7 @@ async function submitCar(){
     user_id:currentUser.id,
     title_ru:document.getElementById('fc-make').value+' '+model+' — '+document.getElementById('fc-year').value,
     make:(document.getElementById('fc-make').value==='Другое'?document.getElementById('fc-make-custom').value.trim():document.getElementById('fc-make').value), model:model,
+    fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom').value||'Другое'):f.value; })(),
     gmaps_url:document.getElementById('fc-gmaps').value.trim()||null,
     year:parseInt(document.getElementById('fc-year').value)||null,
     body_type:document.getElementById('fc-body').value,
@@ -1140,6 +1175,12 @@ function checkDescLen(el){
   var hint=document.getElementById('f-desc-hint');
   if(hint){ hint.textContent='Введено: '+len+' символов'+(len<20?' (минимум 20)':' ✓'); hint.style.color=len>=20?'#16a34a':'var(--muted)'; }
 }
+
+function toggleCustomFuel(sel){
+  var custom = document.getElementById('fc-fuel-custom');
+  if(custom) custom.style.display = sel.value==='other' ? 'block' : 'none';
+}
+
 function toggleCustomMake(sel){
   var custom=document.getElementById('fc-make-custom');
   if(!custom) return;
@@ -1299,7 +1340,7 @@ function nextImg(){
   var photos=detailItem.photos||[];
   if(photos.length<2) return;
   imgIdx=(imgIdx+1)%photos.length;
-  var src=photos[imgIdx].startsWith('http')?photos[imgIdx]:USP+photos[imgIdx];
+  var src=photos[imgIdx]?(photos[imgIdx].startsWith('http')?photos[imgIdx]:USP+photos[imgIdx]):'';
   document.getElementById('m-img').src=src;
   document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
 }
@@ -1411,6 +1452,72 @@ function setLang(l){ lang=l; document.querySelectorAll('.lb').forEach(function(b
 function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
 
 
+
+// ─── FULLSCREEN GALLERY ───────────────────────────────────────────
+var galleryPhotos = [];
+var galleryIdx = 0;
+
+function openGallery(photos, startIdx){
+  if(!photos||!photos.length) return;
+  galleryPhotos = photos;
+  galleryIdx = startIdx || 0;
+  renderGallery();
+  document.getElementById('gallery-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGallery(){
+  document.getElementById('gallery-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderGallery(){
+  var photo = galleryPhotos[galleryIdx];
+  var src = photo ? (photo.startsWith('http') ? photo : 'https://images.unsplash.com/'+photo) : '';
+  document.getElementById('gallery-img').src = src;
+  document.getElementById('gallery-counter').textContent = (galleryIdx+1) + ' / ' + galleryPhotos.length;
+  var dots = document.getElementById('gallery-dots');
+  dots.innerHTML = galleryPhotos.map(function(_,i){
+    return '<div class="gallery-dot'+(i===galleryIdx?' on':'')+'" onclick="galleryGoto('+i+')"></div>';
+  }).join('');
+  // Show/hide prev/next
+  var prev = document.querySelector('.gallery-prev');
+  var next = document.querySelector('.gallery-next');
+  if(prev) prev.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
+  if(next) next.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
+}
+
+function galleryNext(){
+  galleryIdx = (galleryIdx+1) % galleryPhotos.length;
+  renderGallery();
+}
+function galleryPrev(){
+  galleryIdx = (galleryIdx-1+galleryPhotos.length) % galleryPhotos.length;
+  renderGallery();
+}
+function galleryGoto(idx){
+  galleryIdx = idx;
+  renderGallery();
+}
+
+// Swipe support
+var galleryTouchX = 0;
+document.addEventListener('DOMContentLoaded', function(){
+  var overlay = document.getElementById('gallery-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('touchstart', function(e){ galleryTouchX = e.touches[0].clientX; }, {passive:true});
+  overlay.addEventListener('touchend', function(e){
+    var diff = galleryTouchX - e.changedTouches[0].clientX;
+    if(Math.abs(diff) > 50){ if(diff > 0) galleryNext(); else galleryPrev(); }
+  }, {passive:true});
+  // Close on ESC
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape') closeGallery();
+    if(e.key==='ArrowRight') galleryNext();
+    if(e.key==='ArrowLeft') galleryPrev();
+  });
+});
+
 // ─── ADMIN ────────────────────────────────────────────────────────
 var ADMIN_EMAILS = ['adilov.aem@gmail.com'];
 var adminTab = 'pending';
@@ -1476,17 +1583,38 @@ function renderAdminList(){
       ?'<button class="admin-btn approve" onclick="adminApprove(\'' + kind + '\',' + id + ')">✓ Одобрить</button>'
       :'<button class="admin-btn delete" onclick="adminDeactivate(\'' + kind + '\',' + id + ')">↓ Снять</button>';
     var deleteBtn='<button class="admin-btn reject" onclick="adminDelete(\'' + kind + '\',' + id + ')">✕ Удалить</button>';
-    return '<div class="admin-card"><div class="admin-card-inner">'+imgEl
+    return '<div class="admin-card">'
+      +'<div class="admin-card-inner" onclick="adminViewDetail('+JSON.stringify(item).replace(/'/g,"\\'")+',event)" style="cursor:pointer">'
+      +imgEl
       +'<div class="admin-card-body">'
       +'<div style="font-size:11px;color:'+statusColor+';margin-bottom:5px">'+statusText+'</div>'
       +'<div class="admin-card-title">'+(item.title_ru||'Без названия')+'</div>'
       +'<div class="admin-card-meta">'+date+' · '+(item.owner_name||'')+(item.phone?' · '+item.phone:'')+'</div>'
       +'<div class="admin-card-price">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
-      +'<div class="admin-card-actions">'+approveBtn+deleteBtn
-      +'</div></div></div></div>';
+      +'</div></div>'
+      +'<div style="padding:0 14px 14px;display:flex;gap:8px">'+approveBtn+deleteBtn
+      +'<button class="admin-btn" style="background:#f0f7ff;color:#1a6ebc" onclick="adminViewDetail('+JSON.stringify(item).replace(/'/g,"\\'")+')" >👁 Просмотр</button>'
+      +'</div>'
+      +'</div>';
   }).join('');
 }
 
+
+
+function adminViewDetail(item, e){
+  if(e) e.stopPropagation();
+  // Open in detail modal
+  var kind = item._kind || 'apt';
+  // Temporarily add to liveApts/liveCars if not there
+  if(kind==='apt'){
+    var exists = liveApts.find(function(x){return x.id===item.id;});
+    if(!exists) liveApts.push(item);
+  } else {
+    var exists2 = liveCars.find(function(x){return x.id===item.id;});
+    if(!exists2) liveCars.push(item);
+  }
+  openDetail(kind, item.id);
+}
 
 async function adminApprove(kind,id){
   if(!sb) return;
