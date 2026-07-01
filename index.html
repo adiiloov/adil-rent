@@ -19,11 +19,11 @@
   --safe-bot:env(safe-area-inset-bottom,0px);
   --fh:'Sora',sans-serif;--fb:'Inter',sans-serif;
 }
-html,body{height:100%;overflow:hidden;touch-action:manipulation}
-body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;flex-direction:column}
 
 /* NAV */
-.top-nav{height:var(--nav-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;z-index:500;position:relative}
+.top-nav{height:var(--nav-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;z-index:200;position:relative}
 .logo{font-family:var(--fh);font-size:20px;font-weight:700;cursor:pointer}
 .logo em{color:var(--red);font-style:normal}
 .nav-r{display:flex;gap:8px;align-items:center}
@@ -60,12 +60,12 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .sl{font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-top:2px}
 
 /* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--white);border-top:1px solid var(--border);height:var(--bot-h);padding-bottom:var(--safe-bot);display:flex;align-items:stretch}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:6px 2px;position:relative;min-height:44px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--white);border-top:1px solid var(--border);height:var(--bot-h);padding-bottom:var(--safe-bot);display:flex;align-items:stretch}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:6px 2px;position:relative}
 .bn-ico{font-size:20px;line-height:1}
 .bn-lbl{font-size:10px;font-weight:500;color:var(--muted);font-family:var(--fb)}
 .bn.active .bn-lbl{color:var(--red);font-weight:700}
-.bn-plus{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 2px;min-height:44px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.bn-plus{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 2px}
 .bn-plus-circle{width:44px;height:44px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 14px rgba(217,79,59,.4);margin-top:-16px}
 .bn-plus-lbl{font-size:10px;font-weight:700;color:var(--red);font-family:var(--fb)}
 .bn-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px;position:absolute;top:4px;right:calc(50% - 14px);line-height:1.4;min-width:16px;text-align:center}
@@ -73,7 +73,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* PILLS */
 .pills{display:flex;gap:7px;padding:14px 16px 10px;overflow-x:auto;scrollbar-width:none}
 .pills::-webkit-scrollbar{display:none}
-.pill{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;color:var(--muted);background:var(--white);white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:36px}
+.pill{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;color:var(--muted);background:var(--white);white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .12s}
 .pill.active{background:var(--red);color:#fff;border-color:var(--red)}
 
 /* VIEW TOGGLE */
@@ -112,13 +112,13 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 
 /* CARDS */
 .card-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
-.l-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.l-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
 .l-card:active{transform:scale(.99)}
 .l-card-img-wrap{position:relative;height:180px;overflow:hidden;background:var(--bg)}
 .l-card-img{width:100%;height:100%;object-fit:cover;display:block}
 .tag-new{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;z-index:2}
 .tag-type{position:absolute;top:10px;right:44px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;backdrop-filter:blur(4px);z-index:2}
-.fav-btn{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:3;backdrop-filter:blur(4px);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.fav-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:3;backdrop-filter:blur(4px)}
 .fav-btn.on{background:#fff0ee;color:var(--red)}
 .l-card-body{padding:13px 14px}
 .l-card-title{font-size:15px;font-weight:600;margin-bottom:3px;line-height:1.3}
@@ -126,7 +126,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .l-card-row{display:flex;align-items:center;justify-content:space-between}
 .l-price{font-size:18px;font-weight:700;color:var(--red)}
 .l-price small{font-size:11px;color:var(--muted);font-weight:400}
-.wa-quick{background:var(--green);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:40px}
+.wa-quick{background:var(--green);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .l-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
 .badge{font-size:10px;padding:3px 8px;border-radius:10px;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
 .badge.new{background:#fff0ee;color:#c0392b;border-color:#f5c6c6}
@@ -149,7 +149,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .empty-btn{background:var(--red);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--fb)}
 
 /* MODAL OVERLAY */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;-webkit-tap-highlight-color:transparent}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
 .modal-sheet{background:var(--white);width:100%;max-width:540px;max-height:92vh;border-radius:20px 20px 0 0;overflow:hidden;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
 .overlay.open .modal-sheet{transform:translateY(0)}
@@ -317,7 +317,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* DESKTOP */
 @media(min-width:768px){
   html,body{overflow:auto;height:auto}
-  .app-body{overflow-y:auto;height:auto;padding-bottom:80px}
+  .app-body{overflow:visible;height:auto;padding-bottom:80px}
   .bottom-nav{display:none}
   .top-nav{padding:0 32px;height:64px}
   .nav-desktop-links{display:flex;gap:4px}
@@ -717,7 +717,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="m-body">
         <div class="m-head">
           <div class="m-title" id="m-title"></div>
-          <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+          <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">✕</button>
         </div>
         <div class="m-owner-row">
           <div class="m-ava" id="m-ava"></div>
@@ -886,11 +886,10 @@ async function deleteListing(kind,id){
 // ─── AUTH MODAL ───────────────────────────────────────────────────
 function openAuth(mode){
   document.getElementById('auth-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
   switchAuthTab(mode==='signup'?'signup':'login');
   document.getElementById('auth-err').classList.remove('show');
 }
-function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')){ document.getElementById('auth-overlay').classList.remove('open'); document.body.style.overflow=''; } }
+function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')) document.getElementById('auth-overlay').classList.remove('open'); }
 function switchAuthTab(t){
   document.getElementById('auth-login-form').style.display=t==='login'?'block':'none';
   document.getElementById('auth-signup-form').style.display=t==='signup'?'block':'none';
@@ -918,7 +917,6 @@ async function doLogin(){
     return;
   }
   document.getElementById('auth-overlay').classList.remove('open');
-  document.body.style.overflow='';
   showToast('✓ Добро пожаловать!');
 }
 async function doSignup(){
@@ -934,7 +932,6 @@ async function doSignup(){
   btn.disabled=false; btn.textContent='Создать аккаунт';
   if(result.error){ showErr(result.error.message||'Ошибка регистрации'); return; }
   document.getElementById('auth-overlay').classList.remove('open');
-  document.body.style.overflow='';
   showToast('✓ Аккаунт создан! Проверь email для подтверждения.');
 }
 async function logout(){
@@ -991,6 +988,7 @@ async function submitApt(){
     description_ru:document.getElementById('f-desc').value,
     phone:phone, owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
     gmaps_url:document.getElementById('f-gmaps').value.trim()||null,
+    district_ru:document.getElementById('f-district').value.trim(),
     is_furnished:amenities.includes('Мебель'),
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:amenities, photos:photoUrls, is_active:false
@@ -1094,7 +1092,7 @@ function resetFilter(){ priceFrom=0; priceTo=999999; sortVal=''; document.getEle
 // ─── RENDER HELPERS ───────────────────────────────────────────────
 var USP='https://images.unsplash.com/';
 function imgSrc(item){ if(item.photos&&item.photos.length){ var p=item.photos[0]; return p.startsWith('http')?p:USP+p; } return ''; }
-function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note?item.price_note:'/мес'); }
+function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note||'/мес'); }
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
 function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id===id;}); }
 function cardHtml(item,kind){
@@ -1108,7 +1106,7 @@ function cardHtml(item,kind){
   return '<div class="l-card" onclick="openDetail(\''+kind+'\','+item.id+')">'
     +'<div class="l-card-img-wrap">'+imgEl
     +(isNew?'<div class="tag-new">Новое</div>':'')
-    +(typeLabel?'<div class="tag-type">'+typeLabel+'</div>':'')
+    +'<div class="tag-type">'+typeLabel+'</div>'
     +'<button class="fav-btn'+(favOn?' on':'')+'" onclick="toggleFav(event,\''+kind+'\','+item.id+')">'+(favOn?'♥':'♡')+'</button>'
     +'</div>'
     +'<div class="l-card-body">'
@@ -1173,8 +1171,7 @@ function renderMarkers(){
   if(!markers) return;
   markers.clearLayers();
   getFilteredApts().forEach(function(a){
-    var lat=a.lat||24.4672; var lng=a.lng||39.6113;
-    var m=L.marker([lat,lng],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
+    var m=L.marker([a.lat||24.468,a.lng||39.615],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
     m.on('click',function(){openDetail('apt',a.id);});
     var src=imgSrc(a);
     m.on('mouseover',function(){
@@ -1209,7 +1206,6 @@ function openDetail(kind,id){
   var mapsBtn=document.getElementById('m-maps-btn');
   if(mapsBtn){ mapsBtn.style.display=(item.gmaps_url?'flex':'none'); }
   document.getElementById('detail-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
 }
 function nextImg(){
   if(!detailItem) return;
@@ -1220,7 +1216,7 @@ function nextImg(){
   document.getElementById('m-img').src=src;
   document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
 }
-function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')){ document.getElementById('detail-overlay').classList.remove('open'); document.body.style.overflow=''; } }
+function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
 function openWA(){ if(!detailItem) return; var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
 function openCall(){ if(detailItem) window.open('tel:'+detailItem.phone); }
 function openGMaps(){ if(detailItem&&detailItem.gmaps_url) window.open(detailItem.gmaps_url,'_blank'); }
@@ -1255,7 +1251,7 @@ function goSection(s){
     var dfn=document.getElementById('dfn-'+k); if(dfn) dfn.classList.toggle('active',k===s);
     var ndl=document.getElementById('ndl-'+k); if(ndl) ndl.classList.toggle('active',k===s);
   });
-  if(s==='apt'){if(!mapReady){initMap();mapReady=true;setTimeout(function(){map&&map.invalidateSize();},150);}else if(aptView==='map')setTimeout(function(){map&&map.invalidateSize();},80);renderApts();}
+  if(s==='apt'){if(!mapReady){initMap();mapReady=true;}if(aptView==='map')setTimeout(function(){map&&map.invalidateSize();},80);renderApts();}
   if(s==='car') renderCars();
   if(s==='fav') renderFavs();
   if(s==='profile') updateProfileUI();
@@ -1326,96 +1322,6 @@ function renderSearchResults(items,kind){
 }
 function setLang(l){ lang=l; document.querySelectorAll('.lb').forEach(function(b){b.classList.toggle('active',b.textContent===l.toUpperCase());}); }
 function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
-
-
-// ─── ADMIN ────────────────────────────────────────────────────────
-var ADMIN_EMAILS = ['adilov.aem@gmail.com'];
-var adminTab = 'pending';
-var adminItems = [];
-
-function isAdmin(){ return currentUser && ADMIN_EMAILS.indexOf(currentUser.email) !== -1; }
-
-async function loadAdmin(){
-  var blocked=document.getElementById('admin-blocked');
-  var content=document.getElementById('admin-content');
-  var list=document.getElementById('admin-list');
-  if(!currentUser||!isAdmin()){
-    if(blocked) blocked.style.display='block';
-    if(content) content.style.display='none';
-    return;
-  }
-  if(blocked) blocked.style.display='none';
-  if(content) content.style.display='block';
-  if(!sb){ if(list) list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">Supabase не подключён</div>'; return; }
-  var res1=await sb.from('apartments').select('*').order('created_at',{ascending:false});
-  var res2=await sb.from('cars').select('*').order('created_at',{ascending:false});
-  adminItems=[...(res1.data||[]).map(function(a){a._kind='apt';return a;}), ...(res2.data||[]).map(function(c){c._kind='car';return c;})];
-  adminItems.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});
-  var total=adminItems.length;
-  var pending=adminItems.filter(function(x){return !x.is_active;}).length;
-  var active2=adminItems.filter(function(x){return x.is_active;}).length;
-  var e1=document.getElementById('astat-total'); if(e1) e1.textContent=total;
-  var e2=document.getElementById('astat-pending'); if(e2) e2.textContent=pending;
-  var e3=document.getElementById('astat-active'); if(e3) e3.textContent=active2;
-  var e4=document.getElementById('admin-pending-cnt'); if(e4) e4.textContent=pending>0?'('+pending+')':'';
-  renderAdminList();
-}
-
-function setAdminTab(el,tab){
-  adminTab=tab;
-  document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.remove('active');});
-  el.classList.add('active');
-  renderAdminList();
-}
-
-function renderAdminList(){
-  var list=document.getElementById('admin-list');
-  if(!list) return;
-  var filtered=adminItems.filter(function(x){
-    if(adminTab==='pending') return !x.is_active;
-    if(adminTab==='active') return x.is_active;
-    return true;
-  });
-  if(!filtered.length){ list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">Пусто</div>'; return; }
-  list.innerHTML=filtered.map(function(item){
-    var src=item.photos&&item.photos[0]?item.photos[0]:'';
-    var imgEl=src
-      ?'<img style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0" src="'+src+'" loading="lazy">'
-      :'<div style="width:80px;height:80px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
-    var statusColor=item.is_active?'#16a34a':'#d97706';
-    var statusText=item.is_active?'● Активно':'● На проверке';
-    var date=new Date(item.created_at).toLocaleDateString('ru-RU');
-    var approveBtn=!item.is_active
-      ?'<button class="admin-btn approve" onclick="adminApprove(''+item._kind+'','+item.id+')">✓ Одобрить</button>'
-      :'<button class="admin-btn delete" onclick="adminDeactivate(''+item._kind+'','+item.id+')">↓ Снять</button>';
-    return '<div class="admin-card"><div class="admin-card-inner">'+imgEl
-      +'<div class="admin-card-body">'
-      +'<div style="font-size:11px;color:'+statusColor+';margin-bottom:5px">'+statusText+'</div>'
-      +'<div class="admin-card-title">'+(item.title_ru||'Без названия')+'</div>'
-      +'<div class="admin-card-meta">'+date+' · '+(item.owner_name||'')+(item.phone?' · '+item.phone:'')+'</div>'
-      +'<div class="admin-card-price">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
-      +'<div class="admin-card-actions">'+approveBtn
-      +'<button class="admin-btn reject" onclick="adminDelete(''+item._kind+'','+item.id+')">✕ Удалить</button>'
-      +'</div></div></div></div>';
-  }).join('');
-}
-
-async function adminApprove(kind,id){
-  if(!sb) return;
-  await sb.from(kind==='apt'?'apartments':'cars').update({is_active:true}).eq('id',id);
-  showToast('✓ Одобрено!'); loadAdmin(); loadApts(); loadCars();
-}
-async function adminDeactivate(kind,id){
-  if(!sb) return;
-  await sb.from(kind==='apt'?'apartments':'cars').update({is_active:false}).eq('id',id);
-  showToast('Снято с публикации'); loadAdmin(); loadApts(); loadCars();
-}
-async function adminDelete(kind,id){
-  if(!sb) return;
-  if(!confirm('Удалить объявление навсегда?')) return;
-  await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
-  showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
-}
 
 // ─── AMENITIES BUILD ─────────────────────────────────────────────
 function buildAm(list,id){ var el=document.getElementById(id); if(!el) return; el.innerHTML=list.map(function(a){return '<div class="am" onclick="this.classList.toggle(\'on\')">'+a+'</div>';}).join(''); }
