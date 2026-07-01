@@ -903,9 +903,19 @@ async function doLogin(){
   if(!email||!pass){ showErr('Заполни все поля'); return; }
   var btn=document.getElementById('login-btn');
   btn.disabled=true; btn.textContent='Входим...';
-  var {error}=await sb.auth.signInWithPassword({email,password:pass});
+  var result=await sb.auth.signInWithPassword({email:email,password:pass});
   btn.disabled=false; btn.textContent='Войти';
-  if(error){ showErr('Неверный email или пароль'); return; }
+  if(result.error){
+    var msg=result.error.message||'';
+    if(msg.indexOf('Email not confirmed')!==-1){
+      showErr('Email не подтверждён. Проверь почту и нажми на ссылку.');
+    } else if(msg.indexOf('Invalid login')!==-1||msg.indexOf('invalid_credentials')!==-1){
+      showErr('Неверный email или пароль');
+    } else {
+      showErr('Ошибка: '+msg);
+    }
+    return;
+  }
   document.getElementById('auth-overlay').classList.remove('open');
   showToast('✓ Добро пожаловать!');
 }
@@ -918,9 +928,9 @@ async function doSignup(){
   if(pass.length<6){ showErr('Пароль минимум 6 символов'); return; }
   var btn=document.getElementById('signup-btn');
   btn.disabled=true; btn.textContent='Создаём аккаунт...';
-  var {error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+  var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});
   btn.disabled=false; btn.textContent='Создать аккаунт';
-  if(error){ showErr(error.message); return; }
+  if(result.error){ showErr(result.error.message||'Ошибка регистрации'); return; }
   document.getElementById('auth-overlay').classList.remove('open');
   showToast('✓ Аккаунт создан! Проверь email для подтверждения.');
 }
