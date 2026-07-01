@@ -46,6 +46,9 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .hero{background:var(--dark);padding:24px 16px 22px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(217,79,59,.25),transparent);pointer-events:none}
 .hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.7);margin-bottom:12px}
+.hero-type-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.htp{padding:8px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--fb);white-space:nowrap}
+.htp:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
 .hdot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hero-title{font-family:var(--fh);font-size:24px;font-weight:700;color:#fff;line-height:1.2;letter-spacing:-.5px;margin-bottom:6px}
@@ -363,7 +366,14 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 </script>
 
 <header class="top-nav">
-  <div class="logo" onclick="goSection('apt')"><em>Adil</em></div>
+  <div class="logo" onclick="goSection('apt')" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#D94F3B"/>
+    <path d="M16 6L8 14h3v10h10V14h3L16 6z" fill="white" opacity="0.95"/>
+    <circle cx="16" cy="14" r="2.5" fill="#D94F3B"/>
+  </svg>
+  <span style="font-family:var(--fh);font-size:20px;font-weight:700;color:var(--dark)"><em style="color:var(--red);font-style:normal">Adil</em></span>
+</div>
   <div class="nav-desktop-links">
     <button class="ndl active" onclick="goSection('apt')" id="ndl-apt">🏠 Квартиры</button>
     <button class="ndl" onclick="goSection('car')" id="ndl-car">🚗 Машины</button>
@@ -386,7 +396,15 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- HERO -->
   <div class="hero">
     <div class="hero-tag"><span class="hdot"></span><span>Медина, Саудовская Аравия</span></div>
-    <h1 class="hero-title"><em>Adil</em><br><span id="h-t1">Жильё и транспорт в Медине</span></h1>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px">
+  <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#D94F3B"/>
+    <path d="M16 6L8 14h3v10h10V14h3L16 6z" fill="white" opacity="0.95"/>
+    <circle cx="16" cy="14" r="2.5" fill="#D94F3B"/>
+  </svg>
+  <span style="font-family:var(--fh);font-size:32px;font-weight:700;color:#fff">Adil</span>
+</div>
+<h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1">Жильё и транспорт в Медине</span></h1>
     <p class="hero-sub" id="h-sub">Квартиры и машины в аренду. Быстро, прозрачно, без посредников.</p>
 
     <div class="hero-stats">
@@ -652,6 +670,23 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           </div>
           <div class="pmi-arrow">›</div>
         </div>
+      <div class="profile-section">
+        <div class="profile-section-title">Поддержка</div>
+        <div class="profile-menu-item" onclick="window.open('https://t.me/AdilRentSupport','_blank')">
+          <div class="pmi-left">
+            <div class="pmi-ico" style="background:#e8f4fd">✈️</div>
+            <div><div class="pmi-label">Написать в поддержку</div><div class="pmi-sub">Telegram @AdilRentSupport</div></div>
+          </div>
+          <div class="pmi-arrow">›</div>
+        </div>
+        <div class="profile-menu-item" onclick="window.open('mailto:adilrentsa@gmail.com','_blank')">
+          <div class="pmi-left">
+            <div class="pmi-ico" style="background:#f0fdf4">✉️</div>
+            <div><div class="pmi-label">Email поддержки</div><div class="pmi-sub">adilrentsa@gmail.com</div></div>
+          </div>
+          <div class="pmi-arrow">›</div>
+        </div>
+      </div>
       <button class="logout-btn" onclick="logout()">Выйти из аккаунта</button>
       <div style="height:16px"></div>
     </div>
@@ -672,6 +707,8 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="setAdminTab(this,'pending')" id="atab-pending">⏳ На проверке <span id="admin-pending-cnt"></span></button>
         <button class="admin-tab" onclick="setAdminTab(this,'active')" id="atab-active">✅ Активные</button>
+        <button class="admin-tab" onclick="setAdminTab(this,'apts')" id="atab-apts">🏠 Квартиры</button>
+        <button class="admin-tab" onclick="setAdminTab(this,'cars')" id="atab-cars">🚗 Машины</button>
         <button class="admin-tab" onclick="setAdminTab(this,'all')" id="atab-all">📋 Все</button>
       </div>
       <div class="admin-body">
@@ -778,6 +815,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 </div>
 
 <div class="toast" id="toast"></div>
+<a href="https://t.me/AdilRentSupport" target="_blank" id="support-fab" style="position:fixed;bottom:calc(var(--bot-h) + 16px);right:16px;width:46px;height:46px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,136,204,.4);z-index:290;text-decoration:none;font-size:22px;transition:transform .15s" title="Поддержка в Telegram">✈️</a>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -798,22 +836,9 @@ function initSupabase(){
 }
 
 // ─── DEMO DATA (пока не настроен Supabase) ───────────────────────
-var demoApts = [
-  {id:1,title_ru:'Уютная студия у Мечети Пророка',title_en:"Cozy studio near Prophet's Mosque",type:'studio',is_furnished:true,is_short_term:false,is_new:true,price:2200,price_note:null,district_ru:'Центр',district_en:'Center',owner_name:'Азамат К.',phone:'+996700123456',lat:24.4688,lng:39.6152,description_ru:'Отличная студия в 5 минутах от Мечети Пророка. Полностью меблирована, кондиционер, Wi-Fi. Тихий подъезд, охрана 24/7.',badges_ru:['С мебелью','Wi-Fi','Кондиционер'],badges_en:['Furnished','Wi-Fi','AC'],photos:['photo-1555636222-cae831e670b3?w=700&q=80','photo-1502672260266-1c1ef2d93688?w=700&q=80']},
-  {id:2,title_ru:'1-комнатная с видом на мечеть',title_en:'1BR with mosque view',type:'1room',is_furnished:true,is_short_term:false,is_new:false,price:3500,price_note:null,district_ru:'Аль-Анбария',district_en:'Al-Anbariyya',owner_name:'Сардор Р.',phone:'+998901234567',lat:24.4660,lng:39.6105,description_ru:'Просторная однокомнатная с балконом и видом на Масджид ан-Набави.',badges_ru:['С мебелью','Кондиционер','Вид на мечеть'],badges_en:['Furnished','AC','Mosque view'],photos:['photo-1560448204-e02f11c3d0e2?w=700&q=80','photo-1484101403633-562f891dc89a?w=700&q=80']},
-  {id:3,title_ru:'2-комнатная, новый ремонт',title_en:'2BR, newly renovated',type:'2room',is_furnished:false,is_short_term:false,is_new:false,price:4800,price_note:null,district_ru:'Аль-Азизия',district_en:'Al-Aziziyah',owner_name:'Бекзод Н.',phone:'+998711234567',lat:24.4608,lng:39.6078,description_ru:'Двухкомнатная с евроремонтом. Без мебели. Закрытая охраняемая парковка.',badges_ru:['Без мебели','Парковка','Евроремонт'],badges_en:['Unfurnished','Parking','Renovated'],photos:['photo-1493809842364-78817add7ffb?w=700&q=80']},
-  {id:4,title_ru:'Студия для паломников, посуточно',title_en:'Studio for pilgrims, daily',type:'studio',is_furnished:true,is_short_term:true,is_new:true,price:180,price_note:'/сутки',district_ru:'Аль-Хара',district_en:'Al-Harra',owner_name:'Нурлан А.',phone:'+77771234567',lat:24.4738,lng:39.6095,description_ru:'Бюджетная студия. 10 минут от мечети. Хозяин говорит по-русски.',badges_ru:['Посуточно','Wi-Fi','Хозяин RU'],badges_en:['Daily','Wi-Fi','Owner speaks RU'],photos:['photo-1536376072261-38c75010e6c9?w=700&q=80']},
-  {id:5,title_ru:'3-комнатная для семьи',title_en:'3BR family apartment',type:'3room',is_furnished:true,is_short_term:false,is_new:false,price:7500,price_note:null,district_ru:'Аль-Мухтара',district_en:'Al-Mukhtar',owner_name:'Жамал Т.',phone:'+77051234567',lat:24.4648,lng:39.6201,description_ru:'Большая семейная квартира. Полная мебель, детская комната.',badges_ru:['С мебелью','Кондиционер','Парковка'],badges_en:['Furnished','AC','Parking'],photos:['photo-1565183997392-2f6f122e5912?w=700&q=80']},
-  {id:6,title_ru:'2-комнатная в 10 мин от мечети',title_en:'2BR, 10 min from mosque',type:'2room',is_furnished:true,is_short_term:false,is_new:false,price:5200,price_note:null,district_ru:'Аль-Ранха',district_en:'Al-Ranha',owner_name:'Дильшод К.',phone:'+998901111111',lat:24.4635,lng:39.6178,description_ru:'Уютная двушка. 10 минут пешком до мечети.',badges_ru:['С мебелью','Wi-Fi','Кухня'],badges_en:['Furnished','Wi-Fi','Kitchen'],photos:['photo-1512917774080-9991f1c4c750?w=700&q=80']}
-];
-var demoCars = [
-  {id:101,cat:'suv',is_daily:true,is_monthly:false,is_new:true,title_ru:'Toyota Land Cruiser 200 — 2021',title_en:'Toyota Land Cruiser 200 — 2021',specs_ru:'Белый · Внедорожник · 4WD · 7 мест',specs_en:'White · SUV · 4WD · 7 seats',price:800,price_note:'/сутки',owner_name:'Фархад У.',phone:'+998901555444',description_ru:'Идеален для семейных поездок. 7 мест. Страховка включена.',badges_ru:['Посуточно','4WD','7 мест'],badges_en:['Daily','4WD','7 seats'],photos:['photo-1533473359331-0135ef1b58bf?w=700&q=80']},
-  {id:102,cat:'sedan',is_daily:true,is_monthly:true,is_new:false,title_ru:'Toyota Camry 70 — 2022',title_en:'Toyota Camry 70 — 2022',specs_ru:'Чёрный · Седан · Автомат',specs_en:'Black · Sedan · Auto',price:350,price_note:'/сутки',owner_name:'Сайфулло К.',phone:'+992901234567',description_ru:'Представительский седан. Пробег 25 000 км.',badges_ru:['Посуточно','Помесячно','Кожа'],badges_en:['Daily','Monthly','Leather'],photos:['photo-1621007947382-bb3c3994e3fb?w=700&q=80']},
-  {id:103,cat:'van',is_daily:true,is_monthly:false,is_new:false,title_ru:'Toyota Hiace — 15 мест',title_en:'Toyota Hiace — 15 seats',specs_ru:'Белый · Минивэн · 15 мест',specs_en:'White · Minivan · 15 seats',price:600,price_note:'/сутки',owner_name:'Нурмат Э.',phone:'+998901888777',description_ru:'Идеален для группы паломников.',badges_ru:['Посуточно','15 мест','Кондиционер'],badges_en:['Daily','15 seats','AC'],photos:['photo-1582639510494-c80b5de9f148?w=700&q=80']},
-  {id:104,cat:'luxury',is_daily:true,is_monthly:false,is_new:true,title_ru:'BMW X7 — 2023 Премиум',title_en:'BMW X7 — 2023 Premium',specs_ru:'Чёрный · Внедорожник · Люкс',specs_en:'Black · SUV · Luxury',price:1200,price_note:'/сутки',owner_name:'Азиз Ш.',phone:'+998901000111',description_ru:'Флагманский BMW X7. Массажные сиденья, панорамная крыша.',badges_ru:['Посуточно','Люкс','Массаж'],badges_en:['Daily','Luxury','Massage'],photos:['photo-1555215695-3004980ad54e?w=700&q=80']},
-  {id:105,cat:'sedan',is_daily:false,is_monthly:true,is_new:false,title_ru:'Hyundai Sonata — 2023',title_en:'Hyundai Sonata — 2023',specs_ru:'Серебристый · Седан · Автомат',specs_en:'Silver · Sedan · Auto',price:3500,price_note:'/мес',owner_name:'Мухаммад Р.',phone:'+966501234567',description_ru:'Надёжный седан. Только помесячно. Без ограничений пробега.',badges_ru:['Помесячно','Без ограничений'],badges_en:['Monthly','Unlimited km'],photos:['photo-1609521263047-f8f205293f24?w=700&q=80']},
-  {id:106,cat:'suv',is_daily:true,is_monthly:true,is_new:false,title_ru:'Kia Sportage — 2022',title_en:'Kia Sportage — 2022',specs_ru:'Серый · Кроссовер · Автомат',specs_en:'Gray · Crossover · Auto',price:400,price_note:'/сутки',owner_name:'Исмоил Х.',phone:'+992901111222',description_ru:'Компактный кроссовер. Экономичный, надёжный.',badges_ru:['Посуточно','Помесячно','Кондиционер'],badges_en:['Daily','Monthly','AC'],photos:['photo-1519641471654-76ce0107ad1b?w=700&q=80']}
-];
+var demoApts = [];
+
+var demoCars = [];
 
 // ─── APP STATE ────────────────────────────────────────────────────
 var section='apt', aptView='map', aptF='all', carF='all', addType='apt', prevSec='apt';
@@ -910,13 +935,19 @@ async function doLogin(){
   btn.disabled=false; btn.textContent='Войти';
   if(result.error){
     var msg=result.error.message||'';
-    if(msg.indexOf('Email not confirmed')!==-1){
-      showErr('Email не подтверждён. Проверь почту и нажми на ссылку.');
+    if(msg.indexOf('Email not confirmed')!==-1||msg.indexOf('email_not_confirmed')!==-1){
+      showErr('⚠️ Email не подтверждён! Проверь почту '+email+' и нажми на ссылку подтверждения.');
     } else if(msg.indexOf('Invalid login')!==-1||msg.indexOf('invalid_credentials')!==-1){
       showErr('Неверный email или пароль');
     } else {
-      showErr('Ошибка: '+msg);
+      showErr('Ошибка входа: '+msg);
     }
+    return;
+  }
+  // Check email confirmed
+  if(result.data&&result.data.user&&!result.data.user.email_confirmed_at){
+    await sb.auth.signOut();
+    showErr('⚠️ Подтверди email перед входом. Письмо отправлено на '+email);
     return;
   }
   document.getElementById('auth-overlay').classList.remove('open');
@@ -1411,6 +1442,8 @@ function renderAdminList(){
   var filtered=adminItems.filter(function(x){
     if(adminTab==='pending') return !x.is_active;
     if(adminTab==='active') return x.is_active;
+    if(adminTab==='apts') return x._kind==='apt';
+    if(adminTab==='cars') return x._kind==='car';
     return true;
   });
   if(!filtered.length){ list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">Пусто</div>'; return; }
