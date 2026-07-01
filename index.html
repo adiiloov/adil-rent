@@ -317,7 +317,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* DESKTOP */
 @media(min-width:768px){
   html,body{overflow:auto;height:auto}
-  .app-body{overflow:visible;height:auto;padding-bottom:80px}
+  .app-body{overflow-y:auto;height:auto;padding-bottom:80px}
   .bottom-nav{display:none}
   .top-nav{padding:0 32px;height:64px}
   .nav-desktop-links{display:flex;gap:4px}
@@ -717,7 +717,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="m-body">
         <div class="m-head">
           <div class="m-title" id="m-title"></div>
-          <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">✕</button>
+          <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open');document.body.style.overflow=''">✕</button>
         </div>
         <div class="m-owner-row">
           <div class="m-ava" id="m-ava"></div>
@@ -886,10 +886,11 @@ async function deleteListing(kind,id){
 // ─── AUTH MODAL ───────────────────────────────────────────────────
 function openAuth(mode){
   document.getElementById('auth-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
   switchAuthTab(mode==='signup'?'signup':'login');
   document.getElementById('auth-err').classList.remove('show');
 }
-function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')) document.getElementById('auth-overlay').classList.remove('open'); }
+function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')){ document.getElementById('auth-overlay').classList.remove('open'); document.body.style.overflow=''; } }
 function switchAuthTab(t){
   document.getElementById('auth-login-form').style.display=t==='login'?'block':'none';
   document.getElementById('auth-signup-form').style.display=t==='signup'?'block':'none';
@@ -917,6 +918,7 @@ async function doLogin(){
     return;
   }
   document.getElementById('auth-overlay').classList.remove('open');
+  document.body.style.overflow='';
   showToast('✓ Добро пожаловать!');
 }
 async function doSignup(){
@@ -932,6 +934,7 @@ async function doSignup(){
   btn.disabled=false; btn.textContent='Создать аккаунт';
   if(result.error){ showErr(result.error.message||'Ошибка регистрации'); return; }
   document.getElementById('auth-overlay').classList.remove('open');
+  document.body.style.overflow='';
   showToast('✓ Аккаунт создан! Проверь email для подтверждения.');
 }
 async function logout(){
@@ -988,7 +991,6 @@ async function submitApt(){
     description_ru:document.getElementById('f-desc').value,
     phone:phone, owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
     gmaps_url:document.getElementById('f-gmaps').value.trim()||null,
-    district_ru:document.getElementById('f-district').value.trim(),
     is_furnished:amenities.includes('Мебель'),
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:amenities, photos:photoUrls, is_active:false
@@ -1092,7 +1094,7 @@ function resetFilter(){ priceFrom=0; priceTo=999999; sortVal=''; document.getEle
 // ─── RENDER HELPERS ───────────────────────────────────────────────
 var USP='https://images.unsplash.com/';
 function imgSrc(item){ if(item.photos&&item.photos.length){ var p=item.photos[0]; return p.startsWith('http')?p:USP+p; } return ''; }
-function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note||'/мес'); }
+function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note?item.price_note:'/мес'); }
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
 function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id===id;}); }
 function cardHtml(item,kind){
@@ -1106,7 +1108,7 @@ function cardHtml(item,kind){
   return '<div class="l-card" onclick="openDetail(\''+kind+'\','+item.id+')">'
     +'<div class="l-card-img-wrap">'+imgEl
     +(isNew?'<div class="tag-new">Новое</div>':'')
-    +'<div class="tag-type">'+typeLabel+'</div>'
+    +(typeLabel?'<div class="tag-type">'+typeLabel+'</div>':'')
     +'<button class="fav-btn'+(favOn?' on':'')+'" onclick="toggleFav(event,\''+kind+'\','+item.id+')">'+(favOn?'♥':'♡')+'</button>'
     +'</div>'
     +'<div class="l-card-body">'
@@ -1171,7 +1173,8 @@ function renderMarkers(){
   if(!markers) return;
   markers.clearLayers();
   getFilteredApts().forEach(function(a){
-    var m=L.marker([a.lat||24.468,a.lng||39.615],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
+    var lat=a.lat||24.4672; var lng=a.lng||39.6113;
+    var m=L.marker([lat,lng],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
     m.on('click',function(){openDetail('apt',a.id);});
     var src=imgSrc(a);
     m.on('mouseover',function(){
@@ -1206,6 +1209,7 @@ function openDetail(kind,id){
   var mapsBtn=document.getElementById('m-maps-btn');
   if(mapsBtn){ mapsBtn.style.display=(item.gmaps_url?'flex':'none'); }
   document.getElementById('detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 function nextImg(){
   if(!detailItem) return;
@@ -1216,7 +1220,7 @@ function nextImg(){
   document.getElementById('m-img').src=src;
   document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
 }
-function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
+function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')){ document.getElementById('detail-overlay').classList.remove('open'); document.body.style.overflow=''; } }
 function openWA(){ if(!detailItem) return; var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
 function openCall(){ if(detailItem) window.open('tel:'+detailItem.phone); }
 function openGMaps(){ if(detailItem&&detailItem.gmaps_url) window.open(detailItem.gmaps_url,'_blank'); }
@@ -1251,7 +1255,7 @@ function goSection(s){
     var dfn=document.getElementById('dfn-'+k); if(dfn) dfn.classList.toggle('active',k===s);
     var ndl=document.getElementById('ndl-'+k); if(ndl) ndl.classList.toggle('active',k===s);
   });
-  if(s==='apt'){if(!mapReady){initMap();mapReady=true;}if(aptView==='map')setTimeout(function(){map&&map.invalidateSize();},80);renderApts();}
+  if(s==='apt'){if(!mapReady){initMap();mapReady=true;setTimeout(function(){map&&map.invalidateSize();},150);}else if(aptView==='map')setTimeout(function(){map&&map.invalidateSize();},80);renderApts();}
   if(s==='car') renderCars();
   if(s==='fav') renderFavs();
   if(s==='profile') updateProfileUI();
