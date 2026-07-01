@@ -119,8 +119,8 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .card-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
 .l-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
 .l-card:active{transform:scale(.99)}
-.l-card-img-wrap{position:relative;height:180px;overflow:hidden;background:var(--bg)}
-.l-card-img{width:100%;height:100%;object-fit:cover;display:block}
+.l-card-img-wrap{position:relative;height:200px;overflow:hidden;background:var(--bg)}
+.l-card-img{width:100%;height:100%;object-fit:cover;display:block;object-position:center}
 .tag-new{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;z-index:2}
 .tag-type{position:absolute;top:10px;right:44px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;backdrop-filter:blur(4px);z-index:2}
 .fav-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:3;backdrop-filter:blur(4px)}
@@ -162,7 +162,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .modal-scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 
 /* DETAIL MODAL */
-.m-imgs{position:relative;height:220px;background:var(--bg);cursor:pointer;flex-shrink:0}
+.m-imgs{position:relative;height:260px;background:var(--bg);cursor:pointer;flex-shrink:0}
 .m-imgs img{width:100%;height:100%;object-fit:cover;display:block}
 .m-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
 .m-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5)}
@@ -277,8 +277,8 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .photo-upload-text{font-size:13px;color:var(--muted)}
 .photo-upload-text strong{color:var(--red)}
 .photo-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.photo-preview{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.photo-preview img{width:100%;height:100%;object-fit:cover}
+.photo-preview{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.photo-preview img{width:100%;height:100%;object-fit:cover;object-position:center}
 .photo-preview .del-photo{position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
 /* ADMIN */
@@ -407,11 +407,11 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <span style="font-family:var(--fh);font-size:32px;font-weight:700;color:#fff">Adil</span>
 </div>
 <h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1">Жильё и транспорт в Медине</span></h1>
-    <p class="hero-sub" id="h-sub">Квартиры и машины в аренду. Быстро, прозрачно, без посредников.</p>
+    <p class="hero-sub" id="h-sub">Квартиры и машины в аренду. Быстро и прозрачно.</p>
 
     <div class="hero-stats">
-      <div><div class="sn" id="stat-apts">—</div><div class="sl" id="sl1">квартир</div></div>
-      <div><div class="sn" id="stat-cars">—</div><div class="sl" id="sl2">машин</div></div>
+      
+      
       <div><div class="sn">98%</div><div class="sl" id="sl3">довольных</div></div>
     </div>
   </div>
@@ -421,9 +421,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div class="pills" id="apt-pills">
       <button class="pill active" onclick="setAptF(this,'all')">Все</button>
       <button class="pill" onclick="setAptF(this,'studio')">Студия</button>
-      <button class="pill" onclick="setAptF(this,'1room')">1 комн.</button>
-      <button class="pill" onclick="setAptF(this,'2room')">2 комн.</button>
-      <button class="pill" onclick="setAptF(this,'3room')">3+ комн.</button>
+      <button class="pill" onclick="setAptF(this,'apartment')">Квартира</button>
+      <button class="pill" onclick="setAptF(this,'house')">Дом</button>
+      <button class="pill" onclick="setAptF(this,'villa')">Вилла</button>
       <button class="pill" onclick="setAptF(this,'short')">Посуточно</button>
       <button class="pill" onclick="setAptF(this,'furnished')">С мебелью</button>
     </div>
@@ -1148,7 +1148,13 @@ function clearCarForm(){ ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].
 // ─── FILTER / SORT ────────────────────────────────────────────────
 function getFilteredApts(){
   var fl=liveApts.filter(function(a){
-    var typeOk=aptF==='all'||aptF==='studio'&&a.type==='studio'||aptF==='1room'&&a.type==='1room'||aptF==='2room'&&a.type==='2room'||aptF==='3room'&&(a.type==='3room'||a.type==='4room')||aptF==='short'&&a.is_short_term||aptF==='furnished'&&a.is_furnished;
+    var typeOk=aptF==='all'
+      ||aptF==='studio'&&a.type==='studio'
+      ||aptF==='apartment'&&(a.type==='apartment'||a.type==='1room'||a.type==='2room'||a.type==='3room'||a.type==='4room')
+      ||aptF==='house'&&a.type==='house'
+      ||aptF==='villa'&&a.type==='villa'
+      ||aptF==='short'&&a.is_short_term
+      ||aptF==='furnished'&&a.is_furnished;
     var priceOk=a.price>=priceFrom&&a.price<=priceTo;
     return typeOk&&priceOk;
   });
@@ -1170,7 +1176,7 @@ function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
 function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id===id;}); }
 function cardHtml(item,kind){
-  var typeMap={studio:'Студия','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.','4room':'4 комн.','sedan':'Седан','suv':'Внедорожник','van':'Минивэн','luxury':'Премиум'};
+  var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира','sedan':'Седан','suv':'Внедорожник','van':'Минивэн','luxury':'Премиум'};
   var typeLabel=typeMap[item.type||item.cat]||'';
   var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
   var isNew=item.is_new||item.is_new===true;
@@ -1452,7 +1458,7 @@ function renderAdminList(){
   list.innerHTML=filtered.map(function(item){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
     var imgEl=src
-      ?'<img style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0" src="'+src+'" loading="lazy">'
+      ?'<img style="width:80px;height:80px;object-fit:cover;object-position:center;border-radius:8px;flex-shrink:0" src="'+src+'" loading="lazy">'
       :'<div style="width:80px;height:80px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var statusColor=item.is_active?'#16a34a':'#d97706';
     var statusText=item.is_active?'● Активно':'● На проверке';
