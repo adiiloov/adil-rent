@@ -568,9 +568,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fg">
           <label class="fl">Фотографии</label>
           <div class="photo-upload-area" id="apt-upload-area">
-            <input type="file" accept="image/*" multiple onchange="handlePhotos(event,'apt',15)">
-            <div class="photo-upload-icon">📷</div>
-            <div class="photo-upload-text">Нажми или перетащи фото<br><strong>до 15 фотографий</strong></div>
+            <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'apt',15)">
+            <div class="photo-upload-icon">📷🎥</div>
+            <div class="photo-upload-text">Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong></div>
           </div>
           <div class="photo-previews" id="apt-previews"></div>
         </div>
@@ -640,6 +640,15 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fg"><label class="fl">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div class="fg"><label class="fl">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div cl
+        <div class="fg">
+          <label class="fl">📷 Фото и видео</label>
+          <div class="photo-upload-area" id="car-upload-area">
+            <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'car',10)">
+            <div class="photo-upload-icon">📷🎥</div>
+            <div class="photo-upload-text">Фото и видео машины<br><strong>до 10 файлов</strong></div>
+          </div>
+          <div class="photo-previews" id="car-previews"></div>
+        </div>
         <div class="fg"><label class="fl">Опции</label><div class="am-grid" id="am-car"></div></div>
         <button class="f-sub" id="car-submit-btn" onclick="submitCar()">Опубликовать бесплатно</button>
       </div>
@@ -1057,18 +1066,40 @@ function updateStats(){
 
 // ─── GOOGLE MAPS PARSER ───────────────────────────────────────────
 function parseGoogleMapsUrl(url){
-  if(!url) return null;
-  // Format: @lat,lng,zoom or ?q=lat,lng or /place/.../@lat,lng
-  var patterns = [
-    /@(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /ll=(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/
-  ];
-  for(var i=0;i<patterns.length;i++){
-    var m=url.match(patterns[i]);
-    if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+  if(!url||url.length<10) return null;
+  url = decodeURIComponent(url);
+
+  // Pattern 1: @lat,lng (most common in shared links)
+  var m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 2: !3d lat !4d lng (Google Maps embed)
+  m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 3: q=lat,lng
+  m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 4: ll=lat,lng
+  m = url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 5: /maps/place/name/@lat,lng or place/@lat,lng
+  m = url.match(/place\/[^\/]*\/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 6: center=lat,lng
+  m = url.match(/center=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+
+  // Pattern 7: coords in URL path like /24.4688,39.6152
+  m = url.match(/\/(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/);
+  if(m){
+    var lat=parseFloat(m[1]), lng=parseFloat(m[2]);
+    if(lat>=-90&&lat<=90&&lng>=-180&&lng<=180) return {lat,lng};
   }
+
   return null;
 }
 
@@ -1076,17 +1107,19 @@ function parseGoogleMapsUrl(url){
 function previewGMaps(url){
   var preview=document.getElementById('gmaps-preview');
   if(!preview) return;
+  if(!url||url.length<10){ preview.style.display='none'; return; }
   var result=parseGoogleMapsUrl(url);
+  preview.style.display='block';
   if(result){
-    preview.style.display='block';
-    preview.innerHTML='📍 Координаты: '+result.lat.toFixed(4)+', '+result.lng.toFixed(4)+' — точка появится на карте ✓';
+    preview.style.background='#f0fdf4';
+    preview.style.borderColor='#bbf7d0';
     preview.style.color='#16a34a';
-  } else if(url.length>10){
-    preview.style.display='block';
-    preview.innerHTML='⚠️ Координаты не найдены — используем центр Медины';
-    preview.style.color='#d97706';
+    preview.innerHTML='✅ Координаты найдены: '+result.lat.toFixed(5)+', '+result.lng.toFixed(5)+'<br><small style="color:#6b7280">Метка появится на карте</small>';
   } else {
-    preview.style.display='none';
+    preview.style.background='#fffbeb';
+    preview.style.borderColor='#fde68a';
+    preview.style.color='#d97706';
+    preview.innerHTML='⚠️ Не удалось определить координаты<br><small style="color:#6b7280">Попробуй: открой Google Maps → нажми на место → "Поделиться" → скопируй ссылку</small>';
   }
 }
 
@@ -1168,26 +1201,47 @@ async function submitCar(){
 }
 
 // ─── PHOTO UPLOAD ─────────────────────────────────────────────────
-function handlePhotos(e,kind,max){
-  max=max||10;
-  var files=Array.from(e.target.files).slice(0,max);
-  photoFiles[kind]=files;
-  var prev=document.getElementById(kind+'-previews');
-  prev.innerHTML=files.map(function(f,i){
-    var url=URL.createObjectURL(f);
-    return '<div class="photo-preview"><img src="'+url+'"><button class="del-photo" onclick="removePhoto(\''+kind+'\','+i+')">×</button></div>';
+function handleMedia(e, kind, max){
+  max = max || 10;
+  var files = Array.from(e.target.files).slice(0, max);
+  photoFiles[kind] = files;
+  var prev = document.getElementById(kind+'-previews');
+  if(!prev) return;
+  prev.innerHTML = files.map(function(f, i){
+    var url = URL.createObjectURL(f);
+    var isVideo = f.type.startsWith('video/');
+    var previewEl = isVideo
+      ? '<video src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" muted playsinline></video>'
+      : '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
+    var tag = isVideo ? '<div style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;padding:1px 5px;border-radius:4px">🎥 VIDEO</div>' : '';
+    return '<div class="photo-preview" style="position:relative">'+previewEl+tag+'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
   }).join('');
 }
-function removePhoto(kind,idx){ photoFiles[kind].splice(idx,1); var inp=document.getElementById(kind+'-upload-area').querySelector('input'); inp.value=''; handlePhotos({target:{files:photoFiles[kind]}},kind); }
-async function uploadPhotos(kind){
+function handlePhotos(e,kind,max){ handleMedia(e,kind,max); }
+function removeMedia(kind,idx){
+  idx=parseInt(idx);
+  if(!photoFiles[kind]) return;
+  photoFiles[kind].splice(idx,1);
+  var inp=document.getElementById(kind+'-upload-area');
+  if(inp) inp.querySelector('input').value='';
+  handleMedia({target:{files:photoFiles[kind]}},kind,15);
+}
+async function uploadPhotos(kind){ return uploadMedia(kind); }
+
+async function uploadMedia(kind){
   var files=photoFiles[kind];
-  if(!files.length||!sb) return [];
+  if(!files||!files.length||!sb) return [];
   var urls=[];
   for(var i=0;i<files.length;i++){
     var f=files[i];
-    var path='photos/'+Date.now()+'-'+i+'-'+f.name.replace(/[^a-z0-9.]/gi,'_');
-    var {data,error}=await sb.storage.from('adil-photos').upload(path,f,{cacheControl:'3600',upsert:false});
-    if(!error){ var {data:pub}=sb.storage.from('adil-photos').getPublicUrl(path); urls.push(pub.publicUrl); }
+    var ext=f.name.split('.').pop().toLowerCase();
+    var folder=f.type.startsWith('video/')?'videos':'photos';
+    var path=folder+'/'+Date.now()+'-'+i+'-'+f.name.replace(/[^a-z0-9.]/gi,'_');
+    var result=await sb.storage.from('adil-photos').upload(path,f,{cacheControl:'3600',upsert:false});
+    if(!result.error){
+      var pub=sb.storage.from('adil-photos').getPublicUrl(path);
+      urls.push(pub.data.publicUrl);
+    }
   }
   return urls;
 }
