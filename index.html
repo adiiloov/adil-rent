@@ -1635,59 +1635,54 @@ function renderAdminList(){
   var list=document.getElementById('admin-list');
   if(!list) return;
   var filtered=adminItems.filter(function(x){
-    if(adminTab==='pending') return !x.is_active;
-    if(adminTab==='active') return x.is_active;
-    if(adminTab==='apts') return x._kind==='apt';
-    if(adminTab==='cars') return x._kind==='car';
-    return true;
+    if(adminTab==='pending') return !x.is_active && !x.is_archived;
+    if(adminTab==='active') return x.is_active && !x.is_archived;
+    if(adminTab==='apts') return x._kind==='apt' && !x.is_archived;
+    if(adminTab==='cars') return x._kind==='car' && !x.is_archived;
+    if(adminTab==='archived') return !!x.is_archived;
+    return !x.is_archived;
   });
-  if(!filtered.length){ list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">Пусто</div>'; return; }
+  if(!filtered.length){
+    list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:14px">'+(adminTab==='archived'?'📦 Архив пуст':'Пусто — нет объявлений')+'</div>';
+    return;
+  }
   list.innerHTML=filtered.map(function(item){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
+    if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=200&q=70';
     var imgEl=src
-      ?'<img style="width:80px;height:80px;object-fit:cover;object-position:center;border-radius:8px;flex-shrink:0" src="'+src+'" loading="lazy">'
-      :'<div style="width:80px;height:80px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
-    var statusColor=item.is_active?'#16a34a':'#d97706';
-    var statusText=item.is_active?'● Активно':'● На проверке';
+      ?'<img style="width:80px;height:80px;object-fit:cover;object-position:center;border-radius:10px;flex-shrink:0;border:1px solid var(--border)" src="'+src+'" loading="lazy">'
+      :'<div style="width:80px;height:80px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;border:1px solid var(--border)">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var isActive=item.is_active;
+    var isArchived=!!item.is_archived;
+    var statusColor=isArchived?'#9ca3af':isActive?'#16a34a':'#d97706';
+    var statusBg=isArchived?'#f3f4f6':isActive?'#f0fdf4':'#fffbeb';
+    var statusText=isArchived?'📦 В архиве':isActive?'✅ Активно':'⏳ На проверке';
     var date=new Date(item.created_at).toLocaleDateString('ru-RU');
     var kind=item._kind;
     var id=item.id;
-    var approveBtn=!item.is_active
-      ?'<button class="admin-btn approve" onclick="adminApprove(\'' + kind + '\',' + id + ')">✓ Одобрить</button>'
-      :'<button class="admin-btn delete" onclick="adminDeactivate(\'' + kind + '\',' + id + ')">↓ Снять</button>';
-    var deleteBtn='<button class="admin-btn reject" onclick="adminDelete(\'' + kind + '\',' + id + ')">✕ Удалить</button>';
-    return '<div class="admin-card">'
-      +'<div class="admin-card-inner" onclick="adminViewDetail('+JSON.stringify(item).replace(/'/g,"\\'")+',event)" style="cursor:pointer">'
+    var approveBtn=!isActive&&!isArchived
+      ?'<button class="admin-btn approve" onclick="adminApprove(\''+kind+'\','+id+')">✓ Одобрить</button>'
+      :(!isArchived?'<button class="admin-btn delete" onclick="adminDeactivate(\''+kind+'\','+id+')">↓ Снять</button>':'');
+    var archiveBtn=isArchived
+      ?'<button class="admin-btn" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a" onclick="adminUnarchive(\''+kind+'\','+id+')">↩ Восстановить</button>'
+      :'<button class="admin-btn" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb" onclick="adminArchive(\''+kind+'\','+id+')">📦 Архив</button>';
+    var deleteBtn='<button class="admin-btn reject" onclick="adminDelete(\''+kind+'\','+id+')">✕ Удалить</button>';
+    var viewBtn='<button class="admin-btn" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe" onclick="adminViewItem(\''+kind+'\','+id+')">👁 Просмотр</button>';
+    return '<div class="admin-card" style="border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;background:var(--white)">'
+      +'<div style="display:flex;gap:12px;padding:14px;cursor:pointer" onclick="adminViewItem(\''+kind+'\','+id+')">'
       +imgEl
-      +'<div class="admin-card-body">'
-      +'<div style="font-size:11px;color:'+statusColor+';margin-bottom:5px">'+statusText+'</div>'
-      +'<div class="admin-card-title">'+(item.title_ru||'Без названия')+'</div>'
-      +'<div class="admin-card-meta">'+date+' · '+(item.owner_name||'')+(item.phone?' · '+item.phone:'')+'</div>'
-      +'<div class="admin-card-price">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="display:inline-flex;align-items:center;gap:5px;background:'+statusBg+';color:'+statusColor+';font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:6px">'+statusText+'</div>'
+      +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(item.title_ru||'Без названия')+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px">'+date+' · '+(item.owner_name||'')+'</div>'
+      +(item.phone?'<div style="font-size:12px;color:var(--muted)">📞 '+item.phone+'</div>':'')
+      +'<div style="font-size:15px;font-weight:700;color:var(--red);margin-top:4px">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
       +'</div></div>'
-      +'<div style="padding:0 14px 14px;display:flex;gap:8px">'+approveBtn+deleteBtn
-      +'<button class="admin-btn" style="background:#f0f7ff;color:#1a6ebc" onclick="adminViewDetail('+JSON.stringify(item).replace(/'/g,"\\'")+')" >👁 Просмотр</button>'
-      +'</div>'
+      +'<div style="display:flex;gap:6px;padding:0 14px 14px;flex-wrap:wrap">'+viewBtn+approveBtn+archiveBtn+deleteBtn+'</div>'
       +'</div>';
   }).join('');
 }
 
-
-
-function adminViewDetail(item, e){
-  if(e) e.stopPropagation();
-  // Open in detail modal
-  var kind = item._kind || 'apt';
-  // Temporarily add to liveApts/liveCars if not there
-  if(kind==='apt'){
-    var exists = liveApts.find(function(x){return x.id===item.id;});
-    if(!exists) liveApts.push(item);
-  } else {
-    var exists2 = liveCars.find(function(x){return x.id===item.id;});
-    if(!exists2) liveCars.push(item);
-  }
-  openDetail(kind, item.id);
-}
 
 async function adminApprove(kind,id){
   if(!sb) return;
@@ -1705,6 +1700,16 @@ async function adminDelete(kind,id){
   await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
   showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
 }
+async function adminArchive(kind,id){
+  if(!sb) return;
+  await sb.from(kind==='apt'?'apartments':'cars').update({is_active:false,is_archived:true}).eq('id',id);
+  showToast('📦 Перемещено в архив'); loadAdmin(); loadApts(); loadCars();
+}
+async function adminUnarchive(kind,id){
+  if(!sb) return;
+  await sb.from(kind==='apt'?'apartments':'cars').update({is_archived:false}).eq('id',id);
+  showToast('↩ Восстановлено из архива'); loadAdmin(); loadApts(); loadCars();
+}
 
 // ─── AMENITIES BUILD ─────────────────────────────────────────────
 function buildAm(list,id){ var el=document.getElementById(id); if(!el) return; el.innerHTML=list.map(function(a){return '<div class="am" onclick="this.classList.toggle(\'on\')">'+a+'</div>';}).join(''); }
@@ -1714,8 +1719,8 @@ function showToast(msg){ var el=document.getElementById('toast'); el.textContent
 
 // ─── INIT ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function(){
-  buildAm(['Мебель','Кондиционер','Wi-Fi','Парковка','Кухня','Стиральная машина','Холодильник','Smart TV','Балкон','Лифт','Охрана','Бассейн','Вид на мечеть','Генератор'],'am-apt');
-  buildAm(['Автомат (АКПП)','Кондиционер','GPS/Навигатор','Камера зад. вида','Кожаный салон','Bluetooth','USB зарядка','Детское кресло','4WD','Люк','Без лимита км','Страховка'],'am-car');
+  buildAm(['Мебель','Кондиционер','Wi-Fi','Парковка','Кухня','Стиральная машина','Холодильник','Smart TV','Балкон','Лифт','Охрана','Бассейн','Вид на мечеть','Генератор','Горячая вода 24ч','Газ','Интернет 100Мбит','Телевизор','Микроволновка','Посудомоечная машина','Сейф','Гардероб','Детская кроватка','Утюг','Фен','Полотенца и постельное бельё','Уборка включена','Домофон','CCTV камеры','Пожарная сигнализация'],'am-apt');
+  buildAm(['Автомат (АКПП)','Кондиционер','GPS/Навигатор','Камера заднего вида','Камера 360°','Кожаный салон','Bluetooth','USB зарядка','Беспроводная зарядка','Детское кресло','4WD / Полный привод','Люк/Панорама','Без лимита км','Страховка включена','Водитель по запросу','Доставка авто','Парктроник','Круиз-контроль','Подогрев сидений','Вентиляция сидений','Массаж сидений','Apple CarPlay','Android Auto','Подключение к интернету','Шторки на окнах','Тонировка'],'am-car');
   dbReady=initSupabase();
   if(dbReady) await checkSession();
   await loadApts();
