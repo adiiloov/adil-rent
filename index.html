@@ -551,11 +551,16 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <textarea class="fi fi-ta" id="f-desc" placeholder="Этаж, вид из окна, расстояние до мечети, транспорт, условия..." oninput="checkDescLen(this)"></textarea>
           <div id="f-desc-hint" style="font-size:11px;color:var(--muted);margin-top:4px">Введено: 0 символов (минимум 20)</div>
         </div>
-        <div class="fg"><label class="fl">Телефон / WhatsApp</label><input class="fi" id="f-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
+        <div class="row2">
+          <div class="fg"><label class="fl">📞 Телефон для звонков</label><input class="fi" id="f-call-phone" type="tel" placeholder="+7 / +998..."></div>
+          <div class="fg"><label class="fl">💬 WhatsApp</label><input class="fi" id="f-phone" type="tel" placeholder="+7 / +998..."></div>
+        </div>
         <div class="fg">
           <label class="fl">Ссылка Google Maps (необязательно)</label>
           <input class="fi" id="f-gmaps" type="url" placeholder="https://maps.google.com/..." oninput="previewGMaps(this.value)">
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Открой Google Maps → найди адрес → нажми "Поделиться" → скопируй ссылку</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">
+            📱 <strong>Как получить ссылку:</strong> Открой Google Maps → найди адрес → нажми кнопку "Поделиться" → скопируй ссылку → вставь сюда
+          </div>
           <div id="gmaps-preview" style="display:none;margin-top:8px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:12px;color:#16a34a">
             📍 Координаты определены — точка появится на карте ✓
           </div>
@@ -615,21 +620,26 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="fg"><label class="fl">Цена (SAR)</label><input class="fi" id="fc-price" type="number" placeholder="300"></div>
         </div>
         <div class="fg"><label class="fl">Описание</label><textarea class="fi fi-ta" id="fc-desc" placeholder="Состояние, условия, залог..."></textarea></div>
-        <div class="fg"><label class="fl">Телефон / WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998..."></div>
-        <div class="fg">
-          <label class="fl">Место выдачи — Google Maps (необязательно)</label>
-          <input class="fi" id="fc-gmaps" type="url" placeholder="https://maps.google.com/...">
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Укажи где забирать машину</div>
-        </div>
-        <div class="fg">
-          <label class="fl">Фотографии</label>
-          <div class="photo-upload-area" id="car-upload-area">
-            <input type="file" accept="image/*" multiple onchange="handlePhotos(event,'car',10)">
-            <div class="photo-upload-icon">📷</div>
-            <div class="photo-upload-text">Нажми или перетащи фото<br><strong>до 10 фотографий</strong></div>
+        <div class="row2">
+          <div class="fg">
+            <label class="fl">Тип топлива</label>
+            <select class="fi" id="fc-fuel" onchange="toggleCustomFuel(this)">
+              <option value="petrol">⛽ Бензин</option>
+              <option value="diesel">🛢 Дизель</option>
+              <option value="hybrid">🔋 Гибрид</option>
+              <option value="electric">⚡ Электро</option>
+              <option value="other">✏️ Другое</option>
+            </select>
+            <input class="fi" id="fc-fuel-custom" type="text" placeholder="Укажи тип топлива" style="display:none;margin-top:8px">
           </div>
-          <div class="photo-previews" id="car-previews"></div>
+          <div class="fg">
+            <label class="fl">Цвет</label>
+            <input class="fi" id="fc-color" type="text" placeholder="Белый, Чёрный...">
+          </div>
         </div>
+        <div class="fg"><label class="fl">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
+        <div class="fg"><label class="fl">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
+        <div cl
         <div class="fg"><label class="fl">Опции</label><div class="am-grid" id="am-car"></div></div>
         <button class="f-sub" id="car-submit-btn" onclick="submitCar()">Опубликовать бесплатно</button>
       </div>
@@ -845,7 +855,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div style="width:42px"></div>
   </div>
   <div class="gallery-img-wrap" id="gallery-img-wrap">
-    <img class="gallery-img" id="gallery-img" src="" alt="">
+    <div id="gallery-spinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;z-index:1">
+      <div style="width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top:3px solid #fff;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    </div>
+    <img class="gallery-img" id="gallery-img" src="" alt="" style="transition:opacity .2s">
   </div>
   <button class="gallery-prev" onclick="galleryPrev()">‹</button>
   <button class="gallery-next" onclick="galleryNext()">›</button>
@@ -1096,7 +1109,9 @@ async function submitApt(){
     title_ru:title, type:document.getElementById('f-type').value,
     price:parseInt(price), district_ru:document.getElementById('f-district').value,
     description_ru:document.getElementById('f-desc').value,
-    phone:phone, owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
+    phone:phone,
+    call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
+    owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
     gmaps_url:document.getElementById('f-gmaps').value.trim()||null,
     district_ru:document.getElementById('f-district').value.trim(),
     lat:(function(){ var r=parseGoogleMapsUrl(document.getElementById('f-gmaps').value); return r?r.lat:24.468; })(),
@@ -1117,6 +1132,7 @@ async function submitCar(){
   var model=document.getElementById('fc-model').value.trim();
   var price=document.getElementById('fc-price').value;
   var phone=document.getElementById('fc-phone').value.trim();
+  var callPhone=document.getElementById('fc-call-phone')?document.getElementById('fc-call-phone').value.trim():'';
   if(!model||!price||!phone){ showToast('⚠️ Заполни модель, цену и телефон'); return; }
   var btn=document.getElementById('car-submit-btn');
   btn.disabled=true; btn.textContent='Публикуем...';
@@ -1135,7 +1151,11 @@ async function submitCar(){
     price:parseInt(price), price_note:period==='monthly'?'/мес':'/сутки',
     is_daily:period!=='monthly', is_monthly:period!=='daily',
     description_ru:document.getElementById('fc-desc').value,
-    phone:phone, owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
+    phone:phone,
+    call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
+    owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
+    call_phone:callPhone||phone,
+    fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
     badges_ru:opts, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
   };
   if(!sb){ showToast('⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent='Опубликовать бесплатно'; return; }
@@ -1299,9 +1319,16 @@ function renderMarkers(){
   if(!markers) return;
   markers.clearLayers();
   getFilteredApts().forEach(function(a){
-    var m=L.marker([a.lat||24.468,a.lng||39.615],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
+    // Parse coordinates from gmaps_url if lat/lng not set
+    var lat = a.lat || 24.468;
+    var lng = a.lng || 39.615;
+    if((!a.lat || !a.lng) && a.gmaps_url){
+      var parsed = parseGoogleMapsUrl(a.gmaps_url);
+      if(parsed){ lat = parsed.lat; lng = parsed.lng; }
+    }
+    var m=L.marker([lat, lng],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
     m.on('click',function(){openDetail('apt',a.id);});
-    var src=imgSrc(a);
+    var src=imgSrc(a,300);
     m.on('mouseover',function(){
       this.bindPopup((src?'<img src="'+src+'" style="width:140px;height:78px;object-fit:cover;border-radius:6px;display:block;margin-bottom:5px">':'')+'<b style="font-size:12px">'+(a.title_ru||'')+'</b><br><span style="color:#D94F3B;font-weight:700">'+pStr(a)+'</span>',{closeButton:false,autoPan:false,offset:[0,-8]}).openPopup();
     });
@@ -1315,7 +1342,8 @@ function openDetail(kind,id){
   if(!item) return;
   detailItem=item; detailKind=kind; imgIdx=0;
   var photos=item.photos||[];
-  var firstSrc=photos.length?(photos[0].startsWith('http')?photos[0]:USP+photos[0]):'';
+  var firstPhoto=photos.length?photos[0]:'';
+  var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
   var mi=document.getElementById('m-imgs');
   if(firstSrc){ mi.style.display='block'; document.getElementById('m-img').src=firstSrc; }
   else { mi.style.display='none'; }
@@ -1331,6 +1359,12 @@ function openDetail(kind,id){
   document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
   document.getElementById('m-desc').textContent=item.description_ru||'';
   document.querySelector('.modal-scroll').scrollTop=0;
+  // Update call button label
+  var callBtn=document.getElementById('m-call-btn');
+  if(callBtn){
+    var callPhone=item.call_phone||item.phone||'';
+    callBtn.style.display=callPhone?'flex':'none';
+  }
   var mapsBtn=document.getElementById('m-maps-btn');
   if(mapsBtn){ mapsBtn.style.display=(item.gmaps_url?'flex':'none'); }
   document.getElementById('detail-overlay').classList.add('open');
@@ -1340,13 +1374,18 @@ function nextImg(){
   var photos=detailItem.photos||[];
   if(photos.length<2) return;
   imgIdx=(imgIdx+1)%photos.length;
-  var src=photos[imgIdx]?(photos[imgIdx].startsWith('http')?photos[imgIdx]:USP+photos[imgIdx]):'';
+  var p=photos[imgIdx]||'';
+  var src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
   document.getElementById('m-img').src=src;
   document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
 }
 function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
 function openWA(){ if(!detailItem) return; var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
-function openCall(){ if(detailItem) window.open('tel:'+detailItem.phone); }
+function openCall(){
+  if(!detailItem) return;
+  var phone = detailItem.call_phone || detailItem.phone;
+  if(phone) window.open('tel:'+phone.replace(/[^0-9+]/g,''));
+}
 function openGMaps(){ if(detailItem&&detailItem.gmaps_url) window.open(detailItem.gmaps_url,'_blank'); }
 function quickWA(e,kind,id){ e.stopPropagation(); var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;}); if(!item) return; var msg='Здравствуйте! «'+(item.title_ru||item.title||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
 
@@ -1471,20 +1510,54 @@ function closeGallery(){
   document.body.style.overflow = '';
 }
 
+function photoSrc(p, w){
+  if(!p) return '';
+  if(p.startsWith('http')) return p;
+  var USP2 = 'https://images.unsplash.com/';
+  return USP2 + p + (p.indexOf('?')>-1?'&':'?') + 'w='+(w||800)+'&q=80&auto=format';
+}
+
 function renderGallery(){
   var photo = galleryPhotos[galleryIdx];
-  var src = photo ? (photo.startsWith('http') ? photo : 'https://images.unsplash.com/'+photo) : '';
-  document.getElementById('gallery-img').src = src;
+  var src = photoSrc(photo, 1200);
+  var imgEl = document.getElementById('gallery-img');
+  var wrap = document.getElementById('gallery-img-wrap');
+
+  // Show loading spinner
+  imgEl.style.opacity = '0';
+  var spinner = document.getElementById('gallery-spinner');
+  if(spinner) spinner.style.display = 'flex';
+
+  // Load image
+  var tmpImg = new Image();
+  tmpImg.onload = function(){
+    imgEl.src = src;
+    imgEl.style.opacity = '1';
+    if(spinner) spinner.style.display = 'none';
+  };
+  tmpImg.onerror = function(){
+    imgEl.src = src; // try anyway
+    imgEl.style.opacity = '1';
+    if(spinner) spinner.style.display = 'none';
+  };
+  tmpImg.src = src;
+
   document.getElementById('gallery-counter').textContent = (galleryIdx+1) + ' / ' + galleryPhotos.length;
   var dots = document.getElementById('gallery-dots');
   dots.innerHTML = galleryPhotos.map(function(_,i){
     return '<div class="gallery-dot'+(i===galleryIdx?' on':'')+'" onclick="galleryGoto('+i+')"></div>';
   }).join('');
-  // Show/hide prev/next
   var prev = document.querySelector('.gallery-prev');
   var next = document.querySelector('.gallery-next');
   if(prev) prev.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
   if(next) next.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
+
+  // Preload next image
+  if(galleryPhotos.length > 1){
+    var nextIdx = (galleryIdx+1) % galleryPhotos.length;
+    var preload = new Image();
+    preload.src = photoSrc(galleryPhotos[nextIdx], 1200);
+  }
 }
 
 function galleryNext(){
