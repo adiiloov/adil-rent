@@ -1153,8 +1153,9 @@ function isShortGmapsLink(url){
 }
 var gmapsResolveCache={};
 async function resolveGmapsUrl(url){
-  if(!isShortGmapsLink(url)) return {url:url, error:null};
-  if(gmapsResolveCache[url]) return {url:gmapsResolveCache[url], error:null};
+  if(!isShortGmapsLink(url)) return {url:url, error:null, coords:null};
+  if(gmapsResolveCache[url]) return gmapsResolveCache[url];
+  var out;
   try{
     var r=await fetch('/api/resolve-gmaps?url='+encodeURIComponent(url));
     if(!r.ok){
@@ -1162,21 +1163,30 @@ async function resolveGmapsUrl(url){
       try{ var errJson=await r.json(); errText=errJson.error||''; }catch(e2){}
       var msg='HTTP '+r.status+(errText?' — '+errText:'');
       console.error('[gmaps resolve] '+msg);
-      return {url:url, error:msg};
+      out={url:url, error:msg, coords:null};
+    } else {
+      var d=await r.json();
+      if(d&&d.lat!=null&&d.lng!=null){
+        out={url:d.finalUrl||url, error:null, coords:{lat:d.lat,lng:d.lng}};
+      } else if(d&&d.finalUrl){
+        out={url:d.finalUrl, error:d.error||null, coords:null};
+      } else {
+        console.error('[gmaps resolve] no finalUrl in response', d);
+        out={url:url, error:'сервер не вернул ссылку', coords:null};
+      }
     }
-    var d=await r.json();
-    if(d&&d.finalUrl){ gmapsResolveCache[url]=d.finalUrl; return {url:d.finalUrl, error:null}; }
-    console.error('[gmaps resolve] no finalUrl in response', d);
-    return {url:url, error:'сервер не вернул ссылку'};
   }catch(e){
     console.error('[gmaps resolve] fetch failed', e);
-    return {url:url, error:'не удалось связаться с /api/resolve-gmaps ('+e.message+')'};
+    out={url:url, error:'не удалось связаться с /api/resolve-gmaps ('+e.message+')', coords:null};
   }
+  gmapsResolveCache[url]=out;
+  return out;
 }
 async function getGmapsCoords(url){
   if(!url) return {coords:null, error:null, resolvedUrl:null};
   var resolved=await resolveGmapsUrl(url);
-  return {coords:parseGoogleMapsUrl(resolved.url), error:resolved.error, resolvedUrl:resolved.url};
+  var coords=resolved.coords||parseGoogleMapsUrl(resolved.url);
+  return {coords:coords, error:resolved.error, resolvedUrl:resolved.url};
 }
 var gmapsPreviewToken=0;
 async function previewGMaps(url){
