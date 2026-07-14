@@ -1174,9 +1174,9 @@ async function resolveGmapsUrl(url){
   }
 }
 async function getGmapsCoords(url){
-  if(!url) return {coords:null, error:null};
+  if(!url) return {coords:null, error:null, resolvedUrl:null};
   var resolved=await resolveGmapsUrl(url);
-  return {coords:parseGoogleMapsUrl(resolved.url), error:resolved.error};
+  return {coords:parseGoogleMapsUrl(resolved.url), error:resolved.error, resolvedUrl:resolved.url};
 }
 var gmapsPreviewToken=0;
 async function previewGMaps(url){
@@ -1203,7 +1203,12 @@ async function previewGMaps(url){
     preview.style.background='#fffbeb';
     preview.style.borderColor='#fde68a';
     preview.style.color='#d97706';
-    var debugLine=result.error?('<br><small style="color:#b91c1c">Debug: '+result.error+'</small>'):'';
+    var debugLine='';
+    if(result.error){
+      debugLine='<br><small style="color:#b91c1c">Debug: '+result.error+'</small>';
+    } else if(result.resolvedUrl && result.resolvedUrl!==url){
+      debugLine='<br><small style="color:#b91c1c">Debug: получена ссылка, но координат в ней нет: '+result.resolvedUrl.slice(0,120)+'</small>';
+    }
     preview.innerHTML='⚠️ Не удалось определить координаты'+(isShort?' по короткой ссылке':'')+'<br><small style="color:#6b7280">Попробуй: открой Google Maps → нажми на место → "Поделиться" → скопируй ссылку</small>'+debugLine;
   }
 }
