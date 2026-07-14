@@ -4,11 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Adil — Аренда жилья и машин в Медине</title>
+<meta name="application-name" content="Adil">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Adil">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#D94F3B">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23D94F3B'/%3E%3Cpath d='M256 80L100 240h60v200h192V240h60L256 80z' fill='white'/%3E%3Ccircle cx='256' cy='220' r='36' fill='%23D94F3B'/%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D94F3B'/%3E%3Cpath d='M16 5L7 14h3.5v11h11V14H25L16 5z' fill='white'/%3E%3Ccircle cx='16' cy='13.5' r='2.5' fill='%23D94F3B'/%3E%3C/svg%3E">
 <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D94F3B'/%3E%3Cpath d='M16 5L7 14h3.5v11h11V14H25L16 5z' fill='white'/%3E%3Ccircle cx='16' cy='13.5' r='2.5' fill='%23D94F3B'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -113,8 +121,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .map-box{position:relative;height:52vw;max-height:300px;min-height:200px}
 #leafmap{width:100%;height:100%}
 .map-hint{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--muted);pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:400;transition:opacity .3s;border:1px solid var(--border)}
-.leaflet-popup-content-wrapper{border-radius:12px!important;font-family:'Inter',sans-serif!important}
-.leaflet-popup-content{margin:10px 12px!important;font-size:12px!important}
+.gm-style-iw{border-radius:12px!important;font-family:'Inter',sans-serif!important}
 
 /* CARDS */
 .card-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
@@ -479,7 +486,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       </div>
     </div>
     <div id="apt-map-wrap">
-      <div class="map-box"><div id="leafmap"></div><div class="map-hint" id="map-hint">Нажми на маркер</div></div>
+      <div class="map-box"><div id="leafmap" style="width:100%;height:100%"></div><div class="map-hint" id="map-hint">Нажми на маркер</div></div>
       <div style="height:10px"></div>
       <div class="sec-hdr"><h2>Квартиры</h2><span id="apt-map-cnt"></span></div>
       <div id="apt-map-cards" class="card-list"></div>
@@ -878,7 +885,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 <div class="toast" id="toast"></div>
 <a href="https://t.me/AdilRentBot" target="_blank" id="support-fab" style="position:fixed;bottom:calc(var(--bot-h) + 16px);right:16px;width:46px;height:46px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,136,204,.4);z-index:290;text-decoration:none;font-size:22px;transition:transform .15s" title="Поддержка в Telegram">✈️</a>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMjw0h7cMQBl9QQEpyurfUtjmYEaa0fUQ&libraries=places&callback=initMap" async defer></script>
 <script>
 // ─── SUPABASE INIT ────────────────────────────────────────────────
 var sb = null;
@@ -907,7 +914,7 @@ var liveApts=[], liveCars=[], dbReady=false;
 var detailItem=null, detailKind='apt', imgIdx=0;
 var favs=JSON.parse(localStorage.getItem('adil_favs')||'[]');
 var priceFrom=0, priceTo=999999, sortVal='';
-var map=null, markers=null, mapReady=false;
+var mapReady=false;
 var photoFiles={apt:[],car:[]};
 
 // ─── SUPABASE AUTH ────────────────────────────────────────────────
@@ -1284,367 +1291,102 @@ function getFilteredApts(){
   return fl;
 }
 function setAptF(el,f){ aptF=f; document.querySelectorAll('#apt-pills .pill').forEach(function(p){p.classList.remove('active');}); el.classList.add('active'); renderApts(); renderMarkers(); }
-function setAptView(v){ aptView=v; document.getElementById('apt-map-wrap').style.display=v==='map'?'block':'none'; document.getElementById('apt-list-wrap').style.display=v==='list'?'block':'none'; document.getElementById('vb-map').classList.toggle('active',v==='map'); document.getElementById('vb-list').classList.toggle('active',v==='list'); if(v==='map'){if(!mapReady){initMap();mapReady=true;}setTimeout(function(){map&&map.invalidateSize();},80);} renderApts(); }
+function setAptView(v){ aptView=v; document.getElementById('apt-map-wrap').style.display=v==='map'?'block':'none'; document.getElementById('apt-list-wrap').style.display=v==='list'?'block':'none'; document.getElementById('vb-map').classList.toggle('active',v==='map'); document.getElementById('vb-list').classList.toggle('active',v==='list'); if(v==='map'){// Google Maps loads via callbacksetTimeout(function(){gMap&&google.maps.event.trigger(gMap,'resize');},80);} renderApts(); }
 function toggleFilter(){ document.getElementById('filter-panel').classList.toggle('open'); }
 function applyFilter(){ priceFrom=parseInt(document.getElementById('price-from').value)||0; priceTo=parseInt(document.getElementById('price-to').value)||999999; sortVal=document.getElementById('sort-sel').value; var btn=document.getElementById('filter-btn'); btn.classList.toggle('on',priceFrom>0||priceTo<999999||sortVal); renderApts(); renderMarkers(); }
 function resetFilter(){ priceFrom=0; priceTo=999999; sortVal=''; document.getElementById('price-from').value=''; document.getElementById('price-to').value=''; document.getElementById('sort-sel').value=''; document.getElementById('filter-btn').classList.remove('on'); renderApts(); renderMarkers(); }
 
-// ─── RENDER HELPERS ───────────────────────────────────────────────
-var USP='https://images.unsplash.com/';
-function imgSrc(item){ if(item.photos&&item.photos.length){ var p=item.photos[0]; return p.startsWith('http')?p:USP+p; } return ''; }
-function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note||'/мес'); }
-function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
-function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id===id;}); }
-function cardHtml(item,kind){
-var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира','sedan':'Седан','suv':'Внедорожник','crossover':'Кроссовер','van':'Минивэн','luxury':'Премиум','hatch':'Хэтчбек','coupe':'Купе','pickup':'Пикап','wagon':'Универсал','bus':'Минивэн','truck':'Грузовик','convertible':'Кабриолет'};
-  var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
-  var typeLabel = typeMap[catKey] || catKey;
-  var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
-  var isNew=item.is_new||item.is_new===true;
-  var src=imgSrc(item);
-  var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
-  var favOn=isFav(kind,item.id);
-  return '<div class="l-card" onclick="openDetail(\''+kind+'\','+item.id+')">'
-    +'<div class="l-card-img-wrap">'+imgEl
-    +(isNew?'<div class="tag-new">Новое</div>':'')
-    +'<div class="tag-type">'+typeLabel+'</div>'
-    +'<button class="fav-btn'+(favOn?' on':'')+'" onclick="toggleFav(event,\''+kind+'\','+item.id+')">'+(favOn?'♥':'♡')+'</button>'
-    +'</div>'
-    +'<div class="l-card-body">'
-    +'<div class="l-card-title">'+(item.title_ru||item.title||'')+'</div>'
-    +'<div class="l-card-meta">'+(kind==='apt'?'📍 '+(item.district_ru||''):item.specs_ru||'')+'</div>'
-    +'<div class="l-card-row"><div class="l-price">'+pStr(item)+'</div>'
-    +'<button class="wa-quick" onclick="quickWA(event,\''+kind+'\','+item.id+')">'+waIco()+' WA</button></div>'
-    +'<div class="l-badges">'+badges+'</div>'
-    +'</div></div>';
-}
 
-// ─── RENDER APTS ─────────────────────────────────────────────────
-function renderApts(){
-  var fl=getFilteredApts();
-  var cnt=fl.length+(lang==='ru'?' объявлений':' listings');
-  var html=fl.map(function(a){return cardHtml(a,'apt');}).join('');
-  if(!html) html='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">Ничего не найдено</div></div>';
-  if(aptView==='map'){
-    document.getElementById('apt-map-cards').innerHTML=html;
-    document.getElementById('apt-map-cnt').textContent=cnt;
-  } else {
-    document.getElementById('apt-list-cards').innerHTML=html;
-    document.getElementById('apt-list-cnt').textContent=cnt;
-  }
-}
 
-// ─── RENDER CARS ─────────────────────────────────────────────────
-function getFilteredCars(){
-  return liveCars.filter(function(c){
-    var cat = c.cat || c.body_type || '';
-    if(carF==='sedan') return cat==='sedan';
-    if(carF==='suv') return cat==='suv';
-    if(carF==='van') return cat==='van';
-    if(carF==='luxury') return cat==='luxury';
-    if(carF==='daily') return c.is_daily;
-    if(carF==='monthly') return c.is_monthly;
-    return true;
-  });
-}
+// ─── MAP (GOOGLE MAPS) ───────────────────────────────────────────
+var gMap = null;
+var gMarkers = [];
+var gInfoWindow = null;
 
-function setCarF(el,f){ carF=f; document.querySelectorAll('#car-pills .pill').forEach(function(p){p.classList.remove('active');}); el.classList.add('active'); renderCars(); }
-function renderCars(){
-  var fl=getFilteredCars();
-  document.getElementById('car-cnt').textContent=fl.length+(lang==='ru'?' машин':' cars');
-  document.getElementById('car-cards').innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">Ничего не найдено</div></div>';
-}
-
-// ─── MAP ──────────────────────────────────────────────────────────
 function initMap(){
-  map=L.map('leafmap',{center:[24.468,39.615],zoom:14,zoomControl:false,attributionControl:true});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20,attribution:'© OpenStreetMap © CARTO'}).addTo(map);
-  L.control.zoom({position:'bottomright'}).addTo(map);
-  L.marker([24.4672,39.6113],{icon:L.divIcon({html:'<div style="background:#1e6e43;width:38px;height:38px;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,.3)">🕌</div>',className:'',iconSize:[38,38],iconAnchor:[19,19]})}).addTo(map).bindPopup('<b style="color:#1e6e43">Масджид ан-Набави</b>');
-  markers=L.layerGroup().addTo(map);
+  var medina = {lat:24.468, lng:39.615};
+  gMap = new google.maps.Map(document.getElementById('leafmap'), {
+    center: medina,
+    zoom: 14,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+    styles: [
+      {featureType:'poi',stylers:[{visibility:'off'}]},
+      {featureType:'transit',stylers:[{visibility:'off'}]}
+    ]
+  });
+  gInfoWindow = new google.maps.InfoWindow();
+
+  // Mosque marker
+  new google.maps.Marker({
+    position: {lat:24.4672, lng:39.6113},
+    map: gMap,
+    title: 'Масджид ан-Набави',
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 14,
+      fillColor: '#1e6e43',
+      fillOpacity: 1,
+      strokeColor: '#fff',
+      strokeWeight: 2
+    }
+  });
+
+  mapReady = true;
   renderMarkers();
 }
-function mkIcon(price,short){
-  var bg=short?'#FF9800':'#D94F3B';
-  var lbl=(price||0).toLocaleString();
-  var w=Math.max(52,lbl.length*8+20);
-  return L.divIcon({html:'<div style="background:'+bg+';border-radius:14px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);padding:5px 9px;font-family:Inter,sans-serif;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;position:relative">'+lbl+'<div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid '+bg+'"></div></div>',className:'',iconSize:[w,30],iconAnchor:[w/2,30]});
+
+function mkIcon(price, short){
+  var bg = short ? '#FF9800' : '#D94F3B';
+  var lbl = (price||0).toLocaleString() + ' SAR';
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="34">' +
+      '<rect x="0" y="0" width="80" height="26" rx="13" fill="' + bg + '"/>' +
+      '<text x="40" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="white">' + lbl + '</text>' +
+      '<polygon points="35,26 45,26 40,34" fill="' + bg + '"/>' +
+      '</svg>'
+    ),
+    scaledSize: new google.maps.Size(80, 34),
+    anchor: new google.maps.Point(40, 34)
+  };
 }
+
 function renderMarkers(){
-  if(!markers) return;
-  markers.clearLayers();
+  if(!gMap) return;
+  gMarkers.forEach(function(m){ m.setMap(null); });
+  gMarkers = [];
+
   getFilteredApts().forEach(function(a){
-    // Parse coordinates from gmaps_url if lat/lng not set
     var lat = a.lat || 24.468;
     var lng = a.lng || 39.615;
-    if((!a.lat || !a.lng) && a.gmaps_url){
+    if((!a.lat||!a.lng) && a.gmaps_url){
       var parsed = parseGoogleMapsUrl(a.gmaps_url);
-      if(parsed){ lat = parsed.lat; lng = parsed.lng; }
+      if(parsed){ lat=parsed.lat; lng=parsed.lng; }
     }
-    var m=L.marker([lat, lng],{icon:mkIcon(a.price,a.is_short_term)}).addTo(markers);
-    m.on('click',function(){openDetail('apt',a.id);});
-    var src=imgSrc(a,300);
-    m.on('mouseover',function(){
-      this.bindPopup((src?'<img src="'+src+'" style="width:140px;height:78px;object-fit:cover;border-radius:6px;display:block;margin-bottom:5px">':'')+'<b style="font-size:12px">'+(a.title_ru||'')+'</b><br><span style="color:#D94F3B;font-weight:700">'+pStr(a)+'</span>',{closeButton:false,autoPan:false,offset:[0,-8]}).openPopup();
+    var marker = new google.maps.Marker({
+      position: {lat:lat, lng:lng},
+      map: gMap,
+      icon: mkIcon(a.price, a.is_short_term),
+      title: a.title_ru || ''
     });
-    m.on('mouseout',function(){this.closePopup();});
-  });
-}
-
-// ─── DETAIL MODAL ─────────────────────────────────────────────────
-function openDetail(kind,id){
-  var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
-  if(!item) return;
-  detailItem=item; detailKind=kind; imgIdx=0;
-  var photos=item.photos||[];
-  var firstPhoto=photos.length?photos[0]:'';
-  var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
-  var mi=document.getElementById('m-imgs');
-  if(firstSrc){ mi.style.display='block'; document.getElementById('m-img').src=firstSrc; }
-  else { mi.style.display='none'; }
-  document.getElementById('m-dots').innerHTML=photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'"></div>';}).join('');
-  document.getElementById('m-title').textContent=item.title_ru||item.title||'';
-  document.getElementById('m-ava').textContent=(item.owner_name||'?').charAt(0).toUpperCase();
-  document.getElementById('m-owner').textContent=item.owner_name||'Хозяин';
-  document.getElementById('m-role').textContent=kind==='apt'?'Владелец':'Арендодатель';
-  document.getElementById('m-price').textContent=pStr(item);
-  var typeMap={studio:'Студия','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.','sedan':'Седан','suv':'Внедорожник','van':'Минивэн','luxury':'Премиум'};
-  if(kind==='apt') document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>Посуточно</strong></span>':'');
-  else document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+(item.specs_ru||'')+'</strong></span>';
-  document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
-  document.getElementById('m-desc').textContent=item.description_ru||'';
-  document.querySelector('.modal-scroll').scrollTop=0;
-  // Update call button label
-  var callBtn=document.getElementById('m-call-btn');
-  if(callBtn){
-    var callPhone=item.call_phone||item.phone||'';
-    callBtn.style.display=callPhone?'flex':'none';
-  }
-  var mapsBtn=document.getElementById('m-maps-btn');
-  if(mapsBtn){ mapsBtn.style.display=(item.gmaps_url?'flex':'none'); }
-  document.getElementById('detail-overlay').classList.add('open');
-}
-function nextImg(){
-  if(!detailItem) return;
-  var photos=detailItem.photos||[];
-  if(photos.length<2) return;
-  imgIdx=(imgIdx+1)%photos.length;
-  var p=photos[imgIdx]||'';
-  var src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
-  document.getElementById('m-img').src=src;
-  document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
-}
-function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
-function openWA(){ if(!detailItem) return; var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
-function openCall(){
-  if(!detailItem) return;
-  var phone = detailItem.call_phone || detailItem.phone;
-  if(phone) window.open('tel:'+phone.replace(/[^0-9+]/g,''));
-}
-function openGMaps(){ if(detailItem&&detailItem.gmaps_url) window.open(detailItem.gmaps_url,'_blank'); }
-function quickWA(e,kind,id){ e.stopPropagation(); var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;}); if(!item) return; var msg='Здравствуйте! «'+(item.title_ru||item.title||'')+'» на Adil. Интересует аренда.'; window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank'); }
-
-// ─── FAVORITES ────────────────────────────────────────────────────
-function toggleFav(e,kind,id){
-  e.stopPropagation();
-  var btn=e.currentTarget;
-  if(isFav(kind,id)){ favs=favs.filter(function(f){return !(f.kind===kind&&f.id==id);}); btn.classList.remove('on'); btn.textContent='♡'; }
-  else { favs.push({kind:kind,id:id}); btn.classList.add('on'); btn.textContent='♥'; showToast('❤️ Добавлено в избранное'); }
-  localStorage.setItem('adil_favs',JSON.stringify(favs));
-  updateFavBadge();
-  if(section==='fav') renderFavs();
-}
-function updateFavBadge(){ var b=document.getElementById('fav-badge'); if(!b) return; if(favs.length){b.style.display='block';b.textContent=favs.length;}else b.style.display='none'; }
-function renderFavs(){
-  var cnt=document.getElementById('fav-cnt'); var grid=document.getElementById('fav-cards');
-  if(!cnt||!grid) return;
-  if(!favs.length){ cnt.textContent=''; grid.innerHTML='<div class="empty"><div class="empty-ico">♡</div><div class="empty-txt">Пока ничего нет.<br>Нажми ♡ на объявлении</div><button class="empty-btn" onclick="goSection(\'apt\')">Смотреть квартиры</button></div>'; return; }
-  cnt.textContent=favs.length+' сохранено';
-  var items=favs.map(function(f){ return f.kind==='apt'?liveApts.find(function(x){return x.id==f.id;}):liveCars.find(function(x){return x.id==f.id;}); }).filter(Boolean);
-  grid.innerHTML=items.map(function(item){ var kind=liveApts.indexOf(item)!==-1?'apt':'car'; return cardHtml(item,kind); }).join('');
-}
-
-// ─── SECTION NAV ─────────────────────────────────────────────────
-function goSection(s){
-  prevSec=section!=='add'?section:prevSec; section=s;
-  ['apt','car','add','fav','profile','admin'].forEach(function(k){
-    var el=document.getElementById('sec-'+k); if(el) el.style.display=k===s?'block':'none';
-    var bn=document.getElementById('bn-'+k); if(bn) bn.classList.toggle('active',k===s);
-    var dfn=document.getElementById('dfn-'+k); if(dfn) dfn.classList.toggle('active',k===s);
-    var ndl=document.getElementById('ndl-'+k); if(ndl) ndl.classList.toggle('active',k===s);
-  });
-  if(s==='apt'){if(!mapReady){initMap();mapReady=true;}if(aptView==='map')setTimeout(function(){map&&map.invalidateSize();},80);renderApts();}
-  if(s==='car') renderCars();
-  if(s==='fav') renderFavs();
-  if(s==='profile') updateProfileUI();
-  if(s==='admin') loadAdmin();
-  var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0; window.scrollTo(0,0);
-}
-function goBack(){ goSection(prevSec||'apt'); }
-function setAddType(t){ addType=t; document.getElementById('form-apt').style.display=t==='apt'?'block':'none'; document.getElementById('form-car').style.display=t==='car'?'block':'none'; document.getElementById('att-apt').classList.toggle('active',t==='apt'); document.getElementById('att-car').classList.toggle('active',t==='car'); }
-function doSearch(){
-  var q=document.getElementById('q').value.trim().toLowerCase();
-  var type=document.getElementById('type-sel')?document.getElementById('type-sel').value:'';
-  if(!q&&!type){ goSection('apt'); return; }
-  // filter apts
-  if(!type||type==='apt'||type==='studio'||type==='1room'||type==='2room'||type==='3room'){
-    goSection('apt');
-    if(q){
-      var filtered=liveApts.filter(function(a){
-        return (a.title_ru&&a.title_ru.toLowerCase().includes(q))||
-               (a.district_ru&&a.district_ru.toLowerCase().includes(q))||
-               (a.description_ru&&a.description_ru.toLowerCase().includes(q));
-      });
-      renderSearchResults(filtered,'apt');
-    }
-  }
-  // filter cars
-  if(type==='car'||type==='sedan'||type==='suv'||type==='van'){
-    goSection('car');
-    if(q){
-      var filteredC=liveCars.filter(function(c){
-        return (c.title_ru&&c.title_ru.toLowerCase().includes(q))||
-               (c.make&&c.make.toLowerCase().includes(q))||
-               (c.model&&c.model.toLowerCase().includes(q))||
-               (c.description_ru&&c.description_ru.toLowerCase().includes(q));
-      });
-      renderSearchResults(filteredC,'car');
-    }
-  }
-  if(!type&&q){
-    // search both
-    var fA=liveApts.filter(function(a){
-      return (a.title_ru&&a.title_ru.toLowerCase().includes(q))||
-             (a.district_ru&&a.district_ru.toLowerCase().includes(q));
+    marker.addListener('click', function(){ openDetail('apt', a.id); });
+    var src = imgSrc(a, 300);
+    marker.addListener('mouseover', function(){
+      var content = (src?'<img src="'+src+'" style="width:160px;height:90px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px">':'')
+        +'<div style="font-family:Inter,sans-serif">'
+        +'<b style="font-size:13px;display:block;margin-bottom:4px">'+(a.title_ru||'')+'</b>'
+        +'<span style="color:#D94F3B;font-weight:700;font-size:14px">'+pStr(a)+'</span>'
+        +'</div>';
+      gInfoWindow.setContent(content);
+      gInfoWindow.open(gMap, marker);
     });
-    var fC=liveCars.filter(function(c){
-      return (c.title_ru&&c.title_ru.toLowerCase().includes(q))||
-             (c.make&&c.make.toLowerCase().includes(q))||
-             (c.model&&c.model.toLowerCase().includes(q));
-    });
-    if(fC.length>fA.length){ goSection('car'); renderSearchResults(fC,'car'); }
-    else { goSection('apt'); renderSearchResults(fA,'apt'); }
-  }
-}
-function renderSearchResults(items,kind){
-  var html2=items.map(function(item){return cardHtml(item,kind);}).join('');
-  if(!html2) html2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">Ничего не найдено</div></div>';
-  if(kind==='apt'){
-    if(aptView==='map'){
-      document.getElementById('apt-map-cards').innerHTML=html2;
-      document.getElementById('apt-map-cnt').textContent=items.length+' результатов';
-    } else {
-      document.getElementById('apt-list-cards').innerHTML=html2;
-      document.getElementById('apt-list-cnt').textContent=items.length+' результатов';
-    }
-  } else {
-    document.getElementById('car-cards').innerHTML=html2;
-    document.getElementById('car-cnt').textContent=items.length+' результатов';
-  }
-}
-function setLang(l){ lang=l; document.querySelectorAll('.lb').forEach(function(b){b.classList.toggle('active',b.textContent===l.toUpperCase());}); }
-function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
-
-
-
-// ─── FULLSCREEN GALLERY ───────────────────────────────────────────
-var galleryPhotos = [];
-var galleryIdx = 0;
-
-function openGallery(photos, startIdx){
-  if(!photos||!photos.length) return;
-  galleryPhotos = photos;
-  galleryIdx = startIdx || 0;
-  renderGallery();
-  document.getElementById('gallery-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeGallery(){
-  document.getElementById('gallery-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function photoSrc(p, w){
-  if(!p) return '';
-  if(p.startsWith('http')) return p;
-  var USP2 = 'https://images.unsplash.com/';
-  return USP2 + p + (p.indexOf('?')>-1?'&':'?') + 'w='+(w||800)+'&q=80&auto=format';
-}
-
-function renderGallery(){
-  var photo = galleryPhotos[galleryIdx];
-  var src = photoSrc(photo, 1200);
-  var imgEl = document.getElementById('gallery-img');
-  var wrap = document.getElementById('gallery-img-wrap');
-
-  // Show loading spinner
-  imgEl.style.opacity = '0';
-  var spinner = document.getElementById('gallery-spinner');
-  if(spinner) spinner.style.display = 'flex';
-
-  // Load image
-  var tmpImg = new Image();
-  tmpImg.onload = function(){
-    imgEl.src = src;
-    imgEl.style.opacity = '1';
-    if(spinner) spinner.style.display = 'none';
-  };
-  tmpImg.onerror = function(){
-    imgEl.src = src; // try anyway
-    imgEl.style.opacity = '1';
-    if(spinner) spinner.style.display = 'none';
-  };
-  tmpImg.src = src;
-
-  document.getElementById('gallery-counter').textContent = (galleryIdx+1) + ' / ' + galleryPhotos.length;
-  var dots = document.getElementById('gallery-dots');
-  dots.innerHTML = galleryPhotos.map(function(_,i){
-    return '<div class="gallery-dot'+(i===galleryIdx?' on':'')+'" onclick="galleryGoto('+i+')"></div>';
-  }).join('');
-  var prev = document.querySelector('.gallery-prev');
-  var next = document.querySelector('.gallery-next');
-  if(prev) prev.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
-  if(next) next.style.display = galleryPhotos.length > 1 ? 'flex' : 'none';
-
-  // Preload next image
-  if(galleryPhotos.length > 1){
-    var nextIdx = (galleryIdx+1) % galleryPhotos.length;
-    var preload = new Image();
-    preload.src = photoSrc(galleryPhotos[nextIdx], 1200);
-  }
-}
-
-function galleryNext(){
-  galleryIdx = (galleryIdx+1) % galleryPhotos.length;
-  renderGallery();
-}
-function galleryPrev(){
-  galleryIdx = (galleryIdx-1+galleryPhotos.length) % galleryPhotos.length;
-  renderGallery();
-}
-function galleryGoto(idx){
-  galleryIdx = idx;
-  renderGallery();
-}
-
-// Swipe support
-var galleryTouchX = 0;
-document.addEventListener('DOMContentLoaded', function(){
-  var overlay = document.getElementById('gallery-overlay');
-  if(!overlay) return;
-  overlay.addEventListener('touchstart', function(e){ galleryTouchX = e.touches[0].clientX; }, {passive:true});
-  overlay.addEventListener('touchend', function(e){
-    var diff = galleryTouchX - e.changedTouches[0].clientX;
-    if(Math.abs(diff) > 50){ if(diff > 0) galleryNext(); else galleryPrev(); }
-  }, {passive:true});
-  // Close on ESC
-  document.addEventListener('keydown', function(e){
-    if(e.key==='Escape') closeGallery();
-    if(e.key==='ArrowRight') galleryNext();
-    if(e.key==='ArrowLeft') galleryPrev();
+    gMarkers.push(marker);
   });
-});
+  var hint = document.getElementById('map-hint');
+  if(hint) hint.style.opacity = '1';
+}
 
 // ─── ADMIN ────────────────────────────────────────────────────────
 var ADMIN_EMAILS = ['adilov.aem@gmail.com'];
@@ -1670,8 +1412,8 @@ async function loadAdmin(){
   adminItems=[...(res1.data||[]).map(function(a){a._kind='apt';return a;}), ...(res2.data||[]).map(function(c){c._kind='car';return c;})];
   adminItems.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});
   var total=adminItems.length;
-  var pending=adminItems.filter(function(x){return !x.is_active;}).length;
-  var active2=adminItems.filter(function(x){return x.is_active;}).length;
+  var pending=adminItems.filter(function(x){return !x.is_active&&!x.is_archived;}).length;
+  var active2=adminItems.filter(function(x){return x.is_active&&!x.is_archived;}).length;
   var e1=document.getElementById('astat-total'); if(e1) e1.textContent=total;
   var e2=document.getElementById('astat-pending'); if(e2) e2.textContent=pending;
   var e3=document.getElementById('astat-active'); if(e3) e3.textContent=active2;
@@ -1690,80 +1432,58 @@ function renderAdminList(){
   var list=document.getElementById('admin-list');
   if(!list) return;
   var filtered=adminItems.filter(function(x){
-    if(adminTab==='pending') return !x.is_active && !x.is_archived;
-    if(adminTab==='active') return x.is_active && !x.is_archived;
-    if(adminTab==='apts') return x._kind==='apt' && !x.is_archived;
-    if(adminTab==='cars') return x._kind==='car' && !x.is_archived;
+    if(adminTab==='pending') return !x.is_active&&!x.is_archived;
+    if(adminTab==='active') return x.is_active&&!x.is_archived;
+    if(adminTab==='apts') return x._kind==='apt'&&!x.is_archived;
+    if(adminTab==='cars') return x._kind==='car'&&!x.is_archived;
     if(adminTab==='archived') return !!x.is_archived;
     return !x.is_archived;
   });
   if(!filtered.length){
-    list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">'+(adminTab==='archived'?'📦 Архив пуст':'Пусто')+'</div>';
+    list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">'+(adminTab==='archived'?'Архив пуст':'Пусто')+'</div>';
     return;
   }
   list.innerHTML=filtered.map(function(item){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
     if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=160&q=70';
     var imgEl=src
-      ?'<img style="width:76px;height:76px;object-fit:cover;object-position:center;border-radius:10px;flex-shrink:0;border:1px solid var(--border)" src="'+src+'" loading="lazy">'
-      :'<div style="width:76px;height:76px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;border:1px solid var(--border)">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
-    var isActive=!!item.is_active;
-    var isArchived=!!item.is_archived;
+      ?'<img style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy">'
+      :'<div style="width:76px;height:76px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var isActive=!!item.is_active, isArchived=!!item.is_archived;
     var statusColor=isArchived?'#9ca3af':isActive?'#16a34a':'#d97706';
     var statusBg=isArchived?'#f3f4f6':isActive?'#f0fdf4':'#fffbeb';
     var statusText=isArchived?'📦 В архиве':isActive?'✅ Активно':'⏳ На проверке';
     var date=new Date(item.created_at).toLocaleDateString('ru-RU');
-    var kind=item._kind;
-    var id=item.id;
-
-    var btns='';
-    // View button - always
-    btns+='<button class="admin-btn" style="background:#eff6ff;color:#1d4ed8;border:1.5px solid #bfdbfe" data-kind="'+kind+'" data-id="'+id+'" onclick="doAdminView(this.dataset.kind,this.dataset.id)">👁 Просмотр</button>';
-    // Approve or Deactivate
+    var kind=item._kind, id=item.id;
+    var btns='<button class="admin-btn" style="background:#eff6ff;color:#1d4ed8" data-kind="'+kind+'" data-id="'+id+'" onclick="doAdminView(this.dataset.kind,this.dataset.id)">👁 Просмотр</button>';
     if(!isArchived){
-      if(!isActive){
-        btns+='<button class="admin-btn approve" data-kind="'+kind+'" data-id="'+id+'" onclick="adminApprove(this.dataset.kind,this.dataset.id)">✓ Одобрить</button>';
-      } else {
-        btns+='<button class="admin-btn delete" data-kind="'+kind+'" data-id="'+id+'" onclick="adminDeactivate(this.dataset.kind,this.dataset.id)">↓ Снять</button>';
-      }
-    }
-    // Archive or Restore
-    if(isArchived){
-      btns+='<button class="admin-btn" style="background:#fffbeb;color:#d97706;border:1.5px solid #fde68a" data-kind="'+kind+'" data-id="'+id+'" onclick="adminUnarchive(this.dataset.kind,this.dataset.id)">↩ Восстановить</button>';
+      if(!isActive) btns+='<button class="admin-btn approve" data-kind="'+kind+'" data-id="'+id+'" onclick="adminApprove(this.dataset.kind,this.dataset.id)">✓ Одобрить</button>';
+      else btns+='<button class="admin-btn delete" data-kind="'+kind+'" data-id="'+id+'" onclick="adminDeactivate(this.dataset.kind,this.dataset.id)">↓ Снять</button>';
+      btns+='<button class="admin-btn" style="background:#f3f4f6;color:#6b7280" data-kind="'+kind+'" data-id="'+id+'" onclick="adminArchive(this.dataset.kind,this.dataset.id)">📦 Архив</button>';
     } else {
-      btns+='<button class="admin-btn" style="background:#f3f4f6;color:#6b7280;border:1.5px solid #e5e7eb" data-kind="'+kind+'" data-id="'+id+'" onclick="adminArchive(this.dataset.kind,this.dataset.id)">📦 Архив</button>';
+      btns+='<button class="admin-btn" style="background:#fffbeb;color:#d97706" data-kind="'+kind+'" data-id="'+id+'" onclick="adminUnarchive(this.dataset.kind,this.dataset.id)">↩ Восстановить</button>';
     }
     btns+='<button class="admin-btn reject" data-kind="'+kind+'" data-id="'+id+'" onclick="adminDelete(this.dataset.kind,this.dataset.id)">✕ Удалить</button>';
-
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden">'
-      +'<div style="display:flex;gap:12px;padding:14px">'
-      +imgEl
+      +'<div style="display:flex;gap:12px;padding:14px">'+imgEl
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:inline-flex;align-items:center;background:'+statusBg+';color:'+statusColor+';font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:6px">'+statusText+'</div>'
       +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(item.title_ru||'Без названия')+'</div>'
-      +'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">'+date+' · '+(item.owner_name||'')+'</div>'
-      +(item.phone?'<div style="font-size:12px;color:var(--muted)">📞 '+item.phone+'</div>':'')
-      +'<div style="font-size:16px;font-weight:700;color:var(--red);margin-top:5px">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">'+date+' · '+(item.owner_name||'')+(item.phone?' · '+item.phone:'')+'</div>'
+      +'<div style="font-size:16px;font-weight:700;color:var(--red);margin-top:4px">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
       +'</div></div>'
       +'<div style="display:flex;gap:6px;padding:0 14px 14px;flex-wrap:wrap">'+btns+'</div>'
       +'</div>';
   }).join('');
 }
 
-
-function doAdminView(kind, id){
-  id = parseInt(id) || id;
-  var item = adminItems.find(function(x){ return x._kind===kind && x.id==id; });
+function doAdminView(kind,id){
+  id=parseInt(id)||id;
+  var item=adminItems.find(function(x){return x._kind===kind&&x.id==id;});
   if(!item) return;
-  // Add to live arrays temporarily for openDetail
-  if(kind==='apt'){
-    var exists = liveApts.find(function(x){return x.id==id;});
-    if(!exists) liveApts.push(item);
-  } else {
-    var exists = liveCars.find(function(x){return x.id==id;});
-    if(!exists) liveCars.push(item);
-  }
-  openDetail(kind, id);
+  if(kind==='apt'){ if(!liveApts.find(function(x){return x.id==id;})) liveApts.push(item); }
+  else { if(!liveCars.find(function(x){return x.id==id;})) liveCars.push(item); }
+  openDetail(kind,id);
 }
 
 async function adminApprove(kind,id){
@@ -1774,30 +1494,333 @@ async function adminApprove(kind,id){
 async function adminDeactivate(kind,id){
   if(!sb) return;
   await sb.from(kind==='apt'?'apartments':'cars').update({is_active:false}).eq('id',id);
-  showToast('Снято с публикации'); loadAdmin(); loadApts(); loadCars();
-}
-async function adminDelete(kind,id){
-  if(!sb) return;
-  if(!confirm('Удалить объявление навсегда?')) return;
-  await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
-  showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
+  showToast('Снято'); loadAdmin(); loadApts(); loadCars();
 }
 async function adminArchive(kind,id){
   if(!sb) return;
   await sb.from(kind==='apt'?'apartments':'cars').update({is_active:false,is_archived:true}).eq('id',id);
-  showToast('📦 Перемещено в архив'); loadAdmin(); loadApts(); loadCars();
+  showToast('📦 В архиве'); loadAdmin(); loadApts(); loadCars();
 }
 async function adminUnarchive(kind,id){
   if(!sb) return;
   await sb.from(kind==='apt'?'apartments':'cars').update({is_archived:false}).eq('id',id);
-  showToast('↩ Восстановлено из архива'); loadAdmin(); loadApts(); loadCars();
+  showToast('↩ Восстановлено'); loadAdmin(); loadApts(); loadCars();
+}
+async function adminDelete(kind,id){
+  if(!sb) return;
+  if(!confirm('Удалить навсегда?')) return;
+  await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
+  showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
 }
 
+function updateProfileUI(){
+  if(!currentUser) return;
+  var name=currentUser.user_metadata&&currentUser.user_metadata.name?currentUser.user_metadata.name:currentUser.email.split('@')[0];
+  var e1=document.getElementById('p-ava'); if(e1) e1.textContent=name.charAt(0).toUpperCase();
+  var e2=document.getElementById('p-name2'); if(e2) e2.textContent=name;
+  var e3=document.getElementById('p-email2'); if(e3) e3.textContent=currentUser.email;
+  var adminItem=document.getElementById('admin-menu-item');
+  if(adminItem) adminItem.style.display=isAdmin()?'flex':'none';
+  var adminDfn=document.getElementById('dfn-admin');
+  if(adminDfn) adminDfn.style.display=isAdmin()?'flex':'none';
+  loadMyListings();
+}
+
+async function loadMyListings(){
+  if(!sb||!currentUser) return;
+  var area=document.getElementById('my-listings-area');
+  if(!area) return;
+  var uid=currentUser.id;
+  var r1=await sb.from('apartments').select('*').eq('user_id',uid);
+  var r2=await sb.from('cars').select('*').eq('user_id',uid);
+  var all=[...(r1.data||[]).map(function(a){a._kind='apt';return a;}), ...(r2.data||[]).map(function(c){c._kind='car';return c;})];
+  var e=document.getElementById('p-stat-listings'); if(e) e.textContent=all.length;
+  var e2=document.getElementById('p-stat-favs'); if(e2) e2.textContent=favs.length;
+  if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">У тебя пока нет объявлений</div>'; return; }
+  area.innerHTML=all.map(function(item){
+    var src=item.photos&&item.photos[0]?item.photos[0]:'';
+    if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=128&q=70';
+    var imgEl=src?'<img style="width:60px;height:60px;object-fit:cover;border-radius:8px" src="'+src+'">':'<div style="width:60px;height:60px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var status=item.is_active?'<span style="color:#16a34a;font-size:11px">✅ Активно</span>':'<span style="color:#d97706;font-size:11px">⏳ На проверке</span>';
+    return '<div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center">'+imgEl
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(item.title_ru||'')+'</div>'
+      +status+'<div style="font-size:14px;font-weight:700;color:var(--red)">'+(item.price||0)+' SAR</div></div>'
+      +'<button style="background:#fff0ee;color:var(--red);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">Удалить</button>'
+      +'</div>';
+  }).join('');
+}
+async function deleteMyListing(kind,id){
+  if(!sb) return;
+  if(!confirm('Удалить объявление?')) return;
+  await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
+  showToast('Удалено'); loadMyListings(); loadApts(); loadCars();
+}
+
+// ─── RENDER HELPERS ──────────────────────────────────────────────────────────
+var USP='https://images.unsplash.com/';
+function imgSrc(item, size){
+  if(!item) return '';
+  var photos = item.photos;
+  if(photos && photos.length && photos[0]){
+    var p = photos[0];
+    if(typeof p === 'string'){
+      if(p.startsWith('http')) return p;
+      var w = size || 600;
+      return USP + p + (p.indexOf('?')>-1 ? '&' : '?') + 'w='+w+'&q=75&auto=format';
+    }
+  }
+  return '';
+}
+function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note||'/мес'); }
+function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
+function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id==id;}); }
+
+function cardHtml(item,kind){
+  var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
+  var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
+  var typeLabel = typeMap[catKey] || catKey;
+  var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
+  var isNew=item.is_new||item.is_new===true;
+  var src=imgSrc(item, 600);
+  var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
+  var favOn=isFav(kind,item.id);
+  return '<div class="l-card" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
+    +'<div class="l-card-img-wrap">'+imgEl
+    +(isNew?'<div class="tag-new">Новое</div>':'')
+    +'<div class="tag-type">'+typeLabel+'</div>'
+    +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
+    +'</div>'
+    +'<div class="l-card-body">'
+    +'<div class="l-card-title">'+(item.title_ru||item.title||'')+'</div>'
+    +'<div class="l-card-meta">'+(kind==='apt'?'📍 '+(item.district_ru||''):item.specs_ru||'')+'</div>'
+    +'<div class="l-card-row"><div class="l-price">'+pStr(item)+'</div>'
+    +'<button class="wa-quick" data-kind="'+kind+'" data-id="'+item.id+'" onclick="quickWA(event,this.dataset.kind,this.dataset.id)">'+waIco()+' WA</button></div>'
+    +'<div class="l-badges">'+badges+'</div>'
+    +'</div></div>';
+}
+
+// ─── RENDER APTS ─────────────────────────────────────────────────
+function getFilteredApts(){
+  var fl=liveApts.filter(function(a){
+    var typeOk=aptF==='all'
+      ||aptF==='studio'&&a.type==='studio'
+      ||aptF==='apartment'&&(a.type==='apartment'||a.type==='1room'||a.type==='2room'||a.type==='3room'||a.type==='4room')
+      ||aptF==='house'&&a.type==='house'
+      ||aptF==='villa'&&a.type==='villa'
+      ||aptF==='short'&&a.is_short_term
+      ||aptF==='furnished'&&a.is_furnished;
+    var priceOk=a.price>=priceFrom&&a.price<=priceTo;
+    return typeOk&&priceOk;
+  });
+  if(sortVal==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
+  else if(sortVal==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
+  else if(sortVal==='new') fl.sort(function(a,b){return (b.is_new?1:0)-(a.is_new?1:0);});
+  return fl;
+}
+function setAptF(el,f){
+  aptF=f;
+  document.querySelectorAll('#apt-pills .pill').forEach(function(p){p.classList.remove('active');});
+  el.classList.add('active');
+  renderApts(); renderMarkers();
+}
+function setAptView(v){
+  aptView=v;
+  document.getElementById('apt-map-wrap').style.display=v==='map'?'block':'none';
+  document.getElementById('apt-list-wrap').style.display=v==='list'?'block':'none';
+  document.getElementById('vb-map').classList.toggle('active',v==='map');
+  document.getElementById('vb-list').classList.toggle('active',v==='list');
+  if(v==='map'&&gMap){setTimeout(function(){google.maps.event.trigger(gMap,'resize');},80);}
+  renderApts();
+}
+function toggleFilter(){document.getElementById('filter-panel').classList.toggle('open');}
+function applyFilter(){
+  priceFrom=parseInt(document.getElementById('price-from').value)||0;
+  priceTo=parseInt(document.getElementById('price-to').value)||999999;
+  sortVal=document.getElementById('sort-sel').value;
+  var btn=document.getElementById('filter-btn');
+  if(btn) btn.classList.toggle('on',priceFrom>0||priceTo<999999||sortVal);
+  renderApts(); renderMarkers();
+}
+function resetFilter(){
+  priceFrom=0; priceTo=999999; sortVal='';
+  var pf=document.getElementById('price-from'); if(pf) pf.value='';
+  var pt=document.getElementById('price-to'); if(pt) pt.value='';
+  var ss=document.getElementById('sort-sel'); if(ss) ss.value='';
+  var btn=document.getElementById('filter-btn'); if(btn) btn.classList.remove('on');
+  renderApts(); renderMarkers();
+}
+function renderApts(){
+  var fl=getFilteredApts();
+  var cnt=fl.length+' объявлений';
+  var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
+  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">Ничего не найдено</div></div>';
+  if(aptView==='map'){
+    var mc=document.getElementById('apt-map-cards'); if(mc) mc.innerHTML=h2;
+    var ac=document.getElementById('apt-map-cnt'); if(ac) ac.textContent=cnt;
+  } else {
+    var lc=document.getElementById('apt-list-cards'); if(lc) lc.innerHTML=h2;
+    var alc=document.getElementById('apt-list-cnt'); if(alc) alc.textContent=cnt;
+  }
+}
+
+// ─── RENDER CARS ─────────────────────────────────────────────────
+function getFilteredCars(){
+  return liveCars.filter(function(c){
+    var cat=c.cat||c.body_type||'';
+    if(carF==='sedan') return cat==='sedan';
+    if(carF==='suv') return cat==='suv';
+    if(carF==='van') return cat==='van';
+    if(carF==='luxury') return cat==='luxury';
+    if(carF==='daily') return c.is_daily;
+    if(carF==='monthly') return c.is_monthly;
+    return true;
+  });
+}
+function setCarF(el,f){
+  carF=f;
+  document.querySelectorAll('#car-pills .pill').forEach(function(p){p.classList.remove('active');});
+  el.classList.add('active');
+  renderCars();
+}
+function renderCars(){
+  var fl=getFilteredCars();
+  var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=fl.length+' машин';
+  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">Ничего не найдено</div></div>';
+}
+
+// ─── DETAIL MODAL ─────────────────────────────────────────────────
+function openDetail(kind,id){
+  var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
+  if(!item) return;
+  detailItem=item; detailKind=kind; imgIdx=0;
+  var photos=item.photos||[];
+  var firstPhoto=photos.length?photos[0]:'';
+  var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
+  var mi=document.getElementById('m-imgs');
+  if(firstSrc){ mi.style.display='block'; document.getElementById('m-img').src=firstSrc; }
+  else { mi.style.display='none'; }
+  document.getElementById('m-dots').innerHTML=photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'"></div>';}).join('');
+  document.getElementById('m-title').textContent=item.title_ru||item.title||'';
+  document.getElementById('m-ava').textContent=(item.owner_name||'?').charAt(0).toUpperCase();
+  document.getElementById('m-owner').textContent=item.owner_name||'Хозяин';
+  document.getElementById('m-role').textContent=kind==='apt'?'Владелец':'Арендодатель';
+  document.getElementById('m-price').textContent=pStr(item);
+  var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
+  if(kind==='apt'){
+    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>Посуточно</strong></span>':'');
+  } else {
+    var fuelMap={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
+    var fuelLabel=item.fuel_type?(fuelMap[item.fuel_type]||item.fuel_type):'';
+    document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+(item.specs_ru||item.make+' '+(item.model||''))+'</strong></span>'+(fuelLabel?'<span>'+fuelLabel+'</span>':'');
+  }
+  document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
+  document.getElementById('m-desc').textContent=item.description_ru||'';
+  document.querySelector('.modal-scroll').scrollTop=0;
+  var mapsBtn=document.getElementById('m-maps-btn');
+  if(mapsBtn){ mapsBtn.style.display=(item.gmaps_url?'flex':'none'); }
+  var callBtn=document.getElementById('m-call-btn');
+  if(callBtn){ callBtn.style.display=(item.call_phone||item.phone)?'flex':'none'; }
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function nextImg(){
+  if(!detailItem) return;
+  var photos=detailItem.photos||[];
+  if(photos.length<2) return;
+  imgIdx=(imgIdx+1)%photos.length;
+  var p=photos[imgIdx]||'';
+  var src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
+  document.getElementById('m-img').src=src;
+  document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
+}
+function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
+function openWA(){
+  if(!detailItem) return;
+  var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.';
+  window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function openGMaps(){ if(detailItem&&detailItem.gmaps_url) window.open(detailItem.gmaps_url,'_blank'); }
+function openCall(){
+  if(!detailItem) return;
+  var phone=detailItem.call_phone||detailItem.phone;
+  if(phone) window.open('tel:'+phone.replace(/[^0-9+]/g,''));
+}
+function quickWA(e,kind,id){
+  e.stopPropagation();
+  var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
+  if(!item) return;
+  var msg='Здравствуйте! «'+(item.title_ru||item.title||'')+'» на Adil. Интересует аренда.';
+  window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ─── FAVORITES ────────────────────────────────────────────────────
+function toggleFav(e,kind,id){
+  e.stopPropagation();
+  id=parseInt(id)||id;
+  if(isFav(kind,id)){ favs=favs.filter(function(f){return !(f.kind===kind&&f.id==id);}); }
+  else { favs.push({kind:kind,id:id}); showToast('❤️ Добавлено в избранное'); }
+  localStorage.setItem('adil_favs',JSON.stringify(favs));
+  updateFavBadge();
+  // Update button
+  var btn=e.currentTarget||e.target;
+  if(btn){ btn.classList.toggle('on',isFav(kind,id)); btn.textContent=isFav(kind,id)?'♥':'♡'; }
+  if(section==='fav') renderFavs();
+}
+function updateFavBadge(){
+  var b=document.getElementById('fav-badge');
+  if(!b) return;
+  if(favs.length){b.style.display='block';b.textContent=favs.length;}else b.style.display='none';
+}
+function renderFavs(){
+  var cnt=document.getElementById('fav-cnt'); var grid=document.getElementById('fav-cards');
+  if(!cnt||!grid) return;
+  if(!favs.length){
+    cnt.textContent='';
+    grid.innerHTML='<div class="empty"><div class="empty-ico">&#9825;</div><div class="empty-txt">Пока ничего нет.<br>Нажми &#9825; на объявлении</div><button class="empty-btn" onclick="goSection(&quot;apt&quot;)">Смотреть квартиры</button></div>';
+    return;
+  }
+  cnt.textContent=favs.length+' сохранено';
+  var items=favs.map(function(f){ return f.kind==='apt'?liveApts.find(function(x){return x.id==f.id;}):liveCars.find(function(x){return x.id==f.id;}); }).filter(Boolean);
+  grid.innerHTML=items.map(function(item){ var kind=liveApts.indexOf(item)!==-1?'apt':'car'; return cardHtml(item,kind); }).join('');
+}
+
+// ─── SECTION NAV ─────────────────────────────────────────────────
+function goSection(s){
+  prevSec=section!=='add'?section:prevSec; section=s;
+  ['apt','car','add','fav','profile','admin'].forEach(function(k){
+    var el=document.getElementById('sec-'+k); if(el) el.style.display=k===s?'block':'none';
+    var bn=document.getElementById('bn-'+k); if(bn) bn.classList.toggle('active',k===s);
+    var dfn=document.getElementById('dfn-'+k); if(dfn) dfn.classList.toggle('active',k===s);
+    var ndl=document.getElementById('ndl-'+k); if(ndl) ndl.classList.toggle('active',k===s);
+  });
+  if(s==='apt'){if(aptView==='map'&&gMap)setTimeout(function(){google.maps.event.trigger(gMap,'resize');},80);renderApts();}
+  if(s==='car') renderCars();
+  if(s==='fav') renderFavs();
+  if(s==='profile') updateProfileUI();
+  if(s==='admin') loadAdmin();
+  var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0; window.scrollTo(0,0);
+}
+function goBack(){ goSection(prevSec||'apt'); }
+function setAddType(t){
+  addType=t;
+  document.getElementById('form-apt').style.display=t==='apt'?'block':'none';
+  document.getElementById('form-car').style.display=t==='car'?'block':'none';
+  document.getElementById('att-apt').classList.toggle('active',t==='apt');
+  document.getElementById('att-car').classList.toggle('active',t==='car');
+}
+function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
+
 // ─── AMENITIES BUILD ─────────────────────────────────────────────
-function buildAm(list,id){ var el=document.getElementById(id); if(!el) return; el.innerHTML=list.map(function(a){return '<div class="am" onclick="this.classList.toggle(\'on\')">'+a+'</div>';}).join(''); }
+function buildAm(list,id){
+  var el=document.getElementById(id); if(!el) return;
+  el.innerHTML=list.map(function(a){return '<div class="am" onclick="this.classList.toggle(&quot;on&quot;)">'+a+'</div>';}).join('');
+}
 
 // ─── TOAST ────────────────────────────────────────────────────────
-function showToast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(function(){el.classList.remove('show');},3000); }
+function showToast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');},3000);
+}
 
 // ─── INIT ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function(){
@@ -1808,9 +1831,16 @@ document.addEventListener('DOMContentLoaded', async function(){
   await loadApts();
   await loadCars();
   updateFavBadge();
-  initMap(); mapReady=true;
+  // initMap called by Google Maps API callback
   goSection('apt');
 });
+
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(function(){});
+}
 </script>
 </body>
 </html>
