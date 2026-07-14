@@ -52,8 +52,51 @@ export default async function handler(req, res) {
         if (cont) finalUrl = cont;
       } catch {}
     }
+
+    // Try to pull lat/lng directly out of the resolved URL first (works for
+    // pin-dropped locations shared from the map).
+    const direct = extractCoords(finalUrl);
+    if (direct) {
+      return res.status(200).json({ finalUrl, lat: direct.lat, lng: direct.lng });
+    }
+
+    // No coordinates embedded — this happens when the link was shared from a
+    // named place/business (e.g. "?q=Мечеть+Медина"). Geocode the place text
+    // instead, using the same Maps API key already used on the frontend.
+    let queryText = null;
+    try { queryText = new URL(finalUrl).searchParams.get('q'); } catch {}
+    if (queryText && !/^-?\d+\.\d+,-?\d+\.\d+$/.test(queryText)) {
+      const apiKey = 'AIzaSyDMjw0h7cMQBl9QQEpyurfUtjmYEaa0fUQ';
+      const geoRes = await fetch(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=' +
+          encodeURIComponent(queryText) +
+          '&key=' + apiKey
+      );
+      const geoData = await geoRes.json();
+      if (geoData.status === 'OK' && geoData.results && geoData.results[0]) {
+        const loc = geoData.results[0].geometry.location;
+        return res.status(200).json({ finalUrl, lat: loc.lat, lng: loc.lng, geocoded: true });
+      }
+      return res.status(200).json({
+        finalUrl,
+        error: 'геокодирование не удалось (' + geoData.status + ')',
+      });
+    }
+
     return res.status(200).json({ finalUrl });
   } catch (err) {
     return res.status(500).json({ error: 'Failed to resolve link' });
   }
+}
+
+function extractCoords(url) {
+  let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  return null;
 }
