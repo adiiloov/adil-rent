@@ -34,12 +34,25 @@ export default async function handler(req, res) {
       method: 'GET',
       redirect: 'follow',
       headers: {
-        // A normal browser UA gets the fullest redirect chain from Google
+        // A normal browser UA + Accept-Language gets the fullest redirect chain from Google
         'User-Agent':
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+        'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+        // Pre-accepting Google's cookie/consent interstitial avoids the
+        // request landing on consent.google.com instead of the real maps URL.
+        'Cookie': 'CONSENT=YES+1',
       },
     });
-    return res.status(200).json({ finalUrl: response.url });
+    let finalUrl = response.url;
+    // If Google still routed us through the consent interstitial, try to
+    // pull the real destination out of its "continue" query parameter.
+    if (finalUrl.includes('consent.google.com')) {
+      try {
+        const cont = new URL(finalUrl).searchParams.get('continue');
+        if (cont) finalUrl = cont;
+      } catch {}
+    }
+    return res.status(200).json({ finalUrl });
   } catch (err) {
     return res.status(500).json({ error: 'Failed to resolve link' });
   }
