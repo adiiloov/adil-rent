@@ -859,6 +859,12 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="auth-divider"><span>или</span></div>
       <div style="font-size:13px;text-align:center;color:var(--muted)">Уже есть аккаунт? <span style="color:var(--red);cursor:pointer;font-weight:600" onclick="switchAuthTab('login')">Войти</span></div>
     </div>
+    <!-- PROFILE EDIT -->
+    <div id="auth-edit-form" style="display:none">
+      <div class="auth-field"><label class="auth-label">Имя</label><input class="auth-input" type="text" id="edit-name" placeholder="Азамат"></div>
+      <div class="auth-field"><label class="auth-label">Телефон</label><input class="auth-input" type="tel" id="edit-phone" placeholder="+7 777 123 45 67"></div>
+      <button class="auth-btn" onclick="saveProfileEdit()" id="edit-save-btn">Сохранить</button>
+    </div>
     <div style="height:16px"></div>
   </div>
 </div>
@@ -982,15 +988,46 @@ async function deleteListing(kind,id){
 // ─── AUTH MODAL ───────────────────────────────────────────────────
 function openAuth(mode){
   document.getElementById('auth-overlay').classList.add('open');
-  switchAuthTab(mode==='signup'?'signup':'login');
   document.getElementById('auth-err').classList.remove('show');
+  if(mode==='profile-edit'&&currentUser){
+    document.getElementById('auth-modal-title').textContent='Редактировать профиль';
+    document.getElementById('auth-modal-sub').textContent='Имя и телефон';
+    document.querySelector('.auth-tabs').style.display='none';
+    document.getElementById('auth-login-form').style.display='none';
+    document.getElementById('auth-signup-form').style.display='none';
+    document.getElementById('auth-edit-form').style.display='block';
+    document.getElementById('edit-name').value=(currentUser.user_metadata&&currentUser.user_metadata.name)||'';
+    document.getElementById('edit-phone').value=(currentUser.user_metadata&&currentUser.user_metadata.phone)||'';
+  } else {
+    document.getElementById('auth-modal-title').textContent='Добро пожаловать в Adil';
+    document.getElementById('auth-modal-sub').textContent='Войди или создай аккаунт';
+    document.querySelector('.auth-tabs').style.display='flex';
+    document.getElementById('auth-edit-form').style.display='none';
+    switchAuthTab(mode==='signup'?'signup':'login');
+  }
 }
 function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')) document.getElementById('auth-overlay').classList.remove('open'); }
 function switchAuthTab(t){
   document.getElementById('auth-login-form').style.display=t==='login'?'block':'none';
   document.getElementById('auth-signup-form').style.display=t==='signup'?'block':'none';
+  document.getElementById('auth-edit-form').style.display='none';
   document.getElementById('tab-login').classList.toggle('active',t==='login');
   document.getElementById('tab-signup').classList.toggle('active',t==='signup');
+}
+async function saveProfileEdit(){
+  if(!sb||!currentUser){ showToast('⚠️ Не авторизован'); return; }
+  var name=document.getElementById('edit-name').value.trim();
+  var phone=document.getElementById('edit-phone').value.trim();
+  if(!name){ showErr('Введи имя'); return; }
+  var btn=document.getElementById('edit-save-btn');
+  btn.disabled=true; btn.textContent='Сохраняем...';
+  var result=await sb.auth.updateUser({data:{name:name,phone:phone}});
+  btn.disabled=false; btn.textContent='Сохранить';
+  if(result.error){ showErr(result.error.message||'Ошибка сохранения'); return; }
+  currentUser=result.data.user;
+  updateProfileUI();
+  document.getElementById('auth-overlay').classList.remove('open');
+  showToast('✓ Профиль обновлён');
 }
 async function doLogin(){
   if(!sb){ showToast('⚠️ Supabase не настроен'); return; }
@@ -1111,12 +1148,41 @@ function parseGoogleMapsUrl(url){
 }
 
 
-function previewGMaps(url){
+function isShortGmapsLink(url){
+  return /(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)/i.test(url||'');
+}
+var gmapsResolveCache={};
+async function resolveGmapsUrl(url){
+  if(!isShortGmapsLink(url)) return url;
+  if(gmapsResolveCache[url]) return gmapsResolveCache[url];
+  try{
+    var r=await fetch('/api/resolve-gmaps?url='+encodeURIComponent(url));
+    var d=await r.json();
+    if(d&&d.finalUrl){ gmapsResolveCache[url]=d.finalUrl; return d.finalUrl; }
+  }catch(e){}
+  return url;
+}
+async function getGmapsCoords(url){
+  if(!url) return null;
+  var resolved=await resolveGmapsUrl(url);
+  return parseGoogleMapsUrl(resolved);
+}
+var gmapsPreviewToken=0;
+async function previewGMaps(url){
   var preview=document.getElementById('gmaps-preview');
   if(!preview) return;
   if(!url||url.length<10){ preview.style.display='none'; return; }
-  var result=parseGoogleMapsUrl(url);
+  var myToken=++gmapsPreviewToken;
   preview.style.display='block';
+  var isShort=isShortGmapsLink(url);
+  if(isShort){
+    preview.style.background='#f3f4f6';
+    preview.style.borderColor='#e5e7eb';
+    preview.style.color='#6b7280';
+    preview.innerHTML='🔄 Определяем координаты по короткой ссылке...';
+  }
+  var result=await getGmapsCoords(url);
+  if(myToken!==gmapsPreviewToken) return; // a newer input arrived, ignore stale result
   if(result){
     preview.style.background='#f0fdf4';
     preview.style.borderColor='#bbf7d0';
@@ -1126,7 +1192,7 @@ function previewGMaps(url){
     preview.style.background='#fffbeb';
     preview.style.borderColor='#fde68a';
     preview.style.color='#d97706';
-    preview.innerHTML='⚠️ Не удалось определить координаты<br><small style="color:#6b7280">Попробуй: открой Google Maps → нажми на место → "Поделиться" → скопируй ссылку</small>';
+    preview.innerHTML='⚠️ Не удалось определить координаты'+(isShort?' по короткой ссылке':'')+'<br><small style="color:#6b7280">Попробуй: открой Google Maps → нажми на место → "Поделиться" → скопируй ссылку</small>';
   }
 }
 
@@ -1145,6 +1211,8 @@ async function submitApt(){
   var amenities=[];
   document.querySelectorAll('#am-apt .am.on').forEach(function(a){amenities.push(a.textContent.trim());});
   var photoUrls=await uploadPhotos('apt');
+  var gmapsUrlVal=document.getElementById('f-gmaps').value.trim();
+  var gmapsCoords=await getGmapsCoords(gmapsUrlVal);
   var data={
     user_id:currentUser.id,
     title_ru:title, type:document.getElementById('f-type').value,
@@ -1153,10 +1221,10 @@ async function submitApt(){
     phone:phone,
     call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
     owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
-    gmaps_url:document.getElementById('f-gmaps').value.trim()||null,
+    gmaps_url:gmapsUrlVal||null,
     district_ru:document.getElementById('f-district').value.trim(),
-    lat:(function(){ var r=parseGoogleMapsUrl(document.getElementById('f-gmaps').value); return r?r.lat:24.468; })(),
-    lng:(function(){ var r=parseGoogleMapsUrl(document.getElementById('f-gmaps').value); return r?r.lng:39.615; })(),
+    lat:gmapsCoords?gmapsCoords.lat:24.468,
+    lng:gmapsCoords?gmapsCoords.lng:39.615,
     is_furnished:amenities.includes('Мебель'),
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:amenities, photos:photoUrls, is_active:false
@@ -1733,6 +1801,51 @@ function nextImg(){
   document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
 }
 function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
+
+// ─── FULLSCREEN GALLERY ──────────────────────────────────────────
+var galleryPhotos=[], galleryIdx=0;
+function galleryResolve(p){ return p&&p.startsWith('http')?p:(USP+p+'?w=1600&q=90&auto=format'); }
+function isVideoUrl(url){ return /\.(mp4|mov|webm|m4v)(\?|$)/i.test(url||''); }
+function openGallery(photos,startIdx){
+  photos=(photos||[]).filter(Boolean);
+  if(!photos.length) return;
+  galleryPhotos=photos; galleryIdx=startIdx||0;
+  document.getElementById('gallery-overlay').classList.add('open');
+  renderGalleryImg();
+}
+function closeGallery(){ document.getElementById('gallery-overlay').classList.remove('open'); }
+function galleryPrev(){ if(galleryPhotos.length<2) return; galleryIdx=(galleryIdx-1+galleryPhotos.length)%galleryPhotos.length; renderGalleryImg(); }
+function galleryNext(){ if(galleryPhotos.length<2) return; galleryIdx=(galleryIdx+1)%galleryPhotos.length; renderGalleryImg(); }
+function renderGalleryImg(){
+  var wrap=document.getElementById('gallery-img-wrap');
+  var img=document.getElementById('gallery-img');
+  var existingVideo=wrap.querySelector('video');
+  if(existingVideo) existingVideo.remove();
+  var url=galleryResolve(galleryPhotos[galleryIdx]||'');
+  var counter=document.getElementById('gallery-counter');
+  if(counter) counter.textContent=(galleryIdx+1)+' / '+galleryPhotos.length;
+  if(isVideoUrl(url)){
+    img.style.display='none';
+    var vid=document.createElement('video');
+    vid.src=url; vid.controls=true; vid.autoplay=true; vid.playsInline=true;
+    vid.className='gallery-img';
+    wrap.appendChild(vid);
+  } else {
+    img.style.display='block';
+    img.src=url;
+  }
+  var dots=document.getElementById('gallery-dots');
+  if(dots){
+    dots.innerHTML=galleryPhotos.length>1?galleryPhotos.map(function(_,i){return '<div class="gallery-dot'+(i===galleryIdx?' on':'')+'" onclick="galleryIdx='+i+';renderGalleryImg();"></div>';}).join(''):'';
+  }
+}
+document.addEventListener('keydown', function(e){
+  var ov=document.getElementById('gallery-overlay');
+  if(!ov||!ov.classList.contains('open')) return;
+  if(e.key==='Escape') closeGallery();
+  else if(e.key==='ArrowLeft') galleryPrev();
+  else if(e.key==='ArrowRight') galleryNext();
+});
 function openWA(){
   if(!detailItem) return;
   var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.';
