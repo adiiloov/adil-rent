@@ -409,18 +409,18 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <span style="font-family:var(--fh);font-size:20px;font-weight:700;color:var(--dark)"><em style="color:var(--brand);font-style:normal">Adil</em></span>
 </div>
   <div class="nav-desktop-links">
-    <button class="ndl active" onclick="goSection('apt')" id="ndl-apt">🏠 Квартиры</button>
-    <button class="ndl" onclick="goSection('car')" id="ndl-car">🚗 Машины</button>
-    <button class="ndl" onclick="goSection('add')" id="ndl-add">+ Сдать</button>
+    <button class="ndl active" onclick="goSection('apt')" id="ndl-apt" data-i18n="nav.apt">🏠 Квартиры</button>
+    <button class="ndl" onclick="goSection('car')" id="ndl-car" data-i18n="nav.car">🚗 Машины</button>
+    <button class="ndl" onclick="goSection('add')" id="ndl-add" data-i18n="nav.add">+ Сдать</button>
   </div>
   <div class="nav-r">
     <div class="lang-row">
-      <button class="lb active" onclick="setLang('ru')">RU</button>
-      <button class="lb" onclick="setLang('en')">EN</button>
+      <button class="lb active" onclick="setLang('ru')" id="lb-ru">RU</button>
+      <button class="lb" onclick="setLang('en')" id="lb-en">EN</button>
     </div>
     <div id="nav-auth-area">
-      <button class="nav-auth-btn btn-login" onclick="openAuth('login')" id="nav-login-btn">Войти</button>
-      <button class="nav-auth-btn btn-signup" onclick="openAuth('signup')" id="nav-signup-btn">Регистрация</button>
+      <button class="nav-auth-btn btn-login" onclick="openAuth('login')" id="nav-login-btn" data-i18n="nav.login">Войти</button>
+      <button class="nav-auth-btn btn-signup" onclick="openAuth('signup')" id="nav-signup-btn" data-i18n="nav.signup">Регистрация</button>
     </div>
   </div>
 </header>
@@ -429,7 +429,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-tag"><span class="hdot"></span><span>Медина, Саудовская Аравия</span></div>
+    <div class="hero-tag"><span class="hdot"></span><span data-i18n="hero.tag">Медина, Саудовская Аравия</span></div>
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px">
   <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="32" height="32" rx="8" fill="#0F5D4D"/>
@@ -438,67 +438,67 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   </svg>
   <span style="font-family:var(--fh);font-size:32px;font-weight:700;color:#fff">Adil</span>
 </div>
-<h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1">Жильё и транспорт в Медине</span></h1>
-    <p class="hero-sub" id="h-sub">Квартиры и машины в аренду. Быстро и прозрачно.</p>
+<h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1" data-i18n="hero.title">Жильё и транспорт в Медине</span></h1>
+    <p class="hero-sub" id="h-sub" data-i18n="hero.sub">Квартиры и машины в аренду. Быстро и прозрачно.</p>
 
     <div class="hero-stats">
-      
-      
-      <div><div class="sn">98%</div><div class="sl" id="sl3">довольных</div></div>
+
+
+      <div><div class="sn">98%</div><div class="sl" id="sl3" data-i18n="hero.happy">довольных</div></div>
     </div>
   </div>
 
   <!-- APARTMENTS -->
   <div id="sec-apt">
     <div class="pills" id="apt-pills">
-      <button class="pill active" onclick="setAptF(this,'all')">Все</button>
-      <button class="pill" onclick="setAptF(this,'studio')">Студия</button>
-      <button class="pill" onclick="setAptF(this,'apartment')">Квартира</button>
-      <button class="pill" onclick="setAptF(this,'house')">Дом</button>
-      <button class="pill" onclick="setAptF(this,'villa')">Вилла</button>
-      <button class="pill" onclick="setAptF(this,'short')">Посуточно</button>
-      <button class="pill" onclick="setAptF(this,'furnished')">С мебелью</button>
+      <button class="pill active" onclick="setAptF(this,'all')" data-i18n="f.all">Все</button>
+      <button class="pill" onclick="setAptF(this,'studio')" data-i18n="apt.studio">Студия</button>
+      <button class="pill" onclick="setAptF(this,'apartment')" data-i18n="apt.apartment">Квартира</button>
+      <button class="pill" onclick="setAptF(this,'house')" data-i18n="apt.house">Дом</button>
+      <button class="pill" onclick="setAptF(this,'villa')" data-i18n="apt.villa">Вилла</button>
+      <button class="pill" onclick="setAptF(this,'short')" data-i18n="apt.short">Посуточно</button>
+      <button class="pill" onclick="setAptF(this,'furnished')" data-i18n="apt.furnished">С мебелью</button>
     </div>
     <div class="view-toggle">
       <button class="vbtn active" onclick="setAptView('map')" id="vb-map">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
-        Карта
+        <span data-i18n="apt.view.map">Карта</span>
       </button>
       <button class="vbtn" onclick="setAptView('list')" id="vb-list">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>
-        Список
+        <span data-i18n="apt.view.list">Список</span>
       </button>
       <button class="filter-btn" onclick="toggleFilter()" id="filter-btn">
-        ⚙ Фильтр
+        ⚙ <span data-i18n="apt.filter">Фильтр</span>
       </button>
     </div>
     <div class="filter-panel" id="filter-panel">
       <div class="fp-row">
-        <div class="fp-field"><label class="fp-label">Цена от (SAR)</label><input class="fp-input" type="number" id="price-from" placeholder="0"></div>
+        <div class="fp-field"><label class="fp-label" data-i18n="filter.priceFrom">Цена от (SAR)</label><input class="fp-input" type="number" id="price-from" placeholder="0"></div>
         <div class="fp-sep">—</div>
-        <div class="fp-field"><label class="fp-label">Цена до (SAR)</label><input class="fp-input" type="number" id="price-to" placeholder="99999"></div>
+        <div class="fp-field"><label class="fp-label" data-i18n="filter.priceTo">Цена до (SAR)</label><input class="fp-input" type="number" id="price-to" placeholder="99999"></div>
       </div>
-      <label class="fp-label">Сортировка</label>
+      <label class="fp-label" data-i18n="filter.sort">Сортировка</label>
       <select class="fp-sort" id="sort-sel">
-        <option value="">По умолчанию</option>
-        <option value="price-asc">Цена: дешевле</option>
-        <option value="price-desc">Цена: дороже</option>
-        <option value="new">Сначала новые</option>
+        <option value="" data-i18n="filter.sort.default">По умолчанию</option>
+        <option value="price-asc" data-i18n="filter.sort.priceAsc">Цена: дешевле</option>
+        <option value="price-desc" data-i18n="filter.sort.priceDesc">Цена: дороже</option>
+        <option value="new" data-i18n="filter.sort.new">Сначала новые</option>
       </select>
       <div class="fp-actions">
-        <button class="fp-apply" onclick="applyFilter()">Применить</button>
-        <button class="fp-reset" onclick="resetFilter()">Сбросить</button>
+        <button class="fp-apply" onclick="applyFilter()" data-i18n="filter.apply">Применить</button>
+        <button class="fp-reset" onclick="resetFilter()" data-i18n="filter.reset">Сбросить</button>
       </div>
     </div>
     <div id="apt-map-wrap">
-      <div class="map-box"><div id="leafmap" style="width:100%;height:100%"></div><div class="map-hint" id="map-hint">Нажми на маркер</div></div>
+      <div class="map-box"><div id="leafmap" style="width:100%;height:100%"></div><div class="map-hint" id="map-hint" data-i18n="map.hint">Нажми на маркер</div></div>
       <div style="height:10px"></div>
-      <div class="sec-hdr"><h2>Квартиры</h2><span id="apt-map-cnt"></span></div>
+      <div class="sec-hdr"><h2 data-i18n="apt.title">Квартиры</h2><span id="apt-map-cnt"></span></div>
       <div id="apt-map-cards" class="card-list"></div>
       <div style="height:12px"></div>
     </div>
     <div id="apt-list-wrap" style="display:none">
-      <div class="sec-hdr"><h2>Все квартиры</h2><span id="apt-list-cnt"></span></div>
+      <div class="sec-hdr"><h2 data-i18n="apt.titleAll">Все квартиры</h2><span id="apt-list-cnt"></span></div>
       <div id="apt-list-cards" class="card-list"></div>
       <div style="height:12px"></div>
     </div>
@@ -507,15 +507,15 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- CARS -->
   <div id="sec-car" style="display:none">
     <div class="pills" id="car-pills">
-      <button class="pill active" onclick="setCarF(this,'all')">Все</button>
-      <button class="pill" onclick="setCarF(this,'sedan')">Седан</button>
-      <button class="pill" onclick="setCarF(this,'suv')">Внедорожник</button>
-      <button class="pill" onclick="setCarF(this,'van')">Минивэн</button>
-      <button class="pill" onclick="setCarF(this,'luxury')">Премиум</button>
-      <button class="pill" onclick="setCarF(this,'daily')">Посуточно</button>
-      <button class="pill" onclick="setCarF(this,'monthly')">Помесячно</button>
+      <button class="pill active" onclick="setCarF(this,'all')" data-i18n="f.all">Все</button>
+      <button class="pill" onclick="setCarF(this,'sedan')" data-i18n="car.sedan">Седан</button>
+      <button class="pill" onclick="setCarF(this,'suv')" data-i18n="car.suv">Внедорожник</button>
+      <button class="pill" onclick="setCarF(this,'van')" data-i18n="car.van">Минивэн</button>
+      <button class="pill" onclick="setCarF(this,'luxury')" data-i18n="car.luxury">Премиум</button>
+      <button class="pill" onclick="setCarF(this,'daily')" data-i18n="car.daily">Посуточно</button>
+      <button class="pill" onclick="setCarF(this,'monthly')" data-i18n="car.monthly">Помесячно</button>
     </div>
-    <div class="sec-hdr"><h2>Аренда машин</h2><span id="car-cnt"></span></div>
+    <div class="sec-hdr"><h2 data-i18n="car.title">Аренда машин</h2><span id="car-cnt"></span></div>
     <div id="car-cards" class="card-list"></div>
     <div style="height:12px"></div>
   </div>
@@ -523,153 +523,152 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- ADD -->
   <div id="sec-add" style="display:none">
     <div class="back-bar">
-      <button class="back-btn" onclick="goBack()">← Назад</button>
+      <button class="back-btn" onclick="goBack()" data-i18n="common.back">← Назад</button>
     </div>
     <div class="add-wrap">
       <div class="add-type-row">
-        <button class="att active" onclick="setAddType('apt')" id="att-apt">🏠 Квартира</button>
-        <button class="att" onclick="setAddType('car')" id="att-car">🚗 Машина</button>
+        <button class="att active" onclick="setAddType('apt')" id="att-apt" data-i18n="add.typeApt">🏠 Квартира</button>
+        <button class="att" onclick="setAddType('car')" id="att-car" data-i18n="add.typeCar">🚗 Машина</button>
       </div>
       <!-- APT FORM -->
       <div class="form-card" id="form-apt">
-        <div class="f-tip">✓ Бесплатно. Объявление появится после модерации.</div>
-        <div class="fg"><label class="fl">Заголовок</label><input class="fi" id="f-title" type="text" placeholder="Уютная студия у Мечети Пророка"></div>
+        <div class="f-tip" data-i18n="add.tip">✓ Бесплатно. Объявление появится после модерации.</div>
+        <div class="fg"><label class="fl" data-i18n="add.f.title">Заголовок</label><input class="fi" id="f-title" type="text" data-i18n-ph="add.f.title.ph" placeholder="Уютная студия у Мечети Пророка"></div>
         <div class="row2">
-          <div class="fg"><label class="fl">Тип жилья</label>
+          <div class="fg"><label class="fl" data-i18n="add.f.type">Тип жилья</label>
             <select class="fi" id="f-type">
-              <option value="studio">Студия</option>
-              <option value="apartment">Квартира</option>
-              <option value="villa">Вилла</option>
-              <option value="house">Дом</option>
+              <option value="studio" data-i18n="apt.studio">Студия</option>
+              <option value="apartment" data-i18n="apt.apartment">Квартира</option>
+              <option value="villa" data-i18n="apt.villa">Вилла</option>
+              <option value="house" data-i18n="apt.house">Дом</option>
             </select>
           </div>
-          <div class="fg"><label class="fl">Комнат</label>
+          <div class="fg"><label class="fl" data-i18n="add.f.rooms">Комнат</label>
             <select class="fi" id="f-rooms"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select>
           </div>
         </div>
         <div class="row2">
-          <div class="fg"><label class="fl">Период</label>
+          <div class="fg"><label class="fl" data-i18n="add.f.period">Период</label>
             <select class="fi" id="f-period">
-              <option value="daily">Посуточно</option><option value="weekly">Еженедельно</option>
-              <option value="monthly">Месячно</option><option value="yearly">Годовое</option><option value="long">Долгосрочная</option>
+              <option value="daily" data-i18n="add.f.period.daily">Посуточно</option><option value="weekly" data-i18n="add.f.period.weekly">Еженедельно</option>
+              <option value="monthly" data-i18n="add.f.period.monthly">Месячно</option><option value="yearly" data-i18n="add.f.period.yearly">Годовое</option><option value="long" data-i18n="add.f.period.long">Долгосрочная</option>
             </select>
           </div>
-          <div class="fg"><label class="fl">Цена (SAR)</label><input class="fi" id="f-price" type="number" placeholder="2000"></div>
+          <div class="fg"><label class="fl" data-i18n="add.f.price">Цена (SAR)</label><input class="fi" id="f-price" type="number" placeholder="2000"></div>
         </div>
-        <div class="fg"><label class="fl">Район Медины *</label>
-          <input class="fi" id="f-district" type="text" placeholder="Напишите район (обязательно)" required>
+        <div class="fg"><label class="fl" data-i18n="add.f.district">Район Медины *</label>
+          <input class="fi" id="f-district" type="text" data-i18n-ph="add.f.district.ph" placeholder="Напишите район (обязательно)" required>
         </div>
-        <div class="fg"><label class="fl">Описание * (минимум 20 символов)</label>
-          <textarea class="fi fi-ta" id="f-desc" placeholder="Этаж, вид из окна, расстояние до мечети, транспорт, условия..." oninput="checkDescLen(this)"></textarea>
-          <div id="f-desc-hint" style="font-size:11px;color:var(--muted);margin-top:4px">Введено: 0 символов (минимум 20)</div>
+        <div class="fg"><label class="fl" data-i18n="add.f.desc">Описание * (минимум 20 символов)</label>
+          <textarea class="fi fi-ta" id="f-desc" data-i18n-ph="add.f.desc.ph" placeholder="Этаж, вид из окна, расстояние до мечети, транспорт, условия..." oninput="checkDescLen(this)"></textarea>
+          <div id="f-desc-hint" style="font-size:11px;color:var(--muted);margin-top:4px" data-i18n="add.f.desc.hint">Введено: 0 символов (минимум 20)</div>
         </div>
         <div class="row2">
-          <div class="fg"><label class="fl">📞 Телефон для звонков</label><input class="fi" id="f-call-phone" type="tel" placeholder="+7 / +998..."></div>
-          <div class="fg"><label class="fl">💬 WhatsApp</label><input class="fi" id="f-phone" type="tel" placeholder="+7 / +998..."></div>
+          <div class="fg"><label class="fl" data-i18n="add.f.callPhone">📞 Телефон для звонков</label><input class="fi" id="f-call-phone" type="tel" placeholder="+7 / +998..."></div>
+          <div class="fg"><label class="fl" data-i18n="add.f.whatsapp">💬 WhatsApp</label><input class="fi" id="f-phone" type="tel" placeholder="+7 / +998..."></div>
         </div>
         <div class="fg">
-          <label class="fl">Ссылка Google Maps (необязательно)</label>
+          <label class="fl" data-i18n="add.f.gmaps">Ссылка Google Maps (необязательно)</label>
           <input class="fi" id="f-gmaps" type="url" placeholder="https://maps.google.com/..." oninput="previewGMaps(this.value)">
-          <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5" data-i18n="add.f.gmaps.hint">
             📱 <strong>Как получить ссылку:</strong> Открой Google Maps → найди адрес → нажми кнопку "Поделиться" → скопируй ссылку → вставь сюда
           </div>
-          <div id="gmaps-preview" style="display:none;margin-top:8px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:12px;color:#16a34a">
+          <div id="gmaps-preview" style="display:none;margin-top:8px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:12px;color:#16a34a" data-i18n="add.f.gmaps.found">
             📍 Координаты определены — точка появится на карте ✓
           </div>
         </div>
         <div class="fg">
-          <label class="fl">Фотографии</label>
+          <label class="fl" data-i18n="add.f.photos">Фотографии</label>
           <div class="photo-upload-area" id="apt-upload-area">
             <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'apt',15)">
             <div class="photo-upload-icon">📷🎥</div>
-            <div class="photo-upload-text">Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong></div>
+            <div class="photo-upload-text" data-i18n="add.f.photos.apt.hint">Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong></div>
           </div>
           <div class="photo-previews" id="apt-previews"></div>
         </div>
-        <div class="fg"><label class="fl">Удобства</label><div class="am-grid" id="am-apt"></div></div>
-        <button class="f-sub" id="apt-submit-btn" onclick="submitApt()">Опубликовать бесплатно</button>
+        <div class="fg"><label class="fl" data-i18n="add.f.amenities">Удобства</label><div class="am-grid" id="am-apt"></div></div>
+        <button class="f-sub" id="apt-submit-btn" onclick="submitApt()" data-i18n="add.f.submit">Опубликовать бесплатно</button>
       </div>
       <!-- CAR FORM -->
       <div class="form-card" id="form-car" style="display:none">
-        <div class="f-tip">✓ Бесплатно. Объявление появится после модерации.</div>
+        <div class="f-tip" data-i18n="add.tip">✓ Бесплатно. Объявление появится после модерации.</div>
         <div class="row2">
-          <div class="fg"><label class="fl">Марка</label>
+          <div class="fg"><label class="fl" data-i18n="add.fc.make">Марка</label>
             <select class="fi" id="fc-make" onchange="toggleCustomMake(this)">
               <option>Toyota</option><option>Hyundai</option><option>Kia</option>
               <option>Nissan</option><option>BMW</option><option>Mercedes-Benz</option>
               <option>Lexus</option><option>GMC</option><option>Ford</option>
               <option>Honda</option><option>Mitsubishi</option><option>Chevrolet</option>
               <option>Land Rover</option><option>Jeep</option><option>Dodge</option>
-              <option>Infiniti</option><option>Cadillac</option><option>Другое</option>
+              <option>Infiniti</option><option>Cadillac</option><option data-i18n="add.fc.make.other">Другое</option>
             </select>
-            <input class="fi" id="fc-make-custom" type="text" placeholder="Напишите марку" style="display:none;margin-top:8px">
+            <input class="fi" id="fc-make-custom" type="text" data-i18n-ph="add.fc.make.custom.ph" placeholder="Напишите марку" style="display:none;margin-top:8px">
           </div>
-          <div class="fg"><label class="fl">Модель</label><input class="fi" id="fc-model" type="text" placeholder="Camry, Prado..."></div>
+          <div class="fg"><label class="fl" data-i18n="add.fc.model">Модель</label><input class="fi" id="fc-model" type="text" placeholder="Camry, Prado..."></div>
         </div>
         <div class="row2">
-          <div class="fg"><label class="fl">Год</label><input class="fi" id="fc-year" type="number" placeholder="2020"></div>
-          <div class="fg"><label class="fl">Тип кузова</label>
+          <div class="fg"><label class="fl" data-i18n="add.fc.year">Год</label><input class="fi" id="fc-year" type="number" placeholder="2020"></div>
+          <div class="fg"><label class="fl" data-i18n="add.fc.body">Тип кузова</label>
             <select class="fi" id="fc-body">
-              <option value="sedan">Седан</option>
-              <option value="suv">Внедорожник / SUV</option>
-              <option value="van">Минивэн</option>
-              <option value="hatch">Хэтчбек</option>
-              <option value="crossover">Кроссовер</option>
-              <option value="coupe">Купе</option>
-              <option value="convertible">Кабриолет</option>
-              <option value="pickup">Пикап</option>
-              <option value="wagon">Универсал</option>
-              <option value="bus">Автобус / Микроавтобус</option>
-              <option value="truck">Грузовик</option>
-              <option value="luxury">Люкс / Лимузин</option>
+              <option value="sedan" data-i18n="car.sedan">Седан</option>
+              <option value="suv" data-i18n="add.fc.body.suv">Внедорожник / SUV</option>
+              <option value="van" data-i18n="car.van">Минивэн</option>
+              <option value="hatch" data-i18n="add.fc.body.hatch">Хэтчбек</option>
+              <option value="crossover" data-i18n="add.fc.body.crossover">Кроссовер</option>
+              <option value="coupe" data-i18n="add.fc.body.coupe">Купе</option>
+              <option value="convertible" data-i18n="add.fc.body.convertible">Кабриолет</option>
+              <option value="pickup" data-i18n="add.fc.body.pickup">Пикап</option>
+              <option value="wagon" data-i18n="add.fc.body.wagon">Универсал</option>
+              <option value="bus" data-i18n="add.fc.body.bus">Автобус / Микроавтобус</option>
+              <option value="truck" data-i18n="add.fc.body.truck">Грузовик</option>
+              <option value="luxury" data-i18n="add.fc.body.luxury">Люкс / Лимузин</option>
             </select>
           </div>
         </div>
         <div class="row2">
-          <div class="fg"><label class="fl">Период</label>
-            <select class="fi" id="fc-period"><option value="daily">Посуточно</option><option value="monthly">Помесячно</option><option value="both">Оба варианта</option></select>
+          <div class="fg"><label class="fl" data-i18n="add.f.period">Период</label>
+            <select class="fi" id="fc-period"><option value="daily" data-i18n="add.f.period.daily">Посуточно</option><option value="monthly" data-i18n="car.monthly">Помесячно</option><option value="both" data-i18n="add.fc.period.both">Оба варианта</option></select>
           </div>
-          <div class="fg"><label class="fl">Цена (SAR)</label><input class="fi" id="fc-price" type="number" placeholder="300"></div>
+          <div class="fg"><label class="fl" data-i18n="add.f.price">Цена (SAR)</label><input class="fi" id="fc-price" type="number" placeholder="300"></div>
         </div>
-        <div class="fg"><label class="fl">Описание</label><textarea class="fi fi-ta" id="fc-desc" placeholder="Состояние, условия, залог..."></textarea></div>
+        <div class="fg"><label class="fl" data-i18n="add.fc.desc">Описание</label><textarea class="fi fi-ta" id="fc-desc" data-i18n-ph="add.fc.desc.ph" placeholder="Состояние, условия, залог..."></textarea></div>
         <div class="row2">
           <div class="fg">
-            <label class="fl">Тип топлива</label>
+            <label class="fl" data-i18n="add.fc.fuel">Тип топлива</label>
             <select class="fi" id="fc-fuel" onchange="toggleCustomFuel(this)">
-              <option value="petrol">⛽ Бензин</option>
-              <option value="diesel">🛢 Дизель</option>
-              <option value="hybrid">🔋 Гибрид</option>
-              <option value="electric">⚡ Электро</option>
-              <option value="other">✏️ Другое</option>
+              <option value="petrol" data-i18n="add.fc.fuel.petrol">⛽ Бензин</option>
+              <option value="diesel" data-i18n="add.fc.fuel.diesel">🛢 Дизель</option>
+              <option value="hybrid" data-i18n="add.fc.fuel.hybrid">🔋 Гибрид</option>
+              <option value="electric" data-i18n="add.fc.fuel.electric">⚡ Электро</option>
+              <option value="other" data-i18n="add.fc.fuel.other">✏️ Другое</option>
             </select>
-            <input class="fi" id="fc-fuel-custom" type="text" placeholder="Укажи тип топлива" style="display:none;margin-top:8px">
+            <input class="fi" id="fc-fuel-custom" type="text" data-i18n-ph="add.fc.fuel.custom.ph" placeholder="Укажи тип топлива" style="display:none;margin-top:8px">
           </div>
           <div class="fg">
-            <label class="fl">Цвет</label>
-            <input class="fi" id="fc-color" type="text" placeholder="Белый, Чёрный...">
+            <label class="fl" data-i18n="add.fc.color">Цвет</label>
+            <input class="fi" id="fc-color" type="text" data-i18n-ph="add.fc.color.ph" placeholder="Белый, Чёрный...">
           </div>
         </div>
-        <div class="fg"><label class="fl">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
-        <div class="fg"><label class="fl">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
-        <div cl
+        <div class="fg"><label class="fl" data-i18n="add.f.callPhone">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
+        <div class="fg"><label class="fl" data-i18n="add.f.whatsapp">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div class="fg">
-          <label class="fl">📷 Фото и видео</label>
+          <label class="fl" data-i18n="add.fc.photos">📷 Фото и видео</label>
           <div class="photo-upload-area" id="car-upload-area">
             <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'car',10)">
             <div class="photo-upload-icon">📷🎥</div>
-            <div class="photo-upload-text">Фото и видео машины<br><strong>до 10 файлов</strong></div>
+            <div class="photo-upload-text" data-i18n="add.f.photos.car.hint">Фото и видео машины<br><strong>до 10 файлов</strong></div>
           </div>
           <div class="photo-previews" id="car-previews"></div>
         </div>
-        <div class="fg"><label class="fl">Опции</label><div class="am-grid" id="am-car"></div></div>
-        <button class="f-sub" id="car-submit-btn" onclick="submitCar()">Опубликовать бесплатно</button>
+        <div class="fg"><label class="fl" data-i18n="add.fc.options">Опции</label><div class="am-grid" id="am-car"></div></div>
+        <button class="f-sub" id="car-submit-btn" onclick="submitCar()" data-i18n="add.f.submit">Опубликовать бесплатно</button>
       </div>
     </div>
   </div>
 
   <!-- FAVORITES -->
   <div id="sec-fav" style="display:none">
-    <div class="sec-hdr" style="padding-top:16px"><h2>Избранное</h2><span id="fav-cnt"></span></div>
+    <div class="sec-hdr" style="padding-top:16px"><h2 data-i18n="fav.title">Избранное</h2><span id="fav-cnt"></span></div>
     <div id="fav-cards" class="card-list"></div>
     <div style="height:12px"></div>
   </div>
@@ -681,37 +680,37 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="profile-name" id="p-name">—</div>
       <div class="profile-email" id="p-email">—</div>
       <div class="profile-stats">
-        <div><div class="pstat-n" id="p-stat-listings">0</div><div class="pstat-l">объявлений</div></div>
-        <div><div class="pstat-n" id="p-stat-favs">0</div><div class="pstat-l">избранных</div></div>
-        <div><div class="pstat-n">✓</div><div class="pstat-l">аккаунт</div></div>
+        <div><div class="pstat-n" id="p-stat-listings">0</div><div class="pstat-l" data-i18n="profile.listings">объявлений</div></div>
+        <div><div class="pstat-n" id="p-stat-favs">0</div><div class="pstat-l" data-i18n="profile.favs">избранных</div></div>
+        <div><div class="pstat-n">✓</div><div class="pstat-l" data-i18n="profile.account">аккаунт</div></div>
       </div>
     </div>
     <div class="profile-body">
       <div class="profile-section">
-        <div class="profile-section-title">Мои объявления</div>
+        <div class="profile-section-title" data-i18n="profile.myListings">Мои объявления</div>
         <div id="my-listings-area"></div>
-        <button class="f-sub" style="margin-top:4px" onclick="goSection('add')">+ Добавить объявление</button>
+        <button class="f-sub" style="margin-top:4px" onclick="goSection('add')" data-i18n="profile.addListing">+ Добавить объявление</button>
       </div>
       <div class="profile-section">
-        <div class="profile-section-title">Настройки</div>
+        <div class="profile-section-title" data-i18n="profile.settings">Настройки</div>
         <div class="profile-menu-item" onclick="openAuth('profile-edit')">
           <div class="pmi-left">
             <div class="pmi-ico blue">✏️</div>
-            <div><div class="pmi-label">Редактировать профиль</div><div class="pmi-sub">Имя, телефон</div></div>
+            <div><div class="pmi-label" data-i18n="profile.editProfile">Редактировать профиль</div><div class="pmi-sub" data-i18n="profile.editProfile.sub">Имя, телефон</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
         <div class="profile-menu-item" onclick="goSection('fav')">
           <div class="pmi-left">
             <div class="pmi-ico red">♡</div>
-            <div><div class="pmi-label">Избранное</div><div class="pmi-sub" id="p-fav-count">0 объявлений</div></div>
+            <div><div class="pmi-label" data-i18n="fav.title">Избранное</div><div class="pmi-sub" id="p-fav-count">0 объявлений</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
         <div class="profile-menu-item">
           <div class="pmi-left">
             <div class="pmi-ico gray">🌐</div>
-            <div><div class="pmi-label">Язык</div><div class="pmi-sub">Русский / English</div></div>
+            <div><div class="pmi-label" data-i18n="profile.lang">Язык</div><div class="pmi-sub">Русский / English</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
@@ -719,28 +718,28 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="profile-menu-item" onclick="goSection('admin')" id="admin-menu-item" style="display:none">
           <div class="pmi-left">
             <div class="pmi-ico red">⚙️</div>
-            <div><div class="pmi-label">Панель администратора</div><div class="pmi-sub">Модерация объявлений</div></div>
+            <div><div class="pmi-label" data-i18n="profile.admin">Панель администратора</div><div class="pmi-sub" data-i18n="profile.admin.sub">Модерация объявлений</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
       <div class="profile-section">
-        <div class="profile-section-title">Поддержка</div>
+        <div class="profile-section-title" data-i18n="profile.support">Поддержка</div>
         <div class="profile-menu-item" onclick="window.open('https://t.me/AdilRentBot','_blank')">
           <div class="pmi-left">
             <div class="pmi-ico" style="background:#e8f4fd">✈️</div>
-            <div><div class="pmi-label">Написать в поддержку</div><div class="pmi-sub">Telegram @AdilRentBot</div></div>
+            <div><div class="pmi-label" data-i18n="profile.support.telegram">Написать в поддержку</div><div class="pmi-sub">Telegram @AdilRentBot</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
         <div class="profile-menu-item" onclick="window.open('mailto:adilrentsa@gmail.com','_blank')">
           <div class="pmi-left">
             <div class="pmi-ico" style="background:#f0fdf4">✉️</div>
-            <div><div class="pmi-label">Email поддержки</div><div class="pmi-sub">adilrentsa@gmail.com</div></div>
+            <div><div class="pmi-label" data-i18n="profile.support.email">Email поддержки</div><div class="pmi-sub">adilrentsa@gmail.com</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
       </div>
-      <button class="logout-btn" onclick="logout()">Выйти из аккаунта</button>
+      <button class="logout-btn" onclick="logout()" data-i18n="profile.logout">Выйти из аккаунта</button>
       <div style="height:16px"></div>
     </div>
   </div>
@@ -748,13 +747,13 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- ADMIN -->
   <div id="sec-admin" style="display:none">
     <div class="admin-header">
-      <h2>⚙️ Панель администратора</h2>
-      <p>Управление объявлениями</p>
+      <h2 data-i18n="admin.title">⚙️ Панель администратора</h2>
+      <p data-i18n="admin.sub">Управление объявлениями</p>
     </div>
     <div id="admin-blocked" style="display:none;text-align:center;padding:60px 24px">
       <div style="font-size:52px;margin-bottom:12px">🔒</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:8px">Нет доступа</div>
-      <div style="font-size:14px;color:var(--muted)">Только для администраторов</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px" data-i18n="admin.noAccess">Нет доступа</div>
+      <div style="font-size:14px;color:var(--muted)" data-i18n="admin.adminsOnly">Только для администраторов</div>
     </div>
     <div id="admin-content">
       <div class="admin-tabs">
@@ -780,23 +779,23 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="bn active" onclick="goSection('apt')" id="bn-apt"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"/></svg></div><div class="bn-lbl">Квартиры</div></button>
-  <button class="bn" onclick="goSection('car')" id="bn-car"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5V12l1.8-4.8A2 2 0 0 1 7.7 6h8.6a2 2 0 0 1 1.9 1.2L20 12v4.5"/><path d="M4 16.5h16v2.3a1.2 1.2 0 0 1-1.2 1.2h-1a1.2 1.2 0 0 1-1.2-1.2v-1.1H7.4v1.1a1.2 1.2 0 0 1-1.2 1.2h-1A1.2 1.2 0 0 1 4 18.8Z"/><circle cx="7.5" cy="13.2" r="1"/><circle cx="16.5" cy="13.2" r="1"/></svg></div><div class="bn-lbl">Машины</div></button>
+  <button class="bn active" onclick="goSection('apt')" id="bn-apt"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"/></svg></div><div class="bn-lbl" data-i18n="nav.apt.plain">Квартиры</div></button>
+  <button class="bn" onclick="goSection('car')" id="bn-car"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5V12l1.8-4.8A2 2 0 0 1 7.7 6h8.6a2 2 0 0 1 1.9 1.2L20 12v4.5"/><path d="M4 16.5h16v2.3a1.2 1.2 0 0 1-1.2 1.2h-1a1.2 1.2 0 0 1-1.2-1.2v-1.1H7.4v1.1a1.2 1.2 0 0 1-1.2 1.2h-1A1.2 1.2 0 0 1 4 18.8Z"/><circle cx="7.5" cy="13.2" r="1"/><circle cx="16.5" cy="13.2" r="1"/></svg></div><div class="bn-lbl" data-i18n="nav.car.plain">Машины</div></button>
   <button class="bn-plus" onclick="requireAuth(function(){goSection('add');})">
-    <div class="bn-plus-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><div class="bn-plus-lbl">Сдать</div>
+    <div class="bn-plus-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><div class="bn-plus-lbl" data-i18n="nav.add.plain">Сдать</div>
   </button>
-  <button class="bn" onclick="goSection('fav')" id="bn-fav"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.5-4.6-9.8-9.3C.7 7.6 2.3 4.5 5.4 4a4.6 4.6 0 0 1 6.6 2 4.6 4.6 0 0 1 6.6-2c3.1.5 4.7 3.6 3.2 6.9-2.3 4.7-9.8 9.3-9.8 9.3Z"/></svg></div><div class="bn-badge" id="fav-badge" style="display:none">0</div><div class="bn-lbl">Избранное</div></button>
-  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl">Профиль</div></button>
+  <button class="bn" onclick="goSection('fav')" id="bn-fav"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.5-4.6-9.8-9.3C.7 7.6 2.3 4.5 5.4 4a4.6 4.6 0 0 1 6.6 2 4.6 4.6 0 0 1 6.6-2c3.1.5 4.7 3.6 3.2 6.9-2.3 4.7-9.8 9.3-9.8 9.3Z"/></svg></div><div class="bn-badge" id="fav-badge" style="display:none">0</div><div class="bn-lbl" data-i18n="fav.title">Избранное</div></button>
+  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl" data-i18n="nav.profile">Профиль</div></button>
 </nav>
 
 <!-- DESKTOP FOOTER -->
 <nav class="desktop-footer" id="desktop-footer">
-  <button class="dfn active" onclick="goSection('apt')" id="dfn-apt">🏠 Квартиры</button>
-  <button class="dfn" onclick="goSection('car')" id="dfn-car">🚗 Машины</button>
-  <button class="dfn-plus" onclick="requireAuth(function(){goSection('add');})">＋ Сдать объявление</button>
-  <button class="dfn" onclick="goSection('fav')" id="dfn-fav">♡ Избранное</button>
+  <button class="dfn active" onclick="goSection('apt')" id="dfn-apt" data-i18n="nav.apt">🏠 Квартиры</button>
+  <button class="dfn" onclick="goSection('car')" id="dfn-car" data-i18n="nav.car">🚗 Машины</button>
+  <button class="dfn-plus" onclick="requireAuth(function(){goSection('add');})" data-i18n="nav.addListing">＋ Сдать объявление</button>
+  <button class="dfn" onclick="goSection('fav')" id="dfn-fav" data-i18n="nav.favPlus">♡ Избранное</button>
   <div style="flex:1"></div>
-  <button class="dfn" onclick="requireAuth(function(){goSection('profile');})">👤 Профиль</button>
+  <button class="dfn" onclick="requireAuth(function(){goSection('profile');})" data-i18n="nav.profilePlus">👤 Профиль</button>
 </nav>
 
 <!-- DETAIL MODAL -->
@@ -824,11 +823,11 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="m-actions">
           <button class="btn-wa" onclick="openWA()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Написать в WhatsApp
+            <span data-i18n="detail.whatsapp">Написать в WhatsApp</span>
           </button>
           <button class="btn-call" onclick="openCall()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            Позвонить
+            <span data-i18n="detail.call">Позвонить</span>
           </button>
         </div>
       </div>
@@ -840,35 +839,35 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 <div class="overlay" id="auth-overlay" onclick="closeAuthModal(event)">
   <div class="auth-modal">
     <div class="drag-line"></div>
-    <div class="auth-title" id="auth-modal-title">Добро пожаловать в Adil</div>
-    <div class="auth-sub" id="auth-modal-sub">Войди или создай аккаунт</div>
+    <div class="auth-title" id="auth-modal-title" data-i18n="auth.welcome">Добро пожаловать в Adil</div>
+    <div class="auth-sub" id="auth-modal-sub" data-i18n="auth.welcome.sub">Войди или создай аккаунт</div>
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login">Войти</button>
-      <button class="auth-tab" onclick="switchAuthTab('signup')" id="tab-signup">Регистрация</button>
+      <button class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login" data-i18n="nav.login">Войти</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')" id="tab-signup" data-i18n="nav.signup">Регистрация</button>
     </div>
     <div class="auth-err" id="auth-err"></div>
     <!-- LOGIN -->
     <div id="auth-login-form">
-      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" type="email" id="login-email" placeholder="your@email.com"></div>
-      <div class="auth-field"><label class="auth-label">Пароль</label><input class="auth-input" type="password" id="login-pass" placeholder="••••••••"></div>
-      <button class="auth-btn" onclick="doLogin()" id="login-btn">Войти</button>
-      <div class="auth-divider"><span>или</span></div>
-      <div style="font-size:13px;text-align:center;color:var(--muted)">Нет аккаунта? <span style="color:var(--brand);cursor:pointer;font-weight:600" onclick="switchAuthTab('signup')">Зарегистрируйся</span></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.email">Email</label><input class="auth-input" type="email" id="login-email" placeholder="your@email.com"></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.pass">Пароль</label><input class="auth-input" type="password" id="login-pass" placeholder="••••••••"></div>
+      <button class="auth-btn" onclick="doLogin()" id="login-btn" data-i18n="nav.login">Войти</button>
+      <div class="auth-divider"><span data-i18n="auth.or">или</span></div>
+      <div style="font-size:13px;text-align:center;color:var(--muted)"><span data-i18n="auth.noAccount">Нет аккаунта?</span> <span style="color:var(--brand);cursor:pointer;font-weight:600" onclick="switchAuthTab('signup')" data-i18n="auth.signupLink">Зарегистрируйся</span></div>
     </div>
     <!-- SIGNUP -->
     <div id="auth-signup-form" style="display:none">
-      <div class="auth-field"><label class="auth-label">Имя</label><input class="auth-input" type="text" id="signup-name" placeholder="Азамат"></div>
-      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" type="email" id="signup-email" placeholder="your@email.com"></div>
-      <div class="auth-field"><label class="auth-label">Пароль</label><input class="auth-input" type="password" id="signup-pass" placeholder="Минимум 6 символов"></div>
-      <button class="auth-btn" onclick="doSignup()" id="signup-btn">Создать аккаунт</button>
-      <div class="auth-divider"><span>или</span></div>
-      <div style="font-size:13px;text-align:center;color:var(--muted)">Уже есть аккаунт? <span style="color:var(--brand);cursor:pointer;font-weight:600" onclick="switchAuthTab('login')">Войти</span></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.name">Имя</label><input class="auth-input" type="text" id="signup-name" placeholder="Азамат"></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.email">Email</label><input class="auth-input" type="email" id="signup-email" placeholder="your@email.com"></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.pass">Пароль</label><input class="auth-input" type="password" id="signup-pass" data-i18n-ph="auth.pass.min.ph" placeholder="Минимум 6 символов"></div>
+      <button class="auth-btn" onclick="doSignup()" id="signup-btn" data-i18n="auth.createAccount">Создать аккаунт</button>
+      <div class="auth-divider"><span data-i18n="auth.or">или</span></div>
+      <div style="font-size:13px;text-align:center;color:var(--muted)"><span data-i18n="auth.haveAccount">Уже есть аккаунт?</span> <span style="color:var(--brand);cursor:pointer;font-weight:600" onclick="switchAuthTab('login')" data-i18n="nav.login">Войти</span></div>
     </div>
     <!-- PROFILE EDIT -->
     <div id="auth-edit-form" style="display:none">
-      <div class="auth-field"><label class="auth-label">Имя</label><input class="auth-input" type="text" id="edit-name" placeholder="Азамат"></div>
-      <div class="auth-field"><label class="auth-label">Телефон</label><input class="auth-input" type="tel" id="edit-phone" placeholder="+7 777 123 45 67"></div>
-      <button class="auth-btn" onclick="saveProfileEdit()" id="edit-save-btn">Сохранить</button>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.name">Имя</label><input class="auth-input" type="text" id="edit-name" placeholder="Азамат"></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.phone">Телефон</label><input class="auth-input" type="tel" id="edit-phone" placeholder="+7 777 123 45 67"></div>
+      <button class="auth-btn" onclick="saveProfileEdit()" id="edit-save-btn" data-i18n="common.save">Сохранить</button>
     </div>
     <div style="height:16px"></div>
   </div>
@@ -894,14 +893,150 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 </div>
 
 <div class="toast" id="toast"></div>
-<a href="https://t.me/AdilRentBot" target="_blank" id="support-fab" style="position:fixed;bottom:calc(var(--bot-h) + 16px);right:16px;width:46px;height:46px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,136,204,.4);z-index:290;text-decoration:none;font-size:22px;transition:transform .15s" title="Поддержка в Telegram">✈️</a>
+<a href="https://t.me/AdilRentBot" target="_blank" id="support-fab" style="position:fixed;bottom:calc(var(--bot-h) + 16px);right:16px;width:46px;height:46px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,136,204,.4);z-index:290;text-decoration:none;font-size:22px;transition:transform .15s" data-i18n-title="support.telegram.title" title="Поддержка в Telegram">✈️</a>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMjw0h7cMQBl9QQEpyurfUtjmYEaa0fUQ&libraries=places&callback=initMap" async defer></script>
 <script>
 // ─── SUPABASE INIT ────────────────────────────────────────────────
 var sb = null;
 var currentUser = null;
-var lang = 'ru';
+var lang = localStorage.getItem('adil_lang') || 'ru';
+
+// ─── I18N ─────────────────────────────────────────────────────────
+var I18N = {
+  ru:{
+    'nav.apt':'🏠 Квартиры','nav.car':'🚗 Машины','nav.add':'+ Сдать','nav.login':'Войти','nav.signup':'Регистрация',
+    'nav.apt.plain':'Квартиры','nav.car.plain':'Машины','nav.add.plain':'Сдать','nav.profile':'Профиль',
+    'nav.addListing':'＋ Сдать объявление','nav.favPlus':'♡ Избранное','nav.profilePlus':'👤 Профиль',
+    'hero.tag':'Медина, Саудовская Аравия','hero.title':'Жильё и транспорт в Медине','hero.sub':'Квартиры и машины в аренду. Быстро и прозрачно.','hero.happy':'довольных',
+    'f.all':'Все',
+    'apt.studio':'Студия','apt.apartment':'Квартира','apt.house':'Дом','apt.villa':'Вилла','apt.short':'Посуточно','apt.furnished':'С мебелью',
+    'apt.view.map':'Карта','apt.view.list':'Список','apt.filter':'Фильтр','apt.title':'Квартиры','apt.titleAll':'Все квартиры',
+    'car.sedan':'Седан','car.suv':'Внедорожник','car.van':'Минивэн','car.luxury':'Премиум','car.daily':'Посуточно','car.monthly':'Помесячно','car.title':'Аренда машин',
+    'filter.priceFrom':'Цена от (SAR)','filter.priceTo':'Цена до (SAR)','filter.sort':'Сортировка',
+    'filter.sort.default':'По умолчанию','filter.sort.priceAsc':'Цена: дешевле','filter.sort.priceDesc':'Цена: дороже','filter.sort.new':'Сначала новые',
+    'filter.apply':'Применить','filter.reset':'Сбросить','map.hint':'Нажми на маркер',
+    'common.back':'← Назад','common.save':'Сохранить',
+    'add.typeApt':'🏠 Квартира','add.typeCar':'🚗 Машина','add.tip':'✓ Бесплатно. Объявление появится после модерации.',
+    'add.f.title':'Заголовок','add.f.title.ph':'Уютная студия у Мечети Пророка',
+    'add.f.type':'Тип жилья','add.f.rooms':'Комнат',
+    'add.f.period':'Период','add.f.period.daily':'Посуточно','add.f.period.weekly':'Еженедельно','add.f.period.monthly':'Месячно','add.f.period.yearly':'Годовое','add.f.period.long':'Долгосрочная',
+    'add.f.price':'Цена (SAR)','add.f.district':'Район Медины *','add.f.district.ph':'Напишите район (обязательно)',
+    'add.f.desc':'Описание * (минимум 20 символов)','add.f.desc.ph':'Этаж, вид из окна, расстояние до мечети, транспорт, условия...','add.f.desc.hint':'Введено: 0 символов (минимум 20)',
+    'add.f.callPhone':'📞 Телефон для звонков','add.f.whatsapp':'💬 WhatsApp',
+    'add.f.gmaps':'Ссылка Google Maps (необязательно)',
+    'add.f.gmaps.hint':'📱 <strong>Как получить ссылку:</strong> Открой Google Maps → найди адрес → нажми кнопку "Поделиться" → скопируй ссылку → вставь сюда',
+    'add.f.gmaps.found':'📍 Координаты определены — точка появится на карте ✓',
+    'add.f.photos':'Фотографии','add.f.photos.apt.hint':'Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong>',
+    'add.f.amenities':'Удобства','add.f.submit':'Опубликовать бесплатно','add.f.photos.car.hint':'Фото и видео машины<br><strong>до 10 файлов</strong>',
+    'add.fc.make':'Марка','add.fc.make.other':'Другое','add.fc.make.custom.ph':'Напишите марку','add.fc.model':'Модель',
+    'add.fc.year':'Год','add.fc.body':'Тип кузова','add.fc.body.suv':'Внедорожник / SUV','add.fc.body.hatch':'Хэтчбек','add.fc.body.crossover':'Кроссовер',
+    'add.fc.body.coupe':'Купе','add.fc.body.convertible':'Кабриолет','add.fc.body.pickup':'Пикап','add.fc.body.wagon':'Универсал',
+    'add.fc.body.bus':'Автобус / Микроавтобус','add.fc.body.truck':'Грузовик','add.fc.body.luxury':'Люкс / Лимузин','add.fc.period.both':'Оба варианта',
+    'add.fc.desc':'Описание','add.fc.desc.ph':'Состояние, условия, залог...',
+    'add.fc.fuel':'Тип топлива','add.fc.fuel.petrol':'⛽ Бензин','add.fc.fuel.diesel':'🛢 Дизель','add.fc.fuel.hybrid':'🔋 Гибрид','add.fc.fuel.electric':'⚡ Электро','add.fc.fuel.other':'✏️ Другое',
+    'add.fc.fuel.custom.ph':'Укажи тип топлива','add.fc.color':'Цвет','add.fc.color.ph':'Белый, Чёрный...',
+    'add.fc.photos':'📷 Фото и видео','add.fc.options':'Опции',
+    'fav.title':'Избранное',
+    'profile.listings':'объявлений','profile.favs':'избранных','profile.account':'аккаунт','profile.myListings':'Мои объявления','profile.addListing':'+ Добавить объявление',
+    'profile.settings':'Настройки','profile.editProfile':'Редактировать профиль','profile.editProfile.sub':'Имя, телефон','profile.lang':'Язык',
+    'profile.admin':'Панель администратора','profile.admin.sub':'Модерация объявлений','profile.support':'Поддержка',
+    'profile.support.telegram':'Написать в поддержку','profile.support.email':'Email поддержки','profile.logout':'Выйти из аккаунта',
+    'admin.title':'⚙️ Панель администратора','admin.sub':'Управление объявлениями','admin.noAccess':'Нет доступа','admin.adminsOnly':'Только для администраторов',
+    'detail.whatsapp':'Написать в WhatsApp','detail.call':'Позвонить','detail.owner':'Владелец','detail.landlord':'Арендодатель','detail.ownerFallback':'Хозяин','detail.shortTerm':'Посуточно',
+    'auth.welcome':'Добро пожаловать в Adil','auth.welcome.sub':'Войди или создай аккаунт','auth.email':'Email','auth.pass':'Пароль','auth.or':'или',
+    'auth.noAccount':'Нет аккаунта?','auth.signupLink':'Зарегистрируйся','auth.name':'Имя','auth.pass.min.ph':'Минимум 6 символов',
+    'auth.createAccount':'Создать аккаунт','auth.haveAccount':'Уже есть аккаунт?','auth.phone':'Телефон',
+    'auth.editTitle':'Редактировать профиль','auth.editSub':'Имя и телефон',
+    'support.telegram.title':'Поддержка в Telegram',
+    'card.new':'Новое','card.notFound':'Ничего не найдено','card.notFoundCar':'Ничего не найдено',
+    'fav.empty':'Пока ничего нет.<br>Нажми ♡ на объявлении','fav.viewApts':'Смотреть квартиры',
+    'price.month':'/мес','price.day':'/сутки',
+    'count.listings':' объявлений','count.cars':' машин','count.saved':' сохранено',
+    'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
+    'toast.favAdded':'❤️ Добавлено в избранное','toast.loggedOut':'Вы вышли из аккаунта','toast.listingDeleted':'Объявление удалено','toast.deleted':'Удалено',
+    'toast.welcome':'✓ Добро пожаловать!','toast.accountCreated':'✓ Аккаунт создан! Проверь email для подтверждения.','toast.published':'✓ Объявление отправлено на модерацию!',
+    'toast.profileUpdated':'✓ Профиль обновлён','toast.notAuthed':'⚠️ Не авторизован',
+    'btn.publishing':'Публикуем...','btn.saving':'Сохраняем...','btn.loggingIn':'Входим...','btn.creatingAccount':'Создаём аккаунт...'
+  },
+  en:{
+    'nav.apt':'🏠 Apartments','nav.car':'🚗 Cars','nav.add':'+ List','nav.login':'Log in','nav.signup':'Sign up',
+    'nav.apt.plain':'Apartments','nav.car.plain':'Cars','nav.add.plain':'List','nav.profile':'Profile',
+    'nav.addListing':'＋ Add listing','nav.favPlus':'♡ Favorites','nav.profilePlus':'👤 Profile',
+    'hero.tag':'Medina, Saudi Arabia','hero.title':'Housing and transport in Medina','hero.sub':'Apartments and cars for rent. Fast and transparent.','hero.happy':'satisfied',
+    'f.all':'All',
+    'apt.studio':'Studio','apt.apartment':'Apartment','apt.house':'House','apt.villa':'Villa','apt.short':'Daily','apt.furnished':'Furnished',
+    'apt.view.map':'Map','apt.view.list':'List','apt.filter':'Filter','apt.title':'Apartments','apt.titleAll':'All apartments',
+    'car.sedan':'Sedan','car.suv':'SUV','car.van':'Van','car.luxury':'Luxury','car.daily':'Daily','car.monthly':'Monthly','car.title':'Car rental',
+    'filter.priceFrom':'Price from (SAR)','filter.priceTo':'Price to (SAR)','filter.sort':'Sort',
+    'filter.sort.default':'Default','filter.sort.priceAsc':'Price: low to high','filter.sort.priceDesc':'Price: high to low','filter.sort.new':'Newest first',
+    'filter.apply':'Apply','filter.reset':'Reset','map.hint':'Tap a marker',
+    'common.back':'← Back','common.save':'Save',
+    'add.typeApt':'🏠 Apartment','add.typeCar':'🚗 Car','add.tip':'✓ Free. The listing will appear after moderation.',
+    'add.f.title':'Title','add.f.title.ph':'Cozy studio near the Prophet\'s Mosque',
+    'add.f.type':'Housing type','add.f.rooms':'Rooms',
+    'add.f.period':'Period','add.f.period.daily':'Daily','add.f.period.weekly':'Weekly','add.f.period.monthly':'Monthly','add.f.period.yearly':'Yearly','add.f.period.long':'Long-term',
+    'add.f.price':'Price (SAR)','add.f.district':'Medina district *','add.f.district.ph':'Write the district (required)',
+    'add.f.desc':'Description * (minimum 20 characters)','add.f.desc.ph':'Floor, view, distance to the mosque, transport, conditions...','add.f.desc.hint':'Entered: 0 characters (minimum 20)',
+    'add.f.callPhone':'📞 Phone for calls','add.f.whatsapp':'💬 WhatsApp',
+    'add.f.gmaps':'Google Maps link (optional)',
+    'add.f.gmaps.hint':'📱 <strong>How to get the link:</strong> Open Google Maps → find the address → tap "Share" → copy the link → paste it here',
+    'add.f.gmaps.found':'📍 Coordinates found — a marker will appear on the map ✓',
+    'add.f.photos':'Photos','add.f.photos.apt.hint':'Photos and videos of the place<br><strong>up to 15 files (photo + video)</strong>',
+    'add.f.amenities':'Amenities','add.f.submit':'Publish for free','add.f.photos.car.hint':'Photos and videos of the car<br><strong>up to 10 files</strong>',
+    'add.fc.make':'Make','add.fc.make.other':'Other','add.fc.make.custom.ph':'Write the make','add.fc.model':'Model',
+    'add.fc.year':'Year','add.fc.body':'Body type','add.fc.body.suv':'SUV','add.fc.body.hatch':'Hatchback','add.fc.body.crossover':'Crossover',
+    'add.fc.body.coupe':'Coupe','add.fc.body.convertible':'Convertible','add.fc.body.pickup':'Pickup','add.fc.body.wagon':'Wagon',
+    'add.fc.body.bus':'Bus / Minibus','add.fc.body.truck':'Truck','add.fc.body.luxury':'Luxury / Limousine','add.fc.period.both':'Both options',
+    'add.fc.desc':'Description','add.fc.desc.ph':'Condition, terms, deposit...',
+    'add.fc.fuel':'Fuel type','add.fc.fuel.petrol':'⛽ Petrol','add.fc.fuel.diesel':'🛢 Diesel','add.fc.fuel.hybrid':'🔋 Hybrid','add.fc.fuel.electric':'⚡ Electric','add.fc.fuel.other':'✏️ Other',
+    'add.fc.fuel.custom.ph':'Specify fuel type','add.fc.color':'Color','add.fc.color.ph':'White, Black...',
+    'add.fc.photos':'📷 Photos and videos','add.fc.options':'Options',
+    'fav.title':'Favorites',
+    'profile.listings':'listings','profile.favs':'favorites','profile.account':'account','profile.myListings':'My listings','profile.addListing':'+ Add listing',
+    'profile.settings':'Settings','profile.editProfile':'Edit profile','profile.editProfile.sub':'Name, phone','profile.lang':'Language',
+    'profile.admin':'Admin panel','profile.admin.sub':'Listing moderation','profile.support':'Support',
+    'profile.support.telegram':'Contact support','profile.support.email':'Support email','profile.logout':'Log out',
+    'admin.title':'⚙️ Admin panel','admin.sub':'Listing management','admin.noAccess':'No access','admin.adminsOnly':'Admins only',
+    'detail.whatsapp':'Message on WhatsApp','detail.call':'Call','detail.owner':'Owner','detail.landlord':'Landlord','detail.ownerFallback':'Owner','detail.shortTerm':'Daily',
+    'auth.welcome':'Welcome to Adil','auth.welcome.sub':'Log in or create an account','auth.email':'Email','auth.pass':'Password','auth.or':'or',
+    'auth.noAccount':'No account?','auth.signupLink':'Sign up','auth.name':'Name','auth.pass.min.ph':'Minimum 6 characters',
+    'auth.createAccount':'Create account','auth.haveAccount':'Already have an account?','auth.phone':'Phone',
+    'auth.editTitle':'Edit profile','auth.editSub':'Name and phone',
+    'support.telegram.title':'Support on Telegram',
+    'card.new':'New','card.notFound':'Nothing found','card.notFoundCar':'Nothing found',
+    'fav.empty':'Nothing here yet.<br>Tap ♡ on a listing','fav.viewApts':'Browse apartments',
+    'price.month':'/mo','price.day':'/day',
+    'count.listings':' listings','count.cars':' cars','count.saved':' saved',
+    'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
+    'toast.favAdded':'❤️ Added to favorites','toast.loggedOut':'You have logged out','toast.listingDeleted':'Listing deleted','toast.deleted':'Deleted',
+    'toast.welcome':'✓ Welcome!','toast.accountCreated':'✓ Account created! Check your email to confirm.','toast.published':'✓ Listing sent for moderation!',
+    'toast.profileUpdated':'✓ Profile updated','toast.notAuthed':'⚠️ Not logged in',
+    'btn.publishing':'Publishing...','btn.saving':'Saving...','btn.loggingIn':'Logging in...','btn.creatingAccount':'Creating account...'
+  }
+};
+function t(key){ return (I18N[lang]&&I18N[lang][key]) || I18N.ru[key] || key; }
+function applyI18n(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');
+    var v=t(k);
+    if(v.indexOf('<')!==-1) el.innerHTML=v; else el.textContent=v;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ el.placeholder=t(el.getAttribute('data-i18n-ph')); });
+  document.querySelectorAll('[data-i18n-title]').forEach(function(el){ el.title=t(el.getAttribute('data-i18n-title')); });
+}
+function setLang(l){
+  lang=l;
+  localStorage.setItem('adil_lang', l);
+  document.getElementById('lb-ru').classList.toggle('active', l==='ru');
+  document.getElementById('lb-en').classList.toggle('active', l==='en');
+  applyI18n();
+  if(currentUser){ onLogin(); } else { onLogout(); }
+  renderApts(); renderMarkers(); renderCars();
+  if(section==='fav') renderFavs();
+  if(section==='profile') updateProfileUI();
+}
 
 function initSupabase(){
   if(SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co'){
@@ -948,8 +1083,8 @@ function onLogin(){
 }
 function onLogout(){
   document.getElementById('nav-auth-area').innerHTML =
-    '<button class="nav-auth-btn btn-login" onclick="openAuth(\'login\')">Войти</button>' +
-    '<button class="nav-auth-btn btn-signup" onclick="openAuth(\'signup\')">Регистрация</button>';
+    '<button class="nav-auth-btn btn-login" onclick="openAuth(\'login\')">'+t('nav.login')+'</button>' +
+    '<button class="nav-auth-btn btn-signup" onclick="openAuth(\'signup\')">'+t('nav.signup')+'</button>';
 }
 function updateProfileUI(){
   var adminItem=document.getElementById('admin-menu-item');
@@ -962,30 +1097,30 @@ function updateProfileUI(){
   document.getElementById('p-name').textContent=name;
   document.getElementById('p-email').textContent=currentUser.email;
   document.getElementById('p-stat-favs').textContent=favs.length;
-  document.getElementById('p-fav-count').textContent=favs.length+' объявлений';
+  document.getElementById('p-fav-count').textContent=favs.length+t('count.listings');
   loadMyListings();
 }
 async function loadMyListings(){
   if(!sb||!currentUser) return;
   var area=document.getElementById('my-listings-area');
-  area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">Загрузка...</div>';
+  area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'Loading...':'Загрузка...')+'</div>';
   var {data:apts2}=await sb.from('apartments').select('*').eq('user_id',currentUser.id);
   var {data:cars2}=await sb.from('cars').select('*').eq('user_id',currentUser.id);
   var all=[...(apts2||[]).map(function(a){a._kind='apt';return a;}), ...(cars2||[]).map(function(c){c._kind='car';return c;})];
   document.getElementById('p-stat-listings').textContent=all.length;
-  if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">У тебя пока нет объявлений</div>'; return; }
+  if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'You have no listings yet':'У тебя пока нет объявлений')+'</div>'; return; }
   area.innerHTML=all.map(function(item){
     var img=item.photos&&item.photos[0]?item.photos[0]:'';
     var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
-    var status=item.is_active?'<div class="mlc-status active">● Активно</div>':'<div class="mlc-status pending">● Проверяется</div>';
-    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+(item.title_ru||'Без названия')+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div><div class="mlc-actions"><button class="mlc-btn del" onclick="deleteListing(\''+item._kind+'\','+item.id+')">Удалить</button></div></div></div>';
+    var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
+    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div><div class="mlc-actions"><button class="mlc-btn del" onclick="deleteListing(\''+item._kind+'\','+item.id+')">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
 }
 async function deleteListing(kind,id){
   if(!sb) return;
   var table=kind==='apt'?'apartments':'cars';
   await sb.from(table).delete().eq('id',id);
-  showToast('Объявление удалено');
+  showToast(t('toast.listingDeleted'));
   loadMyListings();
   if(kind==='apt') loadApts(); else loadCars();
 }
@@ -995,8 +1130,8 @@ function openAuth(mode){
   document.getElementById('auth-overlay').classList.add('open');
   document.getElementById('auth-err').classList.remove('show');
   if(mode==='profile-edit'&&currentUser){
-    document.getElementById('auth-modal-title').textContent='Редактировать профиль';
-    document.getElementById('auth-modal-sub').textContent='Имя и телефон';
+    document.getElementById('auth-modal-title').textContent=t('auth.editTitle');
+    document.getElementById('auth-modal-sub').textContent=t('auth.editSub');
     document.querySelector('.auth-tabs').style.display='none';
     document.getElementById('auth-login-form').style.display='none';
     document.getElementById('auth-signup-form').style.display='none';
@@ -1004,91 +1139,91 @@ function openAuth(mode){
     document.getElementById('edit-name').value=(currentUser.user_metadata&&currentUser.user_metadata.name)||'';
     document.getElementById('edit-phone').value=(currentUser.user_metadata&&currentUser.user_metadata.phone)||'';
   } else {
-    document.getElementById('auth-modal-title').textContent='Добро пожаловать в Adil';
-    document.getElementById('auth-modal-sub').textContent='Войди или создай аккаунт';
+    document.getElementById('auth-modal-title').textContent=t('auth.welcome');
+    document.getElementById('auth-modal-sub').textContent=t('auth.welcome.sub');
     document.querySelector('.auth-tabs').style.display='flex';
     document.getElementById('auth-edit-form').style.display='none';
     switchAuthTab(mode==='signup'?'signup':'login');
   }
 }
 function closeAuthModal(e){ if(e.target===document.getElementById('auth-overlay')) document.getElementById('auth-overlay').classList.remove('open'); }
-function switchAuthTab(t){
-  document.getElementById('auth-login-form').style.display=t==='login'?'block':'none';
-  document.getElementById('auth-signup-form').style.display=t==='signup'?'block':'none';
+function switchAuthTab(tab){
+  document.getElementById('auth-login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-signup-form').style.display=tab==='signup'?'block':'none';
   document.getElementById('auth-edit-form').style.display='none';
-  document.getElementById('tab-login').classList.toggle('active',t==='login');
-  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active',tab==='signup');
 }
 async function saveProfileEdit(){
-  if(!sb||!currentUser){ showToast('⚠️ Не авторизован'); return; }
+  if(!sb||!currentUser){ showToast(t('toast.notAuthed')); return; }
   var name=document.getElementById('edit-name').value.trim();
   var phone=document.getElementById('edit-phone').value.trim();
-  if(!name){ showErr('Введи имя'); return; }
+  if(!name){ showErr(lang==='en'?'Enter your name':'Введи имя'); return; }
   var btn=document.getElementById('edit-save-btn');
-  btn.disabled=true; btn.textContent='Сохраняем...';
+  btn.disabled=true; btn.textContent=t('btn.saving');
   var result=await sb.auth.updateUser({data:{name:name,phone:phone}});
-  btn.disabled=false; btn.textContent='Сохранить';
-  if(result.error){ showErr(result.error.message||'Ошибка сохранения'); return; }
+  btn.disabled=false; btn.textContent=t('common.save');
+  if(result.error){ showErr(result.error.message||(lang==='en'?'Save error':'Ошибка сохранения')); return; }
   currentUser=result.data.user;
   updateProfileUI();
   document.getElementById('auth-overlay').classList.remove('open');
-  showToast('✓ Профиль обновлён');
+  showToast(t('toast.profileUpdated'));
 }
 async function doLogin(){
-  if(!sb){ showToast('⚠️ Supabase не настроен'); return; }
+  if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured':'⚠️ Supabase не настроен'); return; }
   var email=document.getElementById('login-email').value.trim();
   var pass=document.getElementById('login-pass').value;
-  if(!email||!pass){ showErr('Заполни все поля'); return; }
+  if(!email||!pass){ showErr(lang==='en'?'Fill in all fields':'Заполни все поля'); return; }
   var btn=document.getElementById('login-btn');
-  btn.disabled=true; btn.textContent='Входим...';
+  btn.disabled=true; btn.textContent=t('btn.loggingIn');
   var result=await sb.auth.signInWithPassword({email:email,password:pass});
-  btn.disabled=false; btn.textContent='Войти';
+  btn.disabled=false; btn.textContent=t('nav.login');
   if(result.error){
     var msg=result.error.message||'';
     if(msg.indexOf('Email not confirmed')!==-1||msg.indexOf('email_not_confirmed')!==-1){
-      showErr('⚠️ Email не подтверждён! Проверь почту '+email+' и нажми на ссылку подтверждения.');
+      showErr(lang==='en'?('⚠️ Email not confirmed! Check '+email+' and click the confirmation link.'):('⚠️ Email не подтверждён! Проверь почту '+email+' и нажми на ссылку подтверждения.'));
     } else if(msg.indexOf('Invalid login')!==-1||msg.indexOf('invalid_credentials')!==-1){
-      showErr('Неверный email или пароль');
+      showErr(lang==='en'?'Invalid email or password':'Неверный email или пароль');
     } else {
-      showErr('Ошибка входа: '+msg);
+      showErr((lang==='en'?'Login error: ':'Ошибка входа: ')+msg);
     }
     return;
   }
   // Check email confirmed
   if(result.data&&result.data.user&&!result.data.user.email_confirmed_at){
     await sb.auth.signOut();
-    showErr('⚠️ Подтверди email перед входом. Письмо отправлено на '+email);
+    showErr(lang==='en'?('⚠️ Confirm your email before logging in. An email was sent to '+email):('⚠️ Подтверди email перед входом. Письмо отправлено на '+email));
     return;
   }
   document.getElementById('auth-overlay').classList.remove('open');
-  showToast('✓ Добро пожаловать!');
+  showToast(t('toast.welcome'));
 }
 async function doSignup(){
-  if(!sb){ showToast('⚠️ Supabase не настроен'); return; }
+  if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured':'⚠️ Supabase не настроен'); return; }
   var name=document.getElementById('signup-name').value.trim();
   var email=document.getElementById('signup-email').value.trim();
   var pass=document.getElementById('signup-pass').value;
-  if(!name||!email||!pass){ showErr('Заполни все поля'); return; }
-  if(pass.length<6){ showErr('Пароль минимум 6 символов'); return; }
+  if(!name||!email||!pass){ showErr(lang==='en'?'Fill in all fields':'Заполни все поля'); return; }
+  if(pass.length<6){ showErr(lang==='en'?'Password must be at least 6 characters':'Пароль минимум 6 символов'); return; }
   var btn=document.getElementById('signup-btn');
-  btn.disabled=true; btn.textContent='Создаём аккаунт...';
+  btn.disabled=true; btn.textContent=t('btn.creatingAccount');
   var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});
-  btn.disabled=false; btn.textContent='Создать аккаунт';
-  if(result.error){ showErr(result.error.message||'Ошибка регистрации'); return; }
+  btn.disabled=false; btn.textContent=t('auth.createAccount');
+  if(result.error){ showErr(result.error.message||(lang==='en'?'Sign up error':'Ошибка регистрации')); return; }
   document.getElementById('auth-overlay').classList.remove('open');
-  showToast('✓ Аккаунт создан! Проверь email для подтверждения.');
+  showToast(t('toast.accountCreated'));
 }
 async function logout(){
   if(sb) await sb.auth.signOut();
   currentUser=null; onLogout();
   goSection('apt');
-  showToast('Вы вышли из аккаунта');
+  showToast(t('toast.loggedOut'));
 }
 function showErr(msg){ var el=document.getElementById('auth-err'); el.textContent=msg; el.classList.add('show'); }
 function requireAuth(cb){
   if(currentUser){ cb(); return; }
   openAuth('login');
-  showToast('Войдите чтобы продолжить');
+  showToast(t('toast.loginRequired'));
 }
 
 // ─── LOAD DATA ────────────────────────────────────────────────────
@@ -1229,17 +1364,17 @@ async function previewGMaps(url){
 }
 
 async function submitApt(){
-  if(!currentUser){ openAuth('login'); showToast('Войдите чтобы добавить объявление'); return; }
+  if(!currentUser){ openAuth('login'); showToast(t('toast.loginToAdd')); return; }
   var title=document.getElementById('f-title').value.trim();
   var price=document.getElementById('f-price').value;
   var phone=document.getElementById('f-phone').value.trim();
   var district=document.getElementById('f-district').value.trim();
   var desc=document.getElementById('f-desc').value.trim();
-  if(!title||!price||!phone){ showToast('⚠️ Заполни заголовок, цену и телефон'); return; }
-  if(!district){ showToast('⚠️ Укажи район Медины'); return; }
-  if(desc.length<20){ showToast('⚠️ Описание минимум 20 символов'); return; }
+  if(!title||!price||!phone){ showToast(lang==='en'?'⚠️ Fill in the title, price and phone':'⚠️ Заполни заголовок, цену и телефон'); return; }
+  if(!district){ showToast(lang==='en'?'⚠️ Specify a district in Medina':'⚠️ Укажи район Медины'); return; }
+  if(desc.length<20){ showToast(lang==='en'?'⚠️ Description must be at least 20 characters':'⚠️ Описание минимум 20 символов'); return; }
   var btn=document.getElementById('apt-submit-btn');
-  btn.disabled=true; btn.textContent='Публикуем...';
+  btn.disabled=true; btn.textContent=t('btn.publishing');
   var amenities=[];
   document.querySelectorAll('#am-apt .am.on').forEach(function(a){amenities.push(a.textContent.trim());});
   var photoUrls=await uploadPhotos('apt');
@@ -1262,22 +1397,22 @@ async function submitApt(){
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:amenities, photos:photoUrls, is_active:false
   };
-  if(!sb){ showToast('⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent='Опубликовать бесплатно'; return; }
+  if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('apartments').insert([data]);
-  btn.disabled=false; btn.textContent='Опубликовать бесплатно';
-  if(error){ showToast('Ошибка: '+error.message); return; }
-  showToast('✓ Объявление отправлено на модерацию!');
+  btn.disabled=false; btn.textContent=t('add.f.submit');
+  if(error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+error.message); return; }
+  showToast(t('toast.published'));
   clearAptForm(); goSection('apt'); loadApts();
 }
 async function submitCar(){
-  if(!currentUser){ openAuth('login'); showToast('Войдите чтобы добавить объявление'); return; }
+  if(!currentUser){ openAuth('login'); showToast(t('toast.loginToAdd')); return; }
   var model=document.getElementById('fc-model').value.trim();
   var price=document.getElementById('fc-price').value;
   var phone=document.getElementById('fc-phone').value.trim();
   var callPhone=document.getElementById('fc-call-phone')?document.getElementById('fc-call-phone').value.trim():'';
-  if(!model||!price||!phone){ showToast('⚠️ Заполни модель, цену и телефон'); return; }
+  if(!model||!price||!phone){ showToast(lang==='en'?'⚠️ Fill in the model, price and phone':'⚠️ Заполни модель, цену и телефон'); return; }
   var btn=document.getElementById('car-submit-btn');
-  btn.disabled=true; btn.textContent='Публикуем...';
+  btn.disabled=true; btn.textContent=t('btn.publishing');
   var opts=[];
   document.querySelectorAll('#am-car .am.on').forEach(function(a){opts.push(a.textContent.trim());});
   var photoUrls=await uploadPhotos('car');
@@ -1300,11 +1435,11 @@ async function submitCar(){
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
     badges_ru:opts, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
   };
-  if(!sb){ showToast('⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent='Опубликовать бесплатно'; return; }
+  if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('cars').insert([data]);
-  btn.disabled=false; btn.textContent='Опубликовать бесплатно';
-  if(error){ showToast('Ошибка: '+error.message); return; }
-  showToast('✓ Объявление отправлено на модерацию!');
+  btn.disabled=false; btn.textContent=t('add.f.submit');
+  if(error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+error.message); return; }
+  showToast(t('toast.published'));
   clearCarForm(); goSection('car'); loadCars();
 }
 
@@ -1356,7 +1491,12 @@ async function uploadMedia(kind){
 function checkDescLen(el){
   var len=el.value.length;
   var hint=document.getElementById('f-desc-hint');
-  if(hint){ hint.textContent='Введено: '+len+' символов'+(len<20?' (минимум 20)':' ✓'); hint.style.color=len>=20?'#16a34a':'var(--muted)'; }
+  if(hint){
+    hint.textContent = lang==='en'
+      ? ('Entered: '+len+' characters'+(len<20?' (minimum 20)':' ✓'))
+      : ('Введено: '+len+' символов'+(len<20?' (минимум 20)':' ✓'));
+    hint.style.color=len>=20?'#16a34a':'var(--muted)';
+  }
 }
 
 function toggleCustomFuel(sel){
@@ -1672,12 +1812,18 @@ function imgSrc(item, size){
   }
   return '';
 }
-function pStr(item){ return (item.price||0).toLocaleString()+' SAR'+(item.price_note||'/мес'); }
+function pStr(item){
+  var note=item.price_note||'/мес';
+  if(note==='/мес') note=t('price.month'); else if(note==='/сутки') note=t('price.day');
+  return (item.price||0).toLocaleString()+' SAR'+note;
+}
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
 function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id==id;}); }
 
 function cardHtml(item,kind){
-  var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
+  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
+  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'Apartment','2room':'Apartment','3room':'Apartment','4room':'Apartment',sedan:'Sedan',suv:'SUV',crossover:'Crossover',van:'Van',luxury:'Luxury',hatch:'Hatchback',coupe:'Coupe',pickup:'Pickup',wagon:'Wagon',bus:'Van',truck:'Truck',convertible:'Convertible'};
+  var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
   var typeLabel = typeMap[catKey] || catKey;
   var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
@@ -1687,7 +1833,7 @@ function cardHtml(item,kind){
   var favOn=isFav(kind,item.id);
   return '<div class="l-card" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
     +'<div class="l-card-img-wrap">'+imgEl
-    +(isNew?'<div class="tag-new">Новое</div>':'')
+    +(isNew?'<div class="tag-new">'+t('card.new')+'</div>':'')
     +'<div class="tag-type">'+typeLabel+'</div>'
     +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
     +'</div>'
@@ -1752,9 +1898,9 @@ function resetFilter(){
 }
 function renderApts(){
   var fl=getFilteredApts();
-  var cnt=fl.length+' объявлений';
+  var cnt=fl.length+t('count.listings');
   var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
-  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">Ничего не найдено</div></div>';
+  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t('card.notFound')+'</div></div>';
   if(aptView==='map'){
     var mc=document.getElementById('apt-map-cards'); if(mc) mc.innerHTML=h2;
     var ac=document.getElementById('apt-map-cnt'); if(ac) ac.textContent=cnt;
@@ -1785,8 +1931,8 @@ function setCarF(el,f){
 }
 function renderCars(){
   var fl=getFilteredCars();
-  var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=fl.length+' машин';
-  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">Ничего не найдено</div></div>';
+  var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=fl.length+t('count.cars');
+  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t('card.notFoundCar')+'</div></div>';
 }
 
 // ─── DETAIL MODAL ─────────────────────────────────────────────────
@@ -1803,14 +1949,18 @@ function openDetail(kind,id){
   document.getElementById('m-dots').innerHTML=photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'"></div>';}).join('');
   document.getElementById('m-title').textContent=item.title_ru||item.title||'';
   document.getElementById('m-ava').textContent=(item.owner_name||'?').charAt(0).toUpperCase();
-  document.getElementById('m-owner').textContent=item.owner_name||'Хозяин';
-  document.getElementById('m-role').textContent=kind==='apt'?'Владелец':'Арендодатель';
+  document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
+  document.getElementById('m-role').textContent=kind==='apt'?t('detail.owner'):t('detail.landlord');
   document.getElementById('m-price').textContent=pStr(item);
-  var typeMap={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
+  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
+  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
+  var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   if(kind==='apt'){
-    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>Посуточно</strong></span>':'');
+    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
   } else {
-    var fuelMap={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
+    var fuelMapRu={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
+    var fuelMapEn={petrol:'⛽ Petrol',diesel:'🛢 Diesel',hybrid:'🔋 Hybrid',electric:'⚡ Electric'};
+    var fuelMap = lang==='en' ? fuelMapEn : fuelMapRu;
     var fuelLabel=item.fuel_type?(fuelMap[item.fuel_type]||item.fuel_type):'';
     document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+(item.specs_ru||item.make+' '+(item.model||''))+'</strong></span>'+(fuelLabel?'<span>'+fuelLabel+'</span>':'');
   }
@@ -1903,7 +2053,7 @@ function toggleFav(e,kind,id){
   e.stopPropagation();
   id=parseInt(id)||id;
   if(isFav(kind,id)){ favs=favs.filter(function(f){return !(f.kind===kind&&f.id==id);}); }
-  else { favs.push({kind:kind,id:id}); showToast('❤️ Добавлено в избранное'); }
+  else { favs.push({kind:kind,id:id}); showToast(t('toast.favAdded')); }
   localStorage.setItem('adil_favs',JSON.stringify(favs));
   updateFavBadge();
   // Update button
@@ -1921,10 +2071,10 @@ function renderFavs(){
   if(!cnt||!grid) return;
   if(!favs.length){
     cnt.textContent='';
-    grid.innerHTML='<div class="empty"><div class="empty-ico">&#9825;</div><div class="empty-txt">Пока ничего нет.<br>Нажми &#9825; на объявлении</div><button class="empty-btn" onclick="goSection(&quot;apt&quot;)">Смотреть квартиры</button></div>';
+    grid.innerHTML='<div class="empty"><div class="empty-ico">&#9825;</div><div class="empty-txt">'+t('fav.empty')+'</div><button class="empty-btn" onclick="goSection(&quot;apt&quot;)">'+t('fav.viewApts')+'</button></div>';
     return;
   }
-  cnt.textContent=favs.length+' сохранено';
+  cnt.textContent=favs.length+t('count.saved');
   var items=favs.map(function(f){ return f.kind==='apt'?liveApts.find(function(x){return x.id==f.id;}):liveCars.find(function(x){return x.id==f.id;}); }).filter(Boolean);
   grid.innerHTML=items.map(function(item){ var kind=liveApts.indexOf(item)!==-1?'apt':'car'; return cardHtml(item,kind); }).join('');
 }
@@ -1970,6 +2120,9 @@ function showToast(msg){
 
 // ─── INIT ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function(){
+  document.getElementById('lb-ru').classList.toggle('active', lang==='ru');
+  document.getElementById('lb-en').classList.toggle('active', lang==='en');
+  applyI18n();
   buildAm(['Мебель','Кондиционер','Wi-Fi','Парковка','Кухня','Стиральная машина','Холодильник','Smart TV','Балкон','Лифт','Охрана','Бассейн','Вид на мечеть','Генератор','Горячая вода 24ч','Газ','Интернет 100Мбит','Телевизор','Микроволновка','Посудомоечная машина','Сейф','Гардероб','Детская кроватка','Утюг','Фен','Полотенца и постельное бельё','Уборка включена','Домофон','CCTV камеры','Пожарная сигнализация'],'am-apt');
   buildAm(['Автомат (АКПП)','Кондиционер','GPS/Навигатор','Камера заднего вида','Камера 360°','Кожаный салон','Bluetooth','USB зарядка','Беспроводная зарядка','Детское кресло','4WD / Полный привод','Люк/Панорама','Без лимита км','Страховка включена','Водитель по запросу','Доставка авто','Парктроник','Круиз-контроль','Подогрев сидений','Вентиляция сидений','Массаж сидений','Apple CarPlay','Android Auto','Подключение к интернету','Шторки на окнах','Тонировка'],'am-car');
   dbReady=initSupabase();
