@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подтверждение email — Adil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f8f7f5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:20px;padding:40px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.1)}
+.logo{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:#111;margin-bottom:32px}
+.logo em{color:#D94F3B;font-style:normal}
+
+/* Success state */
+.success-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 24px rgba(34,197,94,.35);animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.checkmark{width:40px;height:40px}
+.checkmark path{stroke:#fff;stroke-width:3;fill:none;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .4s ease .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* Loading state */
+.loading-circle{width:90px;height:90px;border-radius:50%;border:4px solid #f0f0f0;border-top:4px solid #D94F3B;margin:0 auto 24px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error state */
+.error-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 24px rgba(239,68,68,.3)}
+.error-x{font-size:40px;color:#fff}
+
+.title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#111;margin-bottom:10px}
+.subtitle{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:28px}
+.email-badge{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 16px;font-size:14px;color:#16a34a;font-weight:600;margin-bottom:24px;display:none}
+.btn{display:block;width:100%;background:#D94F3B;color:#fff;text-decoration:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;transition:background .15s;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.btn:hover{background:#bf3828}
+.btn-ghost{display:block;width:100%;background:#f8f7f5;color:#374151;text-decoration:none;border-radius:12px;padding:13px;font-size:14px;font-weight:500;margin-top:10px;border:1px solid #e5e7eb;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-ghost:hover{background:#f0efe9}
+.footer-txt{margin-top:24px;font-size:12px;color:#9ca3af}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0}
+.piece{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="confetti" id="confetti"></div>
+
+<div class="card" style="position:relative;z-index:1">
+  <div class="logo"><em>Adil</em></div>
+
+  <!-- LOADING -->
+  <div id="state-loading">
+    <div class="loading-circle"></div>
+    <div class="title">Подтверждаем...</div>
+    <div class="subtitle">Пожалуйста подождите</div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="state-success" style="display:none">
+    <div class="success-circle">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <path d="M14 27 L22 35 L38 19" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="title">Email подтверждён! 🎉</div>
+    <div class="subtitle">Ваш аккаунт активирован. Теперь вы можете размещать объявления на Adil.</div>
+    <div class="email-badge" id="email-badge">✓ <span id="confirmed-email"></span></div>
+    <a href="/" class="btn">Перейти на сайт</a>
+    <div class="footer-txt">Добро пожаловать в Adil 🏠🚗</div>
+  </div>
+
+  <!-- ERROR -->
+  <div id="state-error" style="display:none">
+    <div class="error-circle"><div class="error-x">✕</div></div>
+    <div class="title">Ссылка недействительна</div>
+    <div class="subtitle" id="error-msg">Ссылка для подтверждения устарела или уже использована. Попробуйте зарегистрироваться снова.</div>
+    <a href="/" class="btn">На главную</a>
+  </div>
+</div>
+
+<script>
+var SUPABASE_URL = 'https://ylfbwvgvcflhmswfpvdt.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showState(s){
+  ['loading','success','error'].forEach(function(x){
+    document.getElementById('state-'+x).style.display = x===s?'block':'none';
+  });
+}
+
+function launchConfetti(){
+  var colors=['#D94F3B','#22c55e','#3b82f6','#f59e0b','#8b5cf6','#ec4899'];
+  var container=document.getElementById('confetti');
+  for(var i=0;i<80;i++){
+    var el=document.createElement('div');
+    el.className='piece';
+    el.style.left=Math.random()*100+'%';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.width=(Math.random()*8+4)+'px';
+    el.style.height=(Math.random()*8+4)+'px';
+    el.style.animationDuration=(Math.random()*2+1.5)+'s';
+    el.style.animationDelay=(Math.random()*1)+'s';
+    container.appendChild(el);
+  }
+  setTimeout(function(){ container.innerHTML=''; }, 4000);
+}
+
+async function handleConfirmation(){
+  // Get token from URL hash or query params
+  var hash = window.location.hash.substring(1);
+  var params = new URLSearchParams(hash || window.location.search);
+
+  var accessToken = params.get('access_token');
+  var refreshToken = params.get('refresh_token');
+  var type = params.get('type');
+  var tokenHash = params.get('token_hash');
+  var token = params.get('token');
+
+  try {
+    var result;
+
+    if(accessToken && type === 'signup'){
+      // Old format with access_token
+      result = await sb.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken || ''
+      });
+    } else if(tokenHash){
+      // New format with token_hash
+      result = await sb.auth.verifyOtp({
+        token_hash: tokenHash,
+        type: type || 'signup'
+      });
+    } else if(token && type){
+      result = await sb.auth.verifyOtp({
+        token_hash: token,
+        type: type
+      });
+    } else {
+      // Try to get current session
+      var sessionResult = await sb.auth.getSession();
+      if(sessionResult.data && sessionResult.data.session){
+        result = sessionResult;
+      } else {
+        throw new Error('Нет токена для подтверждения');
+      }
+    }
+
+    if(result.error) throw result.error;
+
+    var user = result.data.user || result.data.session?.user;
+    showState('success');
+    launchConfetti();
+
+    if(user && user.email){
+      var badge = document.getElementById('email-badge');
+      var emailEl = document.getElementById('confirmed-email');
+      if(badge && emailEl){
+        emailEl.textContent = user.email;
+        badge.style.display = 'block';
+      }
+    }
+
+    // Redirect to main site after 4 seconds
+    setTimeout(function(){ window.location.href = '/'; }, 4000);
+
+  } catch(err){
+    console.error('Confirmation error:', err);
+    showState('error');
+    var msgEl = document.getElementById('error-msg');
+    if(msgEl && err.message){
+      if(err.message.includes('expired') || err.message.includes('устарел')){
+        msgEl.textContent = 'Ссылка для подтверждения устарела. Пожалуйста, зарегистрируйтесь снова.';
+      } else if(err.message.includes('already')){
+        msgEl.textContent = 'Email уже подтверждён. Войдите в аккаунт.';
+      }
+    }
+  }
+}
+
+handleConfirmation();
+</script>
+</body>
+</html>

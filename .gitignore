@@ -1,0 +1,27 @@
+# зависимости
+node_modules/
+
+# macOS
+.DS_Store
+
+# iOS (нативный проект коммитим, сборку и Pods — нет)
+ios/App/Pods/
+ios/App/App/public/
+ios/App/build/
+ios/DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Android (нативный проект коммитим, сборку — нет)
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+android/.idea/
+*.iml
+
+# прочее
+.env
+.env.local
+.vercel

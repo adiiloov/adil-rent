@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AdilRent</string>
+    <string name="title_activity_main">AdilRent</string>
+    <string name="package_name">com.adilrent.app</string>
+    <string name="custom_url_scheme">com.adilrent.app</string>
+</resources>

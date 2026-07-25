@@ -1,0 +1,10 @@
+{
+  "appId": "com.adilrent.app",
+  "appName": "AdilRent",
+  "webDir": "www",
+  "server": {
+    "url": "https://www.adilrent.com",
+    "cleartext": false,
+    "allowNavigation": ["*.adilrent.com", "adilrent.com"]
+  }
+}
