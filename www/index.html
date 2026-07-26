@@ -290,6 +290,19 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .pmi-arrow{color:var(--muted);font-size:18px}
 .logout-btn{width:100%;background:var(--red-light);color:var(--red);border:1.5px solid var(--red-bd);border-radius:12px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--fb);margin-top:8px}
 
+/* AVATARS */
+.ava{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;user-select:none;letter-spacing:.02em}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* сдвигаем буквы на пиксель вверх — оптический центр круга выше геометрического */
+.ava span{transform:translateY(-2%);line-height:1}
+.ava-edit{display:block;position:relative;width:88px;height:88px;margin:0 auto 12px;cursor:pointer}
+.ava-edit .ava{width:88px;height:88px;font-size:32px;border:3px solid rgba(212,162,87,.35)}
+.ava-edit-badge{position:absolute;right:-2px;bottom:-2px;width:30px;height:30px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:flex;align-items:center;justify-content:center;border:3px solid var(--white);pointer-events:none}
+.ava-edit-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.ava-edit input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ava-edit.busy{opacity:.55;pointer-events:none}
+.ava-remove{display:block;margin:0 auto 16px;background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--fb)}
+
 /* MY LISTINGS PAGE */
 .my-listing-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px}
 .mlc-img{width:100%;height:140px;object-fit:cover;display:block;background:var(--bg)}
@@ -729,7 +742,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- PROFILE -->
   <div id="sec-profile" style="display:none">
     <div class="profile-header">
-      <div class="profile-ava" id="p-ava">?</div>
+      <div class="profile-ava ava" id="p-ava"></div>
       <div class="profile-name" id="p-name">—</div>
       <div class="profile-email" id="p-email">—</div>
       <div class="profile-stats">
@@ -866,7 +879,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">✕</button>
         </div>
         <div class="m-owner-row">
-          <div class="m-ava" id="m-ava"></div>
+          <div class="m-ava ava" id="m-ava"></div>
           <div><div class="m-on" id="m-owner"></div><div class="m-or" id="m-role"></div></div>
         </div>
         <div class="m-price" id="m-price"></div>
@@ -922,6 +935,12 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     </div>
     <!-- PROFILE EDIT -->
     <div id="auth-edit-form" style="display:none">
+      <label class="ava-edit" id="ava-edit">
+        <div class="ava" id="edit-ava"></div>
+        <div class="ava-edit-badge"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h3.2l1.3-2h9l1.3 2H21v11H3z"/><circle cx="12" cy="13.5" r="3.4"/></svg></div>
+        <input type="file" accept="image/*" onchange="handleAvatarPick(event)">
+      </label>
+      <button class="ava-remove" id="ava-remove-btn" onclick="removeAvatar()" style="display:none" data-i18n="auth.avatar.remove">Удалить фото</button>
       <div class="auth-field"><label class="auth-label" data-i18n="auth.name">Имя</label><input class="auth-input" type="text" id="edit-name" placeholder="Азамат"></div>
       <div class="auth-field"><label class="auth-label" data-i18n="auth.phone">Телефон</label><input class="auth-input" type="tel" id="edit-phone" placeholder="+7 777 123 45 67"></div>
       <button class="auth-btn" onclick="saveProfileEdit()" id="edit-save-btn" data-i18n="common.save">Сохранить</button>
@@ -1013,7 +1032,8 @@ var I18N = {
     'count.listings':' объявлений','count.cars':' машин','count.saved':' сохранено',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
-    'toast.photosOnly':'⚠️ Можно загружать только фотографии','toast.photoTooBig':'⚠️ Файл слишком большой — принимаем до 25 МБ',
+    'toast.photosOnly':'⚠️ Можно загружать только фотографии','auth.avatar.remove':'Удалить фото',
+    'toast.avatarUpdated':'✓ Фото профиля обновлено','toast.avatarRemoved':'Фото профиля удалено','toast.avatarFailed':'⚠️ Не удалось обработать фото','toast.photoTooBig':'⚠️ Файл слишком большой — принимаем до 25 МБ',
     'toast.favAdded':'❤️ Добавлено в избранное','toast.loggedOut':'Вы вышли из аккаунта','toast.listingDeleted':'Объявление удалено','toast.deleted':'Удалено',
     'toast.welcome':'✓ Добро пожаловать!','toast.accountCreated':'✓ Аккаунт создан! Проверь email для подтверждения.','toast.published':'✓ Объявление отправлено на модерацию!',
     'toast.profileUpdated':'✓ Профиль обновлён','toast.notAuthed':'⚠️ Не авторизован',
@@ -1072,7 +1092,8 @@ var I18N = {
     'count.listings':' listings','count.cars':' cars','count.saved':' saved',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
-    'toast.photosOnly':'⚠️ Only photos can be uploaded','toast.photoTooBig':'⚠️ File is too large — up to 25 MB',
+    'toast.photosOnly':'⚠️ Only photos can be uploaded','auth.avatar.remove':'Remove photo',
+    'toast.avatarUpdated':'✓ Profile photo updated','toast.avatarRemoved':'Profile photo removed','toast.avatarFailed':'⚠️ Could not process the photo','toast.photoTooBig':'⚠️ File is too large — up to 25 MB',
     'toast.favAdded':'❤️ Added to favorites','toast.loggedOut':'You have logged out','toast.listingDeleted':'Listing deleted','toast.deleted':'Deleted',
     'toast.welcome':'✓ Welcome!','toast.accountCreated':'✓ Account created! Check your email to confirm.','toast.published':'✓ Listing sent for moderation!',
     'toast.profileUpdated':'✓ Profile updated','toast.notAuthed':'⚠️ Not logged in',
@@ -1138,11 +1159,10 @@ function onLogin(){
   var adminDfn=document.getElementById('dfn-admin');
   if(adminDfn) adminDfn.style.display=isAdmin()?'flex':'none';
   var name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
-  var initial = name.charAt(0).toUpperCase();
   document.getElementById('nav-auth-area').innerHTML =
     '<div class="nav-user" onclick="requireAuth(function(){goSection(\'profile\');})">' +
-    '<div class="nav-ava">'+initial+'</div>' +
-    '<div class="nav-user-name">'+name+'</div></div>';
+    avaMarkup(name, myAvatar(), 'nav-ava') +
+    '<div class="nav-user-name">'+esc(name)+'</div></div>';
   updateProfileUI();
 }
 function onLogout(){
@@ -1157,7 +1177,7 @@ function updateProfileUI(){
   if(adminDfn) adminDfn.style.display=isAdmin()?'flex':'none';
   if(!currentUser) return;
   var name=currentUser.user_metadata?.name||currentUser.email.split('@')[0];
-  document.getElementById('p-ava').textContent=name.charAt(0).toUpperCase();
+  paintAva(document.getElementById('p-ava'),name,myAvatar());
   document.getElementById('p-name').textContent=name;
   document.getElementById('p-email').textContent=currentUser.email;
   document.getElementById('p-stat-favs').textContent=favs.length;
@@ -1177,11 +1197,12 @@ async function loadMyListings(){
     var img=item.photos&&item.photos[0]?item.photos[0]:'';
     var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
-    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div><div class="mlc-actions"><button class="mlc-btn del" onclick="deleteListing(\''+item._kind+'\','+item.id+')">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
+    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div><div class="mlc-actions"><button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
 }
-async function deleteListing(kind,id){
+async function deleteMyListing(kind,id){
   if(!sb) return;
+  if(!confirm(lang==='en'?'Delete this listing?':'Удалить объявление?')) return;
   var table=kind==='apt'?'apartments':'cars';
   await sb.from(table).delete().eq('id',id);
   showToast(t('toast.listingDeleted'));
@@ -1202,6 +1223,7 @@ function openAuth(mode){
     document.getElementById('auth-edit-form').style.display='block';
     document.getElementById('edit-name').value=(currentUser.user_metadata&&currentUser.user_metadata.name)||'';
     document.getElementById('edit-phone').value=(currentUser.user_metadata&&currentUser.user_metadata.phone)||'';
+    refreshAvatars();
   } else {
     document.getElementById('auth-modal-title').textContent=t('auth.welcome');
     document.getElementById('auth-modal-sub').textContent=t('auth.welcome.sub');
@@ -1225,11 +1247,13 @@ async function saveProfileEdit(){
   if(!name){ showErr(lang==='en'?'Enter your name':'Введи имя'); return; }
   var btn=document.getElementById('edit-save-btn');
   btn.disabled=true; btn.textContent=t('btn.saving');
-  var result=await sb.auth.updateUser({data:{name:name,phone:phone}});
+  var meta=Object.assign({},currentUser.user_metadata||{},{name:name,phone:phone});
+  var result=await sb.auth.updateUser({data:meta});
   btn.disabled=false; btn.textContent=t('common.save');
   if(result.error){ showErr(result.error.message||(lang==='en'?'Save error':'Ошибка сохранения')); return; }
   currentUser=result.data.user;
   updateProfileUI();
+  onLogin();
   document.getElementById('auth-overlay').classList.remove('open');
   showToast(t('toast.profileUpdated'));
 }
@@ -1417,6 +1441,7 @@ async function submitApt(){
     phone:phone,
     call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
     owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
+    owner_avatar:myAvatar()||null,
     district_ru:district,
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
@@ -1457,6 +1482,7 @@ async function submitCar(){
     phone:phone,
     call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
     owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
+    owner_avatar:myAvatar()||null,
     call_phone:callPhone||phone,
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
     badges_ru:opts, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
@@ -1765,47 +1791,122 @@ async function adminDelete(kind,id){
   showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
 }
 
-function updateProfileUI(){
-  if(!currentUser) return;
-  var name=currentUser.user_metadata&&currentUser.user_metadata.name?currentUser.user_metadata.name:currentUser.email.split('@')[0];
-  var e1=document.getElementById('p-ava'); if(e1) e1.textContent=name.charAt(0).toUpperCase();
-  var e2=document.getElementById('p-name2'); if(e2) e2.textContent=name;
-  var e3=document.getElementById('p-email2'); if(e3) e3.textContent=currentUser.email;
-  var adminItem=document.getElementById('admin-menu-item');
-  if(adminItem) adminItem.style.display=isAdmin()?'flex':'none';
-  var adminDfn=document.getElementById('dfn-admin');
-  if(adminDfn) adminDfn.style.display=isAdmin()?'flex':'none';
-  loadMyListings();
+// updateProfileUI / loadMyListings / deleteMyListing определены выше — вторые
+// копии удалены: они перетирали первые и писали имя с email в p-name2/p-email2,
+// которых нет в разметке, из-за чего в профиле стояли прочерки.
+
+// ─── АВАТАРЫ ─────────────────────────────────────────────────────────────────
+// Пары для градиента заглушки. Цвет выводится из имени, поэтому у человека он
+// всегда один и тот же, а разные люди в списке различаются с одного взгляда.
+var AVA_COLORS=[
+  ['#D4A257','#A8722A'],['#5B8DEF','#2C5BB8'],['#4FB286','#26765A'],['#C46A8D','#8E3E5D'],
+  ['#7C6BD8','#4B3AA0'],['#D98757','#A5542B'],['#3FA9B8','#1E6C79'],['#9AA85C','#65703A']
+];
+function avaInitials(name){
+  var parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  if(parts.length===1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0)+parts[1].charAt(0)).toUpperCase();
+}
+function avaGradient(name){
+  var s=String(name||''), h=0;
+  for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+  var c=AVA_COLORS[h%AVA_COLORS.length];
+  return 'linear-gradient(135deg,'+c[0]+','+c[1]+')';
+}
+// Заполняет готовый элемент .ava — фото, если оно есть, иначе инициалы.
+function paintAva(el,name,url){
+  if(!el) return;
+  el.classList.add('ava');
+  if(url){
+    el.style.background='var(--surface-2)';
+    el.innerHTML='<img src="'+esc(url)+'" alt="" decoding="async" onerror="this.parentNode.removeChild(this)">';
+  } else {
+    el.style.background=avaGradient(name);
+    el.innerHTML='<span>'+esc(avaInitials(name))+'</span>';
+  }
+}
+function avaMarkup(name,url,cls){
+  if(url) return '<div class="ava '+cls+'" style="background:var(--surface-2)"><img src="'+esc(url)+'" alt="" decoding="async"></div>';
+  return '<div class="ava '+cls+'" style="background:'+avaGradient(name)+'"><span>'+esc(avaInitials(name))+'</span></div>';
+}
+function myAvatar(){ return (currentUser&&currentUser.user_metadata&&currentUser.user_metadata.avatar_url)||''; }
+function myName(){
+  if(!currentUser) return '';
+  return (currentUser.user_metadata&&currentUser.user_metadata.name)||currentUser.email.split('@')[0];
 }
 
-async function loadMyListings(){
-  if(!sb||!currentUser) return;
-  var area=document.getElementById('my-listings-area');
-  if(!area) return;
-  var uid=currentUser.id;
-  var r1=await sb.from('apartments').select('*').eq('user_id',uid);
-  var r2=await sb.from('cars').select('*').eq('user_id',uid);
-  var all=[...(r1.data||[]).map(function(a){a._kind='apt';return a;}), ...(r2.data||[]).map(function(c){c._kind='car';return c;})];
-  var e=document.getElementById('p-stat-listings'); if(e) e.textContent=all.length;
-  var e2=document.getElementById('p-stat-favs'); if(e2) e2.textContent=favs.length;
-  if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">У тебя пока нет объявлений</div>'; return; }
-  area.innerHTML=all.map(function(item){
-    var src=item.photos&&item.photos[0]?item.photos[0]:'';
-    if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=128&q=70';
-    var imgEl=src?'<img style="width:60px;height:60px;object-fit:cover;border-radius:8px" src="'+src+'">':'<div style="width:60px;height:60px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
-    var status=item.is_active?'<span style="color:var(--ok);font-size:11px">✅ Активно</span>':'<span style="color:var(--warn);font-size:11px">⏳ На проверке</span>';
-    return '<div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center">'+imgEl
-      +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(item.title_ru||'')+'</div>'
-      +status+'<div style="font-size:14px;font-weight:700;color:var(--brand)">'+(item.price||0)+' SAR</div></div>'
-      +'<button style="background:var(--red-light);color:var(--red);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">Удалить</button>'
-      +'</div>';
-  }).join('');
+// Аватар обрезается по центру в квадрат и ужимается до 256px — этого хватает
+// для всех мест, где он показывается, и файл выходит на десятки килобайт.
+async function compressAvatar(file){
+  var bmp;
+  try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
+  catch(e){
+    try{ bmp=await createImageBitmap(file); }catch(e2){ return null; }
+  }
+  var side=Math.min(bmp.width,bmp.height);
+  var sx=(bmp.width-side)/2, sy=(bmp.height-side)/2;
+  var out=256;
+  var canvas=document.createElement('canvas');
+  canvas.width=canvas.height=out;
+  canvas.getContext('2d').drawImage(bmp,sx,sy,side,side,0,0,out,out);
+  if(bmp.close) bmp.close();
+  var type=WEBP_OK?'image/webp':'image/jpeg';
+  var blob=await new Promise(function(r){ canvas.toBlob(r,type,0.86); });
+  canvas.width=canvas.height=0;
+  return blob?{blob:blob,type:type,ext:type==='image/webp'?'webp':'jpg'}:null;
 }
-async function deleteMyListing(kind,id){
-  if(!sb) return;
-  if(!confirm('Удалить объявление?')) return;
-  await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
-  showToast('Удалено'); loadMyListings(); loadApts(); loadCars();
+
+async function handleAvatarPick(e){
+  var file=e.target.files&&e.target.files[0];
+  e.target.value='';
+  if(!file) return;
+  if(file.type.indexOf('image/')!==0){ showToast(t('toast.photosOnly')); return; }
+  if(file.size>MAX_SRC_BYTES){ showToast(t('toast.photoTooBig')); return; }
+  if(!sb||!currentUser){ showToast(t('toast.notAuthed')); return; }
+  var box=document.getElementById('ava-edit');
+  if(box) box.classList.add('busy');
+  var out=await compressAvatar(file);
+  if(!out){ if(box) box.classList.remove('busy'); showToast(t('toast.avatarFailed')); return; }
+  var path='avatars/'+currentUser.id+'.'+out.ext;
+  var up=await sb.storage.from('adil-photos').upload(path,out.blob,{
+    cacheControl:CACHE_YEAR, contentType:out.type, upsert:true
+  });
+  if(up.error){
+    if(box) box.classList.remove('busy');
+    console.error('[avatar]',up.error.message);
+    showToast(t('toast.avatarFailed'));
+    return;
+  }
+  // ?v= сбрасывает кэш CDN, иначе год будет отдаваться старая картинка
+  var url=sb.storage.from('adil-photos').getPublicUrl(path).data.publicUrl+'?v='+Date.now();
+  await saveAvatarUrl(url);
+  if(box) box.classList.remove('busy');
+  showToast(t('toast.avatarUpdated'));
+}
+async function removeAvatar(){
+  if(!sb||!currentUser) return;
+  await saveAvatarUrl(null);
+  showToast(t('toast.avatarRemoved'));
+}
+async function saveAvatarUrl(url){
+  var meta=Object.assign({},currentUser.user_metadata||{},{avatar_url:url||null});
+  var res=await sb.auth.updateUser({data:meta});
+  if(res.error){ showToast(res.error.message); return; }
+  currentUser=res.data.user;
+  // объявления хранят аватар у себя, поэтому обновляем и их
+  await sb.from('apartments').update({owner_avatar:url||null}).eq('user_id',currentUser.id);
+  await sb.from('cars').update({owner_avatar:url||null}).eq('user_id',currentUser.id);
+  refreshAvatars();
+  loadApts(); loadCars();
+}
+function refreshAvatars(){
+  var url=myAvatar(), name=myName();
+  paintAva(document.getElementById('p-ava'),name,url);
+  paintAva(document.getElementById('edit-ava'),name,url);
+  paintAva(document.querySelector('.nav-ava'),name,url);
+  var rm=document.getElementById('ava-remove-btn');
+  if(rm) rm.style.display=url?'block':'none';
 }
 
 // ─── RENDER HELPERS ──────────────────────────────────────────────────────────
@@ -1960,7 +2061,7 @@ function openDetail(kind,id){
   else { mi.style.display='none'; }
   document.getElementById('m-dots').innerHTML=photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'"></div>';}).join('');
   document.getElementById('m-title').textContent=item.title_ru||item.title||'';
-  document.getElementById('m-ava').textContent=(item.owner_name||'?').charAt(0).toUpperCase();
+  paintAva(document.getElementById('m-ava'),item.owner_name||'',item.owner_avatar||'');
   document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
   document.getElementById('m-role').textContent=kind==='apt'?t('detail.owner'):t('detail.landlord');
   document.getElementById('m-price').textContent=pStr(item);
