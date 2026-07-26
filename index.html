@@ -633,9 +633,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fg">
           <label class="fl" data-i18n="add.f.photos">Фотографии</label>
           <div class="photo-upload-area" id="apt-upload-area">
-            <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'apt',15)">
-            <div class="photo-upload-icon">📷🎥</div>
-            <div class="photo-upload-text" data-i18n="add.f.photos.apt.hint">Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong></div>
+            <input type="file" accept="image/*" multiple onchange="handleMedia(event,'apt',15)">
+            <div class="photo-upload-icon">📷</div>
+            <div class="photo-upload-text" data-i18n="add.f.photos.apt.hint">Фотографии жилья<br><strong>до 15 фото</strong></div>
           </div>
           <div class="photo-previews" id="apt-previews"></div>
         </div>
@@ -705,11 +705,11 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fg"><label class="fl" data-i18n="add.f.callPhone">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div class="fg"><label class="fl" data-i18n="add.f.whatsapp">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div class="fg">
-          <label class="fl" data-i18n="add.fc.photos">📷 Фото и видео</label>
+          <label class="fl" data-i18n="add.fc.photos">📷 Фотографии</label>
           <div class="photo-upload-area" id="car-upload-area">
-            <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'car',10)">
-            <div class="photo-upload-icon">📷🎥</div>
-            <div class="photo-upload-text" data-i18n="add.f.photos.car.hint">Фото и видео машины<br><strong>до 10 файлов</strong></div>
+            <input type="file" accept="image/*" multiple onchange="handleMedia(event,'car',10)">
+            <div class="photo-upload-icon">📷</div>
+            <div class="photo-upload-text" data-i18n="add.f.photos.car.hint">Фотографии машины<br><strong>до 10 фото</strong></div>
           </div>
           <div class="photo-previews" id="car-previews"></div>
         </div>
@@ -857,7 +857,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div class="drag-line"></div>
     <div class="modal-scroll">
       <div class="m-imgs" id="m-imgs" onclick="openGallery(detailItem&&detailItem.photos?detailItem.photos:[],imgIdx)" style="cursor:zoom-in">
-        <img id="m-img" src="" alt="">
+        <img id="m-img" src="" alt="" decoding="async">
         <div class="m-dots" id="m-dots"></div>
       </div>
       <div class="m-body">
@@ -985,8 +985,8 @@ var I18N = {
     'add.f.point.geo':'Моё местоположение','add.f.point.reset':'Сбросить',
     'add.f.point.geoFail':'⚠️ Не удалось определить местоположение — поставь метку вручную',
     'add.f.point.geoDenied':'⚠️ Доступ к геолокации запрещён — поставь метку вручную',
-    'add.f.photos':'Фотографии','add.f.photos.apt.hint':'Фото и видео жилья<br><strong>до 15 файлов (фото + видео)</strong>',
-    'add.f.amenities':'Удобства','add.f.submit':'Опубликовать бесплатно','add.f.photos.car.hint':'Фото и видео машины<br><strong>до 10 файлов</strong>',
+    'add.f.photos':'Фотографии','add.f.photos.apt.hint':'Фотографии жилья<br><strong>до 15 фото</strong>',
+    'add.f.amenities':'Удобства','add.f.submit':'Опубликовать бесплатно','add.f.photos.car.hint':'Фотографии машины<br><strong>до 10 фото</strong>',
     'add.fc.make':'Марка','add.fc.make.other':'Другое','add.fc.make.custom.ph':'Напишите марку','add.fc.model':'Модель',
     'add.fc.year':'Год','add.fc.body':'Тип кузова','add.fc.body.suv':'Внедорожник / SUV','add.fc.body.hatch':'Хэтчбек','add.fc.body.crossover':'Кроссовер',
     'add.fc.body.coupe':'Купе','add.fc.body.convertible':'Кабриолет','add.fc.body.pickup':'Пикап','add.fc.body.wagon':'Универсал',
@@ -994,7 +994,7 @@ var I18N = {
     'add.fc.desc':'Описание','add.fc.desc.ph':'Состояние, условия, залог...',
     'add.fc.fuel':'Тип топлива','add.fc.fuel.petrol':'⛽ Бензин','add.fc.fuel.diesel':'🛢 Дизель','add.fc.fuel.hybrid':'🔋 Гибрид','add.fc.fuel.electric':'⚡ Электро','add.fc.fuel.other':'✏️ Другое',
     'add.fc.fuel.custom.ph':'Укажи тип топлива','add.fc.color':'Цвет','add.fc.color.ph':'Белый, Чёрный...',
-    'add.fc.photos':'📷 Фото и видео','add.fc.options':'Опции',
+    'add.fc.photos':'📷 Фотографии','add.fc.options':'Опции',
     'fav.title':'Избранное',
     'profile.listings':'объявлений','profile.favs':'избранных','profile.account':'аккаунт','profile.myListings':'Мои объявления','profile.addListing':'+ Добавить объявление',
     'profile.settings':'Настройки','profile.editProfile':'Редактировать профиль','profile.editProfile.sub':'Имя, телефон','profile.lang':'Язык',
@@ -1013,10 +1013,11 @@ var I18N = {
     'count.listings':' объявлений','count.cars':' машин','count.saved':' сохранено',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
+    'toast.photosOnly':'⚠️ Можно загружать только фотографии','toast.photoTooBig':'⚠️ Файл слишком большой — принимаем до 25 МБ',
     'toast.favAdded':'❤️ Добавлено в избранное','toast.loggedOut':'Вы вышли из аккаунта','toast.listingDeleted':'Объявление удалено','toast.deleted':'Удалено',
     'toast.welcome':'✓ Добро пожаловать!','toast.accountCreated':'✓ Аккаунт создан! Проверь email для подтверждения.','toast.published':'✓ Объявление отправлено на модерацию!',
     'toast.profileUpdated':'✓ Профиль обновлён','toast.notAuthed':'⚠️ Не авторизован',
-    'btn.publishing':'Публикуем...','btn.saving':'Сохраняем...','btn.loggingIn':'Входим...','btn.creatingAccount':'Создаём аккаунт...'
+    'btn.publishing':'Публикуем...','btn.compressing':'Готовим фото','btn.saving':'Сохраняем...','btn.loggingIn':'Входим...','btn.creatingAccount':'Создаём аккаунт...'
   },
   en:{
     'nav.apt':'🏠 Apartments','nav.car':'🚗 Cars','nav.add':'+ List','nav.login':'Log in','nav.signup':'Sign up',
@@ -1043,8 +1044,8 @@ var I18N = {
     'add.f.point.geo':'My location','add.f.point.reset':'Reset',
     'add.f.point.geoFail':'⚠️ Could not detect your location — drop the pin manually',
     'add.f.point.geoDenied':'⚠️ Location access denied — drop the pin manually',
-    'add.f.photos':'Photos','add.f.photos.apt.hint':'Photos and videos of the place<br><strong>up to 15 files (photo + video)</strong>',
-    'add.f.amenities':'Amenities','add.f.submit':'Publish for free','add.f.photos.car.hint':'Photos and videos of the car<br><strong>up to 10 files</strong>',
+    'add.f.photos':'Photos','add.f.photos.apt.hint':'Photos of the place<br><strong>up to 15 photos</strong>',
+    'add.f.amenities':'Amenities','add.f.submit':'Publish for free','add.f.photos.car.hint':'Photos of the car<br><strong>up to 10 photos</strong>',
     'add.fc.make':'Make','add.fc.make.other':'Other','add.fc.make.custom.ph':'Write the make','add.fc.model':'Model',
     'add.fc.year':'Year','add.fc.body':'Body type','add.fc.body.suv':'SUV','add.fc.body.hatch':'Hatchback','add.fc.body.crossover':'Crossover',
     'add.fc.body.coupe':'Coupe','add.fc.body.convertible':'Convertible','add.fc.body.pickup':'Pickup','add.fc.body.wagon':'Wagon',
@@ -1052,7 +1053,7 @@ var I18N = {
     'add.fc.desc':'Description','add.fc.desc.ph':'Condition, terms, deposit...',
     'add.fc.fuel':'Fuel type','add.fc.fuel.petrol':'⛽ Petrol','add.fc.fuel.diesel':'🛢 Diesel','add.fc.fuel.hybrid':'🔋 Hybrid','add.fc.fuel.electric':'⚡ Electric','add.fc.fuel.other':'✏️ Other',
     'add.fc.fuel.custom.ph':'Specify fuel type','add.fc.color':'Color','add.fc.color.ph':'White, Black...',
-    'add.fc.photos':'📷 Photos and videos','add.fc.options':'Options',
+    'add.fc.photos':'📷 Photos','add.fc.options':'Options',
     'fav.title':'Favorites',
     'profile.listings':'listings','profile.favs':'favorites','profile.account':'account','profile.myListings':'My listings','profile.addListing':'+ Add listing',
     'profile.settings':'Settings','profile.editProfile':'Edit profile','profile.editProfile.sub':'Name, phone','profile.lang':'Language',
@@ -1071,10 +1072,11 @@ var I18N = {
     'count.listings':' listings','count.cars':' cars','count.saved':' saved',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
+    'toast.photosOnly':'⚠️ Only photos can be uploaded','toast.photoTooBig':'⚠️ File is too large — up to 25 MB',
     'toast.favAdded':'❤️ Added to favorites','toast.loggedOut':'You have logged out','toast.listingDeleted':'Listing deleted','toast.deleted':'Deleted',
     'toast.welcome':'✓ Welcome!','toast.accountCreated':'✓ Account created! Check your email to confirm.','toast.published':'✓ Listing sent for moderation!',
     'toast.profileUpdated':'✓ Profile updated','toast.notAuthed':'⚠️ Not logged in',
-    'btn.publishing':'Publishing...','btn.saving':'Saving...','btn.loggingIn':'Logging in...','btn.creatingAccount':'Creating account...'
+    'btn.publishing':'Publishing...','btn.compressing':'Processing photos','btn.saving':'Saving...','btn.loggingIn':'Logging in...','btn.creatingAccount':'Creating account...'
   }
 };
 function t(key){ return (I18N[lang]&&I18N[lang][key]) || I18N.ru[key] || key; }
@@ -1173,7 +1175,7 @@ async function loadMyListings(){
   if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'You have no listings yet':'У тебя пока нет объявлений')+'</div>'; return; }
   area.innerHTML=all.map(function(item){
     var img=item.photos&&item.photos[0]?item.photos[0]:'';
-    var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
     return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div><div class="mlc-actions"><button class="mlc-btn del" onclick="deleteListing(\''+item._kind+'\','+item.id+')">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
@@ -1405,7 +1407,8 @@ async function submitApt(){
   btn.disabled=true; btn.textContent=t('btn.publishing');
   var amenities=[];
   document.querySelectorAll('#am-apt .am.on').forEach(function(a){amenities.push(a.textContent.trim());});
-  var photoUrls=await uploadPhotos('apt');
+  var photoUrls=await uploadMedia('apt',function(n,total){ btn.textContent=t('btn.compressing')+' '+n+'/'+total; });
+  btn.textContent=t('btn.publishing');
   var data={
     user_id:currentUser.id,
     title_ru:title, type:document.getElementById('f-type').value,
@@ -1439,7 +1442,8 @@ async function submitCar(){
   btn.disabled=true; btn.textContent=t('btn.publishing');
   var opts=[];
   document.querySelectorAll('#am-car .am.on').forEach(function(a){opts.push(a.textContent.trim());});
-  var photoUrls=await uploadPhotos('car');
+  var photoUrls=await uploadMedia('car',function(n,total){ btn.textContent=t('btn.compressing')+' '+n+'/'+total; });
+  btn.textContent=t('btn.publishing');
   var period=document.getElementById('fc-period').value;
   var data={
     user_id:currentUser.id,
@@ -1466,20 +1470,37 @@ async function submitCar(){
 }
 
 // ─── PHOTO UPLOAD ─────────────────────────────────────────────────
+var MAX_SIDE=1600;           // длинная сторона после сжатия
+var IMG_QUALITY=0.82;
+var CACHE_YEAR='31536000';   // файлы объявления не меняются — кэшируем на год
+var MAX_SRC_BYTES=25*1024*1024;
+
+// WebP на выходе поддерживают все актуальные браузеры, но проверяем: старые
+// Safari умеют его показывать и не умеют кодировать — там останется JPEG.
+var WEBP_OK=(function(){
+  try{ var c=document.createElement('canvas'); c.width=c.height=1;
+       return c.toDataURL('image/webp').indexOf('data:image/webp')===0; }
+  catch(e){ return false; }
+})();
+
 function handleMedia(e, kind, max){
   max = max || 10;
-  var files = Array.from(e.target.files).slice(0, max);
+  var picked = Array.from(e.target.files);
+  var images = picked.filter(function(f){ return f.type.indexOf('image/')===0; });
+  var rejected = picked.length - images.length;
+  var tooBig = images.filter(function(f){ return f.size>MAX_SRC_BYTES; });
+  images = images.filter(function(f){ return f.size<=MAX_SRC_BYTES; });
+  if(rejected>0) showToast(t('toast.photosOnly'));
+  else if(tooBig.length) showToast(t('toast.photoTooBig'));
+  var files = images.slice(0, max);
   photoFiles[kind] = files;
   var prev = document.getElementById(kind+'-previews');
   if(!prev) return;
   prev.innerHTML = files.map(function(f, i){
     var url = URL.createObjectURL(f);
-    var isVideo = f.type.startsWith('video/');
-    var previewEl = isVideo
-      ? '<video src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" muted playsinline></video>'
-      : '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
-    var tag = isVideo ? '<div style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;padding:1px 5px;border-radius:4px">🎥 VIDEO</div>' : '';
-    return '<div class="photo-preview" style="position:relative">'+previewEl+tag+'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
+    return '<div class="photo-preview" style="position:relative">'
+      +'<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onload="URL.revokeObjectURL(this.src)">'
+      +'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
   }).join('');
 }
 function handlePhotos(e,kind,max){ handleMedia(e,kind,max); }
@@ -1491,22 +1512,45 @@ function removeMedia(kind,idx){
   if(inp) inp.querySelector('input').value='';
   handleMedia({target:{files:photoFiles[kind]}},kind,15);
 }
+
+// Уменьшает снимок с телефона (3–4 МБ) до ~200–400 КБ. Если браузер не может
+// декодировать формат (например HEIC вне Safari) — отдаём оригинал как есть.
+async function compressImage(file){
+  var bmp;
+  try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
+  catch(e){
+    try{ bmp=await createImageBitmap(file); }
+    catch(e2){ return {blob:file, type:file.type, ext:(file.name.split('.').pop()||'jpg').toLowerCase()}; }
+  }
+  var scale=Math.min(1, MAX_SIDE/Math.max(bmp.width,bmp.height));
+  var w=Math.max(1,Math.round(bmp.width*scale)), h=Math.max(1,Math.round(bmp.height*scale));
+  var canvas=document.createElement('canvas');
+  canvas.width=w; canvas.height=h;
+  canvas.getContext('2d').drawImage(bmp,0,0,w,h);
+  if(bmp.close) bmp.close();
+  var type=WEBP_OK?'image/webp':'image/jpeg';
+  var blob=await new Promise(function(res){ canvas.toBlob(res,type,IMG_QUALITY); });
+  canvas.width=canvas.height=0;
+  // если «сжатие» вышло больше оригинала (мелкие или уже оптимизированные файлы) — берём оригинал
+  if(!blob||blob.size>=file.size) return {blob:file, type:file.type, ext:(file.name.split('.').pop()||'jpg').toLowerCase()};
+  return {blob:blob, type:type, ext:(type==='image/webp'?'webp':'jpg')};
+}
+
 async function uploadPhotos(kind){ return uploadMedia(kind); }
 
-async function uploadMedia(kind){
+async function uploadMedia(kind, onProgress){
   var files=photoFiles[kind];
   if(!files||!files.length||!sb) return [];
   var urls=[];
   for(var i=0;i<files.length;i++){
-    var f=files[i];
-    var ext=f.name.split('.').pop().toLowerCase();
-    var folder=f.type.startsWith('video/')?'videos':'photos';
-    var path=folder+'/'+Date.now()+'-'+i+'-'+f.name.replace(/[^a-z0-9.]/gi,'_');
-    var result=await sb.storage.from('adil-photos').upload(path,f,{cacheControl:'3600',upsert:false});
-    if(!result.error){
-      var pub=sb.storage.from('adil-photos').getPublicUrl(path);
-      urls.push(pub.data.publicUrl);
-    }
+    if(onProgress) onProgress(i+1, files.length);
+    var out=await compressImage(files[i]);
+    var path='photos/'+Date.now()+'-'+i+'.'+out.ext;
+    var result=await sb.storage.from('adil-photos').upload(path,out.blob,{
+      cacheControl:CACHE_YEAR, contentType:out.type, upsert:false
+    });
+    if(result.error){ console.error('[upload]',result.error.message); continue; }
+    urls.push(sb.storage.from('adil-photos').getPublicUrl(path).data.publicUrl);
   }
   return urls;
 }
@@ -1655,7 +1699,7 @@ function renderAdminList(){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
     if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=160&q=70';
     var imgEl=src
-      ?'<img style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy">'
+      ?'<img style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy" decoding="async">'
       :'<div style="width:76px;height:76px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var isActive=!!item.is_active, isArchived=!!item.is_archived;
     var statusColor=isArchived?'#94A3B8':isActive?'#34D399':'#FBBF24';
@@ -1769,15 +1813,16 @@ var USP='https://images.unsplash.com/';
 function imgSrc(item, size){
   if(!item) return '';
   var photos = item.photos;
-  if(photos && photos.length && photos[0]){
-    var p = photos[0];
-    if(typeof p === 'string'){
-      if(p.startsWith('http')) return p;
-      var w = size || 600;
-      return USP + p + (p.indexOf('?')>-1 ? '&' : '?') + 'w='+w+'&q=75&auto=format';
-    }
+  if(!photos || !photos.length) return '';
+  // у старых объявлений в photos могут лежать видео — для превью берём первую картинку
+  var p = null;
+  for(var k=0;k<photos.length;k++){
+    if(typeof photos[k]==='string' && photos[k] && !isVideoUrl(photos[k])){ p=photos[k]; break; }
   }
-  return '';
+  if(!p) return '';
+  if(p.startsWith('http')) return p;
+  var w = size || 600;
+  return USP + p + (p.indexOf('?')>-1 ? '&' : '?') + 'w='+w+'&q=75&auto=format';
 }
 function pStr(item){
   var note=item.price_note||'/мес';
@@ -1796,7 +1841,7 @@ function cardHtml(item,kind){
   var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
   var isNew=item.is_new||item.is_new===true;
   var src=imgSrc(item, 600);
-  var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
+  var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
   var favOn=isFav(kind,item.id);
   return '<div class="l-card" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
     +'<div class="l-card-img-wrap">'+imgEl
