@@ -3127,9 +3127,54 @@ document.addEventListener('DOMContentLoaded', async function(){
 </script>
 
 <script>
-if('serviceWorker' in navigator){
+// В нативной оболочке страница открывается по схеме capacitor://, где
+// service worker не регистрируется — там он и не нужен, файлы уже внутри.
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0
+   && !(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform())){
   navigator.serviceWorker.register('/sw.js').catch(function(){});
 }
 </script>
+<script>
+// ─── НАТИВНАЯ ОБОЛОЧКА ───────────────────────────────────────────
+// Всё под проверкой: в обычном браузере этих модулей нет и блок молчит.
+(function(){
+  if(!window.Capacitor || !Capacitor.isNativePlatform || !Capacitor.isNativePlatform()) return;
+
+  // Статус-бар под тёмную тему: светлые значки на тёмно-синем.
+  var SB = Capacitor.Plugins && Capacitor.Plugins.StatusBar;
+  if(SB){
+    SB.setStyle({style:'DARK'}).catch(function(){});      // DARK = светлый текст
+    SB.setBackgroundColor({color:'#0A1424'}).catch(function(){});
+  }
+
+  // Аппаратная кнопка «Назад» на Android. Без неё выход из приложения
+  // происходит с любого экрана — для Google Play это повод придраться.
+  var App = Capacitor.Plugins && Capacitor.Plugins.App;
+  if(App && App.addListener){
+    App.addListener('backButton', function(e){
+      // сначала закрываем то, что открыто поверх
+      var layers = [
+        ['gallery-overlay', closeGallery],
+        ['booking-overlay', function(){ closeBooking(); }],
+        ['detail-overlay',  function(){ document.getElementById('detail-overlay').classList.remove('open'); }],
+        ['auth-overlay',    function(){ document.getElementById('auth-overlay').classList.remove('open'); }]
+      ];
+      for(var i=0;i<layers.length;i++){
+        var el=document.getElementById(layers[i][0]);
+        if(el && el.classList.contains('open')){ layers[i][1](); return; }
+      }
+      var fp=document.getElementById('filter-panel');
+      if(fp && fp.classList.contains('open')){ fp.classList.remove('open'); return; }
+      // затем возвращаемся из внутренних разделов в каталог
+      if(section!=='apt'){ goSection(section==='car'?'apt':(prevSec||'apt')); return; }
+      // и только с главной выходим, если действительно некуда
+      if(e && e.canGoBack) window.history.back(); else App.exitApp();
+    });
+    // вернулись в приложение — перечитываем заявки
+    App.addListener('appStateChange', function(st){ if(st && st.isActive) loadBookings(); });
+  }
+})();
+</script>
+
 </body>
 </html>

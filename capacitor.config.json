@@ -2,9 +2,12 @@
   "appId": "com.adilrent.app",
   "appName": "AdilRent",
   "webDir": "www",
-  "server": {
-    "url": "https://www.adilrent.com",
-    "cleartext": false,
-    "allowNavigation": ["*.adilrent.com", "adilrent.com"]
+  "backgroundColor": "#0A1424",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0A1424"
+  },
+  "android": {
+    "backgroundColor": "#0A1424"
   }
 }
