@@ -1028,7 +1028,8 @@ var I18N = {
     'support.telegram.title':'Поддержка в Telegram',
     'card.new':'Новое','card.notFound':'Ничего не найдено','card.notFoundCar':'Ничего не найдено',
     'fav.empty':'Пока ничего нет.<br>Нажми ♡ на объявлении','fav.viewApts':'Смотреть квартиры',
-    'price.month':'/мес','price.day':'/сутки',
+    'price.month':'/мес','price.day':'/сутки','price.week':'/неделя','price.year':'/год',
+    'toast.noPhone':'⚠️ Хозяин не указал телефон',
     'count.listings':' объявлений','count.cars':' машин','count.saved':' сохранено',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
@@ -1088,7 +1089,8 @@ var I18N = {
     'support.telegram.title':'Support on Telegram',
     'card.new':'New','card.notFound':'Nothing found','card.notFoundCar':'Nothing found',
     'fav.empty':'Nothing here yet.<br>Tap ♡ on a listing','fav.viewApts':'Browse apartments',
-    'price.month':'/mo','price.day':'/day',
+    'price.month':'/mo','price.day':'/day','price.week':'/week','price.year':'/year',
+    'toast.noPhone':'⚠️ The owner did not provide a phone number',
     'count.listings':' listings','count.cars':' cars','count.saved':' saved',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
@@ -1448,6 +1450,7 @@ async function submitApt(){
     district_ru:district,
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
+    price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
     is_furnished:amenities.includes('Мебель'),
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:amenities, photos:photoUrls, is_active:false
@@ -1749,8 +1752,8 @@ function renderAdminList(){
       +'<div style="display:flex;gap:12px;padding:14px">'+imgEl
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:inline-flex;align-items:center;background:'+statusBg+';color:'+statusColor+';font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:6px">'+statusText+'</div>'
-      +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(item.title_ru||'Без названия')+'</div>'
-      +'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">'+date+' · '+(item.owner_name||'')+(item.phone?' · '+item.phone:'')+'</div>'
+      +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(item.title_ru||'Без названия')+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">'+date+' · '+esc(item.owner_name||'')+(item.phone?' · '+esc(item.phone):'')+'</div>'
       +'<div style="font-size:16px;font-weight:700;color:var(--brand);margin-top:4px">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
       +'</div></div>'
       +'<div style="display:flex;gap:6px;padding:0 14px 14px;flex-wrap:wrap">'+btns+'</div>'
@@ -1930,7 +1933,8 @@ function imgSrc(item, size){
 }
 function pStr(item){
   var note=item.price_note||'/мес';
-  if(note==='/мес') note=t('price.month'); else if(note==='/сутки') note=t('price.day');
+  var noteMap={'/мес':'price.month','/сутки':'price.day','/неделя':'price.week','/год':'price.year'};
+  if(noteMap[note]) note=t(noteMap[note]);
   return (item.price||0).toLocaleString()+' SAR'+note;
 }
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
@@ -1942,7 +1946,7 @@ function cardHtml(item,kind){
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
   var typeLabel = typeMap[catKey] || catKey;
-  var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
+  var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
   var isNew=item.is_new||item.is_new===true;
   var src=imgSrc(item, 600);
   var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
@@ -1954,8 +1958,8 @@ function cardHtml(item,kind){
     +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
     +'</div>'
     +'<div class="l-card-body">'
-    +'<div class="l-card-title">'+(item.title_ru||item.title||'')+'</div>'
-    +'<div class="l-card-meta">'+(kind==='apt'?'📍 '+(item.district_ru||''):item.specs_ru||'')+'</div>'
+    +'<div class="l-card-title">'+esc(item.title_ru||item.title||'')+'</div>'
+    +'<div class="l-card-meta">'+(kind==='apt'?'📍 '+esc(item.district_ru||''):esc(item.specs_ru||''))+'</div>'
     +'<div class="l-card-row"><div class="l-price">'+pStr(item)+'</div>'
     +'<button class="wa-quick" data-kind="'+kind+'" data-id="'+item.id+'" onclick="quickWA(event,this.dataset.kind,this.dataset.id)">'+waIco()+' WA</button></div>'
     +'<div class="l-badges">'+badges+'</div>'
@@ -2072,15 +2076,15 @@ function openDetail(kind,id){
   var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   if(kind==='apt'){
-    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
+    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+esc(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+esc(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
   } else {
     var fuelMapRu={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
     var fuelMapEn={petrol:'⛽ Petrol',diesel:'🛢 Diesel',hybrid:'🔋 Hybrid',electric:'⚡ Electric'};
     var fuelMap = lang==='en' ? fuelMapEn : fuelMapRu;
     var fuelLabel=item.fuel_type?(fuelMap[item.fuel_type]||item.fuel_type):'';
-    document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+(item.specs_ru||item.make+' '+(item.model||''))+'</strong></span>'+(fuelLabel?'<span>'+fuelLabel+'</span>':'');
+    document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+esc(item.specs_ru||((item.make||'')+' '+(item.model||'')).trim())+'</strong></span>'+(fuelLabel?'<span>'+esc(fuelLabel)+'</span>':'');
   }
-  document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+b+'</span>';}).join('');
+  document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
   document.getElementById('m-desc').textContent=item.description_ru||'';
   document.querySelector('.modal-scroll').scrollTop=0;
   var mapsBtn=document.getElementById('m-maps-btn');
@@ -2145,10 +2149,13 @@ document.addEventListener('keydown', function(e){
   else if(e.key==='ArrowLeft') galleryPrev();
   else if(e.key==='ArrowRight') galleryNext();
 });
+function waDigits(p){ return String(p||'').replace(/[^0-9]/g,''); }
 function openWA(){
   if(!detailItem) return;
-  var msg='Здравствуйте! Объявление «'+(detailItem.title_ru||'')+'» на Adil. Интересует аренда.';
-  window.open('https://wa.me/'+detailItem.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+  var num=waDigits(detailItem.phone);
+  if(!num){ showToast(t('toast.noPhone')); return; }
+  var msg=(lang==='en'?'Hello! Listing «':'Здравствуйте! Объявление «')+(detailItem.title_ru||'')+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
 }
 // Открывает точку в навигаторе: на iOS/Android ссылка вида ?q=lat,lng
 // перехватывается нативным приложением карт, в браузере откроется веб-версия.
@@ -2162,15 +2169,17 @@ function openGMaps(){
 }
 function openCall(){
   if(!detailItem) return;
-  var phone=detailItem.call_phone||detailItem.phone;
-  if(phone) window.open('tel:'+phone.replace(/[^0-9+]/g,''));
+  var phone=String(detailItem.call_phone||detailItem.phone||'').replace(/[^0-9+]/g,'');
+  if(phone) window.open('tel:'+phone); else showToast(t('toast.noPhone'));
 }
 function quickWA(e,kind,id){
   e.stopPropagation();
   var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
   if(!item) return;
-  var msg='Здравствуйте! «'+(item.title_ru||item.title||'')+'» на Adil. Интересует аренда.';
-  window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+  var num=waDigits(item.phone);
+  if(!num){ showToast(t('toast.noPhone')); return; }
+  var msg=(lang==='en'?'Hello! «':'Здравствуйте! «')+(item.title_ru||item.title||'')+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
 }
 
 // ─── FAVORITES ────────────────────────────────────────────────────
