@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Adil — Аренда жилья и машин в Медине</title>
 <meta name="application-name" content="Adil">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,13 +37,14 @@
   color-scheme:dark;
   --radius:12px;--nav-h:56px;--bot-h:60px;
   --safe-bot:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
   --fh:'Sora',sans-serif;--fb:'Inter',sans-serif;
 }
 html,body{height:100%;overflow:hidden}
 body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;flex-direction:column}
 
 /* NAV */
-.top-nav{height:var(--nav-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;z-index:200;position:relative}
+.top-nav{height:calc(var(--nav-h) + var(--safe-top));background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:var(--safe-top) 16px 0;flex-shrink:0;z-index:200;position:relative}
 .logo{font-family:var(--fh);font-size:20px;font-weight:700;cursor:pointer}
 .logo em{color:var(--brand);font-style:normal}
 .nav-r{display:flex;gap:8px;align-items:center}
@@ -463,7 +464,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* FULLSCREEN GALLERY */
 .gallery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .gallery-overlay.open{opacity:1;pointer-events:all}
-.gallery-top{position:absolute;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;justify-content:space-between;z-index:1}
+.gallery-top{position:absolute;top:0;left:0;right:0;padding:calc(16px + var(--safe-top)) 16px 16px;display:flex;align-items:center;justify-content:space-between;z-index:1}
 .gallery-back{background:rgba(255,255,255,.15);border:none;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:20px;backdrop-filter:blur(8px)}
 .gallery-back:hover{background:rgba(255,255,255,.25)}
 .gallery-counter{color:rgba(255,255,255,.8);font-size:14px;font-weight:500;font-family:var(--fb)}
@@ -486,7 +487,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
   html,body{overflow:auto;height:auto}
   .app-body{overflow:visible;height:auto;padding-bottom:80px}
   .bottom-nav{display:none}
-  .top-nav{padding:0 32px;height:64px}
+  .top-nav{padding:var(--safe-top) 32px 0;height:calc(64px + var(--safe-top))}
   .nav-desktop-links{display:flex;gap:4px}
   .ndl{padding:7px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--fb);transition:all .15s}
   .ndl:hover{background:var(--bg);color:var(--text)}
