@@ -275,6 +275,48 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .pin-top .pp{background:linear-gradient(135deg,#F0DDB4,#C08A2E)!important;box-shadow:0 3px 12px rgba(212,162,87,.5)!important}
 .pin-top .pp::after{border-top-color:#C08A2E!important}
 
+/* ПОКУПКА ПРОДВИЖЕНИЯ */
+.pm-opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;border:1px solid var(--border);
+  border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;font-family:var(--fb);
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.pm-opt:disabled{opacity:.5;cursor:default}
+.pm-badge{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0}
+.pm-badge.top{background:linear-gradient(135deg,#F0DDB4,#C08A2E);color:#0A1424}
+.pm-badge.hot{background:linear-gradient(135deg,#FDBA4A,#E0651C);color:#2A1405}
+.pm-txt{flex:1;min-width:0}
+.pm-name{font-size:14px;font-weight:700;color:var(--text)}
+.pm-desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+.pm-state{font-size:11px;color:var(--ok);margin-top:3px;font-weight:600}
+.pm-price{font-family:var(--fh);font-size:17px;font-weight:700;color:var(--brand);flex-shrink:0}
+.mlc-exp{font-size:11px;color:var(--muted);margin-top:7px}
+.mlc-exp.soon{color:var(--warn)}
+.mlc-exp.gone{color:var(--red);font-weight:600}
+
+/* ЗАСТАВКА ПРИ ЗАПУСКЕ */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:22px;background:radial-gradient(ellipse 120% 100% at 50% 38%,#16243C,#060C18 72%)}
+#splash.done{opacity:0;pointer-events:none;transition:opacity .45s ease}
+#splash svg{width:104px;height:104px;overflow:visible}
+/* Штрихи рисуются обводкой: длина линии равна её же длине, а сдвиг
+   уводит её за край — по мере уменьшения сдвига линия «прочерчивается». */
+#splash .stroke{fill:none;stroke:url(#sgrad);stroke-width:2.6;stroke-linecap:square;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw .85s cubic-bezier(.62,.02,.34,1) forwards}
+#splash .arc{--len:34}
+#splash .bar{--len:18;animation-delay:.5s}
+#splash .word{font-family:var(--fh);font-size:30px;font-weight:700;color:#fff;letter-spacing:-.01em;text-align:center;
+  opacity:0;animation:rise .5s cubic-bezier(.32,.72,0,1) .95s forwards}
+#splash .tag{font-size:13px;color:rgba(255,255,255,.55);opacity:0;
+  animation:rise .5s cubic-bezier(.32,.72,0,1) 1.12s forwards;text-align:center;padding:0 32px}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  #splash .stroke{animation:none;stroke-dashoffset:0}
+  #splash .word,#splash .tag{animation:none;opacity:1}
+}
+
 /* SEARCH */
 .search-bar{position:relative;margin:12px 16px 0}
 .search-bar input{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--white);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 38px 12px 40px;outline:none;-webkit-appearance:none}
@@ -535,7 +577,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
    Опознавательный признак стекла — светлая линия по верхнему краю. */
 
 /* поверхности с размытием */
-.top-nav,.bottom-nav,.ib,.map-hint,.pick-hint,#support-fab,
+.top-nav,.bottom-nav,.ib,.map-hint,.pick-hint,
 .gallery-back,.gallery-prev,.gallery-next,.m-nav{
   backdrop-filter:blur(22px) saturate(170%);
   -webkit-backdrop-filter:blur(22px) saturate(170%);
@@ -684,6 +726,21 @@ var SUPABASE_URL = 'https://ylfbwvgvcflhmswfpvdt.supabase.co';
 var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 </script>
 
+<!-- ЗАСТАВКА: буква собирается штрих за штрихом, следом название -->
+<div id="splash">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><linearGradient id="sgrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F0DDB4"/><stop offset="1" stop-color="#C08A2E"/>
+    </linearGradient></defs>
+    <path class="stroke arc" d="M10.5 26V12.8a5.5 5.5 0 0 1 11 0V26"/>
+    <path class="stroke bar" d="M7 20.2h18"/>
+  </svg>
+  <div style="text-align:center">
+    <div class="word">Adil</div>
+    <div class="tag" data-i18n="hero.title">Жильё и транспорт в Медине</div>
+  </div>
+</div>
+
 <header class="top-nav">
   <div class="logo" onclick="goSection('apt')" style="display:flex;align-items:center;gap:8px;cursor:pointer">
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Adil">
@@ -731,11 +788,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 <h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1" data-i18n="hero.title">Жильё и транспорт в Медине</span></h1>
     <p class="hero-sub" id="h-sub" data-i18n="hero.sub">Квартиры и машины в аренду. Быстро и прозрачно.</p>
 
-    <div class="hero-stats">
 
-
-      <div><div class="sn">98%</div><div class="sl" id="sl3" data-i18n="hero.happy">довольных</div></div>
-    </div>
   </div>
 
   <!-- APARTMENTS -->
@@ -772,6 +825,25 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fp-field"><label class="fp-label" data-i18n="filter.priceFrom">Цена от (SAR)</label><input class="fp-input" type="number" id="price-from" placeholder="0"></div>
         <div class="fp-sep">—</div>
         <div class="fp-field"><label class="fp-label" data-i18n="filter.priceTo">Цена до (SAR)</label><input class="fp-input" type="number" id="price-to" placeholder="99999"></div>
+      </div>
+      <div class="fp-row">
+        <div class="fp-field">
+          <label class="fp-label" data-i18n="filter.furn">Мебель</label>
+          <select class="fp-sort" id="furn-sel" style="margin-bottom:0">
+            <option value="" data-i18n="filter.any">Не важно</option>
+            <option value="yes" data-i18n="filter.furn.yes">С мебелью</option>
+            <option value="no" data-i18n="filter.furn.no">Без мебели</option>
+          </select>
+        </div>
+        <div class="fp-field">
+          <label class="fp-label" data-i18n="filter.period">Период</label>
+          <select class="fp-sort" id="period-sel" style="margin-bottom:0">
+            <option value="" data-i18n="filter.any">Не важно</option>
+            <option value="daily" data-i18n="add.f.period.daily">Посуточно</option>
+            <option value="monthly" data-i18n="add.f.period.monthly">Месячно</option>
+            <option value="yearly" data-i18n="add.f.period.yearly">Годовое</option>
+          </select>
+        </div>
       </div>
       <label class="fp-label" data-i18n="filter.walk">Пешком до Мечети Пророка</label>
       <select class="fp-sort" id="walk-sel">
@@ -835,6 +907,14 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fp-sep">—</div>
         <div class="fp-field"><label class="fp-label" data-i18n="filter.priceTo">Цена до (SAR)</label><input class="fp-input" type="number" id="car-price-to" placeholder="99999"></div>
       </div>
+      <label class="fp-label" data-i18n="filter.fuel">Тип топлива</label>
+      <select class="fp-sort" id="fuel-sel">
+        <option value="" data-i18n="filter.any">Не важно</option>
+        <option value="petrol" data-i18n="add.fc.fuel.petrol">⛽ Бензин</option>
+        <option value="diesel" data-i18n="add.fc.fuel.diesel">🛢 Дизель</option>
+        <option value="hybrid" data-i18n="add.fc.fuel.hybrid">🔋 Гибрид</option>
+        <option value="electric" data-i18n="add.fc.fuel.electric">⚡ Электро</option>
+      </select>
       <label class="fp-label" data-i18n="filter.sort">Сортировка</label>
       <select class="fp-sort" id="car-sort-sel">
         <option value="" data-i18n="filter.sort.default">По умолчанию</option>
@@ -1039,6 +1119,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="profile-section-title" data-i18n="profile.myListings">Мои объявления</div>
         <div id="my-listings-area"></div>
         <button class="f-sub" style="margin-top:4px" onclick="goSection('add')" data-i18n="profile.addListing">+ Добавить объявление</button>
+      </div>
+      <div class="profile-section" id="promo-orders-section" style="display:none">
+        <div class="profile-section-title" data-i18n="promo.orders">Заказы на продвижение</div>
+        <div id="promo-orders-area"></div>
       </div>
       <div class="profile-section" id="incoming-section" style="display:none">
         <div class="profile-section-title"><span data-i18n="bk.incoming">Заявки на мои объявления</span><span class="sec-badge" id="incoming-badge" style="display:none"></span></div>
@@ -1336,12 +1420,44 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <button class="ib-x" onclick="dismissInstall()" aria-label="Закрыть">✕</button>
 </div>
 
+<!-- ПРОДВИЖЕНИЕ -->
+<div class="overlay" id="promo-overlay" onclick="closePromo(event)">
+  <div class="bk-sheet" onclick="event.stopPropagation()">
+    <div class="drag-line"></div>
+    <div class="bk-title" data-i18n="promo.title">Продвинуть объявление</div>
+    <div class="bk-sub" id="pm-obj"></div>
+    <button class="pm-opt" id="pm-top" onclick="buyPromo('top')">
+      <div class="pm-badge top">★</div>
+      <div class="pm-txt">
+        <div class="pm-name" data-i18n="promo.top.name">Отправить в ТОП</div>
+        <div class="pm-desc" data-i18n="promo.top.desc">24 часа выше бесплатных объявлений — в списке и на карте</div>
+        <div class="pm-state" id="pm-top-state"></div>
+      </div>
+      <div class="pm-price">5 SAR</div>
+    </button>
+    <button class="pm-opt" id="pm-hot" onclick="buyPromo('hot')">
+      <div class="pm-badge hot">🔥</div>
+      <div class="pm-txt">
+        <div class="pm-name" data-i18n="promo.hot.name">Отправить в Горячие</div>
+        <div class="pm-desc" data-i18n="promo.hot.desc">24 часа с яркой меткой и подсветкой карточки</div>
+        <div class="pm-state" id="pm-hot-state"></div>
+      </div>
+      <div class="pm-price">3 SAR</div>
+    </button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.6" data-i18n="promo.pay.note">
+      После заказа откроется WhatsApp с номером заказа. Продвижение включится сразу после подтверждения оплаты.
+    </div>
+    <div style="height:14px"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
-<a href="https://t.me/AdilRentBot" target="_blank" id="support-fab" style="position:fixed;bottom:calc(var(--bot-h) + 16px);right:16px;width:46px;height:46px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,136,204,.4);z-index:290;text-decoration:none;font-size:22px;transition:transform .15s" data-i18n-title="support.telegram.title" title="Поддержка в Telegram">✈️</a>
+
 
 <script>
 // ─── SUPABASE INIT ────────────────────────────────────────────────
 var sb = null;
+setTimeout(function(){ if(typeof hideSplash==='function') hideSplash(); },5000);
 var currentUser = null;
 var lang = localStorage.getItem('adil_lang') || 'ru';
 
@@ -1359,6 +1475,8 @@ var I18N = {
     'filter.priceFrom':'Цена от (SAR)','filter.priceTo':'Цена до (SAR)','filter.sort':'Сортировка',
     'filter.sort.default':'По умолчанию','filter.sort.priceAsc':'Цена: дешевле','filter.sort.priceDesc':'Цена: дороже','filter.sort.new':'Сначала новые',
     'filter.apply':'Применить','filter.reset':'Сбросить','map.hint':'Нажми на маркер',
+    'filter.any':'Не важно','filter.furn':'Мебель','filter.furn.yes':'С мебелью','filter.furn.no':'Без мебели',
+    'filter.period':'Период','filter.fuel':'Тип топлива',
     'filter.walk':'Пешком до Мечети Пророка','filter.walk.any':'Не важно','filter.walk.10':'До 10 минут','filter.walk.15':'До 15 минут','filter.walk.20':'До 20 минут','filter.walk.30':'До 30 минут',
     'filter.sort.walk':'Ближе к мечети','walk.min':'мин','walk.m':'м','walk.km':'км',
     'search.apt.ph':'Район, название объявления...','search.car.ph':'Марка, модель...','card.nothingFound':'По запросу ничего не найдено',
@@ -1427,6 +1545,14 @@ var I18N = {
     'ib.title':'Приложение Adil','ib.sub':'Быстрее и работает без интернета','ib.go':'Установить',
     'ib.sub.ios':'Добавь на экран «Домой» — откроется как приложение','ib.how':'Как?',
     'ib.ios.help':'Нажми <b>Поделиться</b> внизу экрана, пролистай список и выбери <b>«На экран „Домой“»</b>. Adil появится рядом с обычными приложениями и будет открываться без адресной строки.',
+    'promo.title':'Продвинуть объявление','promo.promote':'Продвинуть','promo.orders':'Заказы на продвижение',
+    'promo.top.name':'Отправить в ТОП','promo.top.desc':'24 часа выше бесплатных объявлений — в списке и на карте',
+    'promo.hot.name':'Отправить в Горячие','promo.hot.desc':'24 часа с яркой меткой и подсветкой карточки',
+    'promo.pay.note':'После заказа откроется WhatsApp с номером заказа. Продвижение включится сразу после подтверждения оплаты.',
+    'promo.until':'осталось','promo.remind':'Напомнить об оплате',
+    'promo.st.pending':'Ждёт оплаты','promo.st.paid':'Оплачено','promo.st.cancelled':'Отменён',
+    'exp.left':'Снимется через','exp.gone':'Срок истёк — объявление скрыто','exp.renew':'Продлить 7 дней',
+    'toast.promoOrdered':'Заказ создан — подтвердите оплату','toast.renewed':'✓ Объявление продлено на 7 дней',
     'promo.top':'ТОП','promo.hot':'Горячее','promo.d1':'день','promo.d2':'дня','promo.d5':'дней',
     'promo.h1':'час','promo.h2':'часа','promo.h5':'часов',
     'promo.set':'Продвижение','promo.top.on':'ТОП','promo.hot.on':'Горячее','promo.off':'Снять',
@@ -1452,6 +1578,8 @@ var I18N = {
     'filter.priceFrom':'Price from (SAR)','filter.priceTo':'Price to (SAR)','filter.sort':'Sort',
     'filter.sort.default':'Default','filter.sort.priceAsc':'Price: low to high','filter.sort.priceDesc':'Price: high to low','filter.sort.new':'Newest first',
     'filter.apply':'Apply','filter.reset':'Reset','map.hint':'Tap a marker',
+    'filter.any':'Any','filter.furn':'Furniture','filter.furn.yes':'Furnished','filter.furn.no':'Unfurnished',
+    'filter.period':'Period','filter.fuel':'Fuel type',
     'filter.walk':'Walk to the Prophet\'s Mosque','filter.walk.any':'Any','filter.walk.10':'Up to 10 min','filter.walk.15':'Up to 15 min','filter.walk.20':'Up to 20 min','filter.walk.30':'Up to 30 min',
     'filter.sort.walk':'Closest to the mosque','walk.min':'min','walk.m':'m','walk.km':'km',
     'search.apt.ph':'District, listing name...','search.car.ph':'Make, model...','card.nothingFound':'Nothing matches your search',
@@ -1520,6 +1648,14 @@ var I18N = {
     'ib.title':'Adil app','ib.sub':'Faster and works offline','ib.go':'Install',
     'ib.sub.ios':'Add to the Home Screen — it opens like an app','ib.how':'How?',
     'ib.ios.help':'Tap <b>Share</b> at the bottom of the screen, scroll the list and choose <b>Add to Home Screen</b>. Adil will sit next to your other apps and open without the address bar.',
+    'promo.title':'Promote listing','promo.promote':'Promote','promo.orders':'Promotion orders',
+    'promo.top.name':'Send to TOP','promo.top.desc':'24 hours above free listings — in the list and on the map',
+    'promo.hot.name':'Send to Hot','promo.hot.desc':'24 hours with a bright badge and a highlighted card',
+    'promo.pay.note':'WhatsApp will open with your order number. Promotion starts as soon as payment is confirmed.',
+    'promo.until':'left','promo.remind':'Remind about payment',
+    'promo.st.pending':'Awaiting payment','promo.st.paid':'Paid','promo.st.cancelled':'Cancelled',
+    'exp.left':'Hides in','exp.gone':'Expired — listing is hidden','exp.renew':'Extend 7 days',
+    'toast.promoOrdered':'Order created — confirm the payment','toast.renewed':'✓ Listing extended by 7 days',
     'promo.top':'TOP','promo.hot':'Hot','promo.d1':'day','promo.d2':'days','promo.d5':'days',
     'promo.h1':'hour','promo.h2':'hours','promo.h5':'hours',
     'promo.set':'Promotion','promo.top.on':'TOP','promo.hot.on':'Hot','promo.off':'Remove',
@@ -1584,7 +1720,7 @@ var section='apt', aptView='map', aptF='all', carF='all', addType='apt', prevSec
 var liveApts=[], liveCars=[], dbReady=false;
 var detailItem=null, detailKind='apt', imgIdx=0;
 var favs=JSON.parse(localStorage.getItem('adil_favs')||'[]');
-var priceFrom=0, priceTo=999999, sortVal='', walkMax=0;
+var priceFrom=0, priceTo=999999, sortVal='', walkMax=0, furnVal='', periodVal='';
 var photoFiles={apt:[],car:[]};
 
 // ─── SUPABASE AUTH ────────────────────────────────────────────────
@@ -1624,6 +1760,7 @@ function updateProfileUI(){
   document.getElementById('p-fav-count').textContent=favs.length+t('count.listings');
   loadMyListings();
   loadBookings();
+  loadMyPromoOrders();
 }
 async function loadMyListings(){
   if(!sb||!currentUser) return;
@@ -1650,7 +1787,13 @@ async function loadMyListings(){
       +'<div class="mlc-stat"><div class="mlc-stat-n'+(s.pending>0?' hot':'')+'">'+(s.requests||0)+'</div><div class="mlc-stat-l">'+t('st.requests')+'</div></div>'
       +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.confirmed||0)+'</div><div class="mlc-stat-l">'+t('st.confirmed')+'</div></div>'
       +'</div>';
-    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+stats+'<div class="mlc-actions"><button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
+    var ex=expiryInfo(item);
+    var expHtml=ex?('<div class="mlc-exp'+(ex.expired?' gone':(parseInt(ex.left)<=2?' soon':''))+'">'
+      +(ex.expired?t('exp.gone'):(t('exp.left')+' '+ex.left))+'</div>'):'';
+    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+expHtml+stats+'<div class="mlc-actions">'
+      +'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>'
+      +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="renewListing(this.dataset.kind,this.dataset.id)">'+t('exp.renew')+'</button>'
+      +'<button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
 }
 async function deleteMyListing(kind,id){
@@ -2382,7 +2525,7 @@ function refreshAvatars(){
 
 // ─── ПОИСК ───────────────────────────────────────────────────────
 var aptQ='', carQ='', qTimer=null;
-var carPriceFrom=0, carPriceTo=999999, carSort='';
+var carPriceFrom=0, carPriceTo=999999, carSort='', fuelVal='';
 function normQ(s){ return String(s||'').toLowerCase().replace(/ё/g,'е').trim(); }
 function onSearch(kind,val){
   var clear=document.getElementById(kind+'-q-clear');
@@ -2413,13 +2556,15 @@ function applyCarFilter(){
   carPriceFrom=parseInt(document.getElementById('car-price-from').value)||0;
   carPriceTo=parseInt(document.getElementById('car-price-to').value)||999999;
   carSort=document.getElementById('car-sort-sel').value;
+  fuelVal=document.getElementById('fuel-sel').value;
   var b=document.getElementById('car-filter-btn');
-  if(b) b.classList.toggle('on',carPriceFrom>0||carPriceTo<999999||!!carSort);
+  if(b) b.classList.toggle('on',carPriceFrom>0||carPriceTo<999999||!!carSort||!!fuelVal);
   renderCars();
 }
 function resetCarFilter(){
-  carPriceFrom=0; carPriceTo=999999; carSort='';
+  carPriceFrom=0; carPriceTo=999999; carSort=''; fuelVal='';
   ['car-price-from','car-price-to'].forEach(function(id){var e=document.getElementById(id); if(e) e.value='';});
+  var fs=document.getElementById('fuel-sel'); if(fs) fs.value='';
   var s=document.getElementById('car-sort-sel'); if(s) s.value='';
   var b=document.getElementById('car-filter-btn'); if(b) b.classList.remove('on');
   renderCars();
@@ -2524,6 +2669,8 @@ function renderLegal(){
 // из браузера. Как появятся ссылки — впиши их сюда, и баннер начнёт
 // вести в магазин вместо установки веб-версии.
 var STORE_IOS='', STORE_ANDROID='';
+// Номер, куда уходят заказы на продвижение (без плюса и пробелов).
+var ADMIN_WA='966500000000';
 var deferredInstall=null, IB_SNOOZE_DAYS=30;
 
 function isNativeApp(){
@@ -2592,6 +2739,108 @@ window.addEventListener('beforeinstallprompt', function(e){
   maybeShowInstallBanner();
 });
 window.addEventListener('appinstalled', function(){ dismissInstall(); });
+
+// Заставка держится, пока идёт первая загрузка, но не дольше — иначе
+// при медленной сети человек смотрит на логотип вместо приложения.
+function hideSplash(){
+  var s=document.getElementById('splash');
+  if(!s||s.classList.contains('done')) return;
+  s.classList.add('done');
+  setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); },600);
+}
+
+// ─── ПОКУПКА ПРОДВИЖЕНИЯ ─────────────────────────────────────────
+// Цену и срок задаёт сервер (функция order_promo), клиент их только
+// показывает — иначе стоимость можно было бы подделать запросом.
+var PROMO_PRICE={top:5,hot:3}, PROMO_HOURS=24;
+var promoItem=null, promoKind='apt';
+
+function openPromo(kind,id){
+  var list=kind==='apt'?liveApts:liveCars;
+  var item=list.find(function(x){return x.id==id;});
+  if(!item||!currentUser) return;
+  promoItem=item; promoKind=kind;
+  document.getElementById('pm-obj').textContent=item.title_ru||'';
+  ['top','hot'].forEach(function(w){
+    var on=(w==='top'?isTop(item):isHot(item));
+    var el=document.getElementById('pm-'+w+'-state');
+    if(el) el.textContent=on?(t('promo.until')+' '+promoLeft(w==='top'?item.top_until:item.hot_until)):'';
+  });
+  document.getElementById('promo-overlay').classList.add('open');
+}
+function closePromo(e){
+  if(!e||e.target===document.getElementById('promo-overlay'))
+    document.getElementById('promo-overlay').classList.remove('open');
+}
+async function buyPromo(what){
+  if(!sb||!promoItem||!currentUser) return;
+  var btn=document.getElementById('pm-'+what);
+  btn.disabled=true;
+  var res=await sb.rpc('order_promo',{p_kind:promoKind,p_id:promoItem.id,p_what:what});
+  btn.disabled=false;
+  if(res.error){ showToast(res.error.message); return; }
+  closePromo();
+  // Автоматическое списание денег требует платёжного провайдера. Пока его
+  // нет, заказ уходит в WhatsApp вместе с номером: как только оплата
+  // отмечена, продвижение включается само, без ручной правки объявления.
+  var sum=PROMO_PRICE[what];
+  var msg=(lang==='en'?'Promotion order':'Заказ на продвижение')+' №'+res.data+'\n'
+    +(what==='top'?t('promo.top'):t('promo.hot'))+' · '+PROMO_HOURS+' '+t('promo.h5')+' · '+sum+' SAR\n'
+    +(lang==='en'?'Listing: ':'Объявление: ')+(promoItem.title_ru||'')+'\n'
+    +(lang==='en'?'From: ':'От: ')+myName();
+  window.open('https://wa.me/'+ADMIN_WA+'?text='+encodeURIComponent(msg),'_blank');
+  showToast(t('toast.promoOrdered'));
+  loadMyPromoOrders();
+}
+// Свои заказы владелец видит в профиле — понятно, что уже оплачено.
+var myPromoOrders=[];
+async function loadMyPromoOrders(){
+  if(!sb||!currentUser){ myPromoOrders=[]; return; }
+  var res=await sb.from('promo_orders').select('*').eq('user_id',currentUser.id)
+    .order('created_at',{ascending:false}).limit(20);
+  myPromoOrders=res.data||[];
+  renderPromoOrders();
+}
+function renderPromoOrders(){
+  var box=document.getElementById('promo-orders-area');
+  var sec=document.getElementById('promo-orders-section');
+  if(!box||!sec) return;
+  var pending=myPromoOrders.filter(function(o){return o.status==='pending';});
+  sec.style.display=myPromoOrders.length?'block':'none';
+  box.innerHTML=myPromoOrders.slice(0,6).map(function(o){
+    var st=o.status==='paid'?'confirmed':(o.status==='cancelled'?'declined':'pending');
+    return '<div class="bk-card"><div class="bk-card-top">'
+      +'<div class="bk-card-title">'+esc(o.listing_title||'')+' · '
+      +(o.kind==='top'?t('promo.top'):t('promo.hot'))+'</div>'
+      +'<div class="bk-st '+st+'">'+t('promo.st.'+o.status)+'</div></div>'
+      +'<div class="bk-row">'+o.amount_sar+' SAR · '+o.hours+' '+t('promo.h5')+'</div>'
+      +(o.status==='pending'?'<div class="bk-acts"><button class="bk-btn wa" data-id="'+o.id
+        +'" data-k="'+o.kind+'" data-t="'+esc(o.listing_title||'')+'" data-a="'+o.amount_sar
+        +'" onclick="repeatPromoMsg(this)">'+t('promo.remind')+'</button></div>':'')
+      +'</div>';
+  }).join('');
+}
+function repeatPromoMsg(el){
+  var msg=(lang==='en'?'Promotion order':'Заказ на продвижение')+' №'+el.dataset.id+'\n'
+    +(el.dataset.k==='top'?t('promo.top'):t('promo.hot'))+' · '+el.dataset.a+' SAR\n'
+    +(lang==='en'?'Listing: ':'Объявление: ')+el.dataset.t+'\n'
+    +(lang==='en'?'From: ':'От: ')+myName();
+  window.open('https://wa.me/'+ADMIN_WA+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ─── СРОК ЖИЗНИ ОБЪЯВЛЕНИЯ ───────────────────────────────────────
+function expiryInfo(item){
+  if(!item||!item.expires_at) return null;
+  var ms=new Date(item.expires_at).getTime()-Date.now();
+  return {expired:ms<=0, left:ms>0?promoLeft(item.expires_at):''};
+}
+async function renewListing(kind,id){
+  if(!sb) return;
+  var res=await sb.rpc('renew_listing',{p_kind:kind,p_id:id});
+  if(res.error){ showToast(res.error.message); return; }
+  showToast(t('toast.renewed'));
+  loadMyListings(); loadApts(); loadCars();
+}
 
 // ─── ПРОДВИЖЕНИЕ ─────────────────────────────────────────────────
 // ТОП поднимает объявление над остальными, Горячее — только подсвечивает.
@@ -2928,7 +3177,15 @@ function getFilteredApts(){
     var priceOk=a.price>=priceFrom&&a.price<=priceTo;
     var w=walkMax?walkTo(a):null;
     var walkOk=!walkMax||(w&&w.minutes<=walkMax);
-    return typeOk&&priceOk&&walkOk&&matchQ(a,aptQ,'apt');
+    var furnOk=!furnVal||(furnVal==='yes'?!!a.is_furnished:!a.is_furnished);
+    // У объявлений, поданных до появления приписки к цене, период
+    // определяем по старому признаку «посуточно».
+    var note=a.price_note||(a.is_short_term?'/сутки':'/мес');
+    var periodOk=!periodVal
+      ||(periodVal==='daily'&&(note==='/сутки'||note==='/неделя'))
+      ||(periodVal==='monthly'&&note==='/мес')
+      ||(periodVal==='yearly'&&note==='/год');
+    return typeOk&&priceOk&&walkOk&&furnOk&&periodOk&&matchQ(a,aptQ,'apt');
   });
   if(sortVal==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
   else if(sortVal==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
@@ -2960,13 +3217,15 @@ function applyFilter(){
   priceTo=parseInt(document.getElementById('price-to').value)||999999;
   sortVal=document.getElementById('sort-sel').value;
   walkMax=parseInt(document.getElementById('walk-sel').value)||0;
+  furnVal=document.getElementById('furn-sel').value;
+  periodVal=document.getElementById('period-sel').value;
   var btn=document.getElementById('filter-btn');
-  if(btn) btn.classList.toggle('on',priceFrom>0||priceTo<999999||!!sortVal||!!walkMax);
+  if(btn) btn.classList.toggle('on',priceFrom>0||priceTo<999999||!!sortVal||!!walkMax||!!furnVal||!!periodVal);
   renderApts(); renderMarkers();
 }
 function resetFilter(){
-  priceFrom=0; priceTo=999999; sortVal=''; walkMax=0;
-  var ws=document.getElementById('walk-sel'); if(ws) ws.value='';
+  priceFrom=0; priceTo=999999; sortVal=''; walkMax=0; furnVal=''; periodVal='';
+  ['walk-sel','furn-sel','period-sel'].forEach(function(id){var e=document.getElementById(id); if(e) e.value='';});
   var pf=document.getElementById('price-from'); if(pf) pf.value='';
   var pt=document.getElementById('price-to'); if(pt) pt.value='';
   var ss=document.getElementById('sort-sel'); if(ss) ss.value='';
@@ -2996,7 +3255,8 @@ function getFilteredCars(){
       : carF==='monthly' ? !!c.is_monthly
       : cat===carF;
     var priceOk=c.price>=carPriceFrom&&c.price<=carPriceTo;
-    return catOk&&priceOk&&matchQ(c,carQ,'car');
+    var fuelOk=!fuelVal||(c.fuel_type||'petrol')===fuelVal;
+    return catOk&&priceOk&&fuelOk&&matchQ(c,carQ,'car');
   });
   if(carSort==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
   else if(carSort==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
@@ -3057,8 +3317,10 @@ function openDetail(kind,id){
   if(mapsBtn){ mapsBtn.style.display=(hasPoint(item)||item.gmaps_url)?'flex':'none'; }
   var callBtn=document.getElementById('m-call-btn');
   if(callBtn){ callBtn.style.display=(item.call_phone||item.phone)?'flex':'none'; }
+  // Бронь оставлена только для жилья: у машин даты заезда и число гостей
+  // не имеют смысла, договариваются напрямую.
   var bookBtn=document.getElementById('m-book-btn');
-  if(bookBtn) bookBtn.style.display=(currentUser&&currentUser.id===item.user_id)?'none':'flex';
+  if(bookBtn) bookBtn.style.display=(kind!=='apt'||(currentUser&&currentUser.id===item.user_id))?'none':'flex';
   trackView(kind,id);
   document.getElementById('detail-overlay').classList.add('open');
 }
@@ -3318,6 +3580,8 @@ document.addEventListener('DOMContentLoaded', async function(){
   goSection('apt');
   initListMap();
   maybeShowInstallBanner();
+  // 1.6 с — столько идёт сборка буквы с появлением подписи
+  setTimeout(hideSplash,1600);
 });
 
 </script>
