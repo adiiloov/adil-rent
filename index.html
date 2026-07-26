@@ -254,6 +254,27 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
   margin-top:10px;font-size:13px;color:var(--ink,var(--text));line-height:1.7}
 .ib-help b{color:var(--brand)}
 
+/* ПРОДВИЖЕНИЕ: ТОП И ГОРЯЧЕЕ */
+.l-card.is-top{border-color:rgba(212,162,87,.55);box-shadow:0 0 0 1px rgba(212,162,87,.22),0 6px 22px rgba(0,0,0,.45)}
+.l-card.is-hot{border-color:rgba(245,158,11,.5)}
+.promo{position:absolute;top:10px;left:10px;display:flex;gap:5px;z-index:3}
+.promo span{font-size:10px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:20px;
+  text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.promo .top{background:linear-gradient(135deg,#F0DDB4,#C08A2E);color:#0A1424}
+.promo .hot{background:linear-gradient(135deg,#FDBA4A,#E0651C);color:#2A1405}
+/* метка «Новое» уступает место продвижению */
+.l-card.is-promo .tag-new{display:none}
+.m-promo{display:flex;gap:6px;margin-bottom:10px}
+.m-promo span{font-size:11px;font-weight:800;letter-spacing:.04em;padding:4px 11px;border-radius:20px;text-transform:uppercase}
+.m-promo .top{background:linear-gradient(135deg,#F0DDB4,#C08A2E);color:#0A1424}
+.m-promo .hot{background:linear-gradient(135deg,#FDBA4A,#E0651C);color:#2A1405}
+.mlc-promo{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0}
+.mlc-promo span{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+.mlc-promo .top{background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)}
+.mlc-promo .hot{background:#2A1D0C;color:#F3A952;border:1px solid rgba(224,101,28,.35)}
+.pin-top .pp{background:linear-gradient(135deg,#F0DDB4,#C08A2E)!important;box-shadow:0 3px 12px rgba(212,162,87,.5)!important}
+.pin-top .pp::after{border-top-color:#C08A2E!important}
+
 /* SEARCH */
 .search-bar{position:relative;margin:12px 16px 0}
 .search-bar input{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--white);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 38px 12px 40px;outline:none;-webkit-appearance:none}
@@ -1063,6 +1084,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="m-ava ava" id="m-ava"></div>
           <div><div class="m-on" id="m-owner"></div><div class="m-or" id="m-role"></div></div>
         </div>
+        <div class="m-promo" id="m-promo"></div>
         <div class="m-price" id="m-price"></div>
         <div class="m-meta" id="m-meta"></div>
         <div class="m-tags" id="m-tags"></div>
@@ -1296,6 +1318,10 @@ var I18N = {
     'ib.title':'Приложение Adil','ib.sub':'Быстрее и работает без интернета','ib.go':'Установить',
     'ib.sub.ios':'Добавь на экран «Домой» — откроется как приложение','ib.how':'Как?',
     'ib.ios.help':'Нажми <b>Поделиться</b> внизу экрана, пролистай список и выбери <b>«На экран „Домой“»</b>. Adil появится рядом с обычными приложениями и будет открываться без адресной строки.',
+    'promo.top':'ТОП','promo.hot':'Горячее','promo.d1':'день','promo.d2':'дня','promo.d5':'дней',
+    'promo.h1':'час','promo.h2':'часа','promo.h5':'часов',
+    'promo.set':'Продвижение','promo.top.on':'ТОП','promo.hot.on':'Горячее','promo.off':'Снять',
+    'promo.days':'На сколько дней?','toast.promoOn':'✓ Продвижение включено','toast.promoOff':'Продвижение снято',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
     'toast.photosOnly':'⚠️ Можно загружать только фотографии','auth.avatar.remove':'Удалить фото',
@@ -1385,6 +1411,10 @@ var I18N = {
     'ib.title':'Adil app','ib.sub':'Faster and works offline','ib.go':'Install',
     'ib.sub.ios':'Add to the Home Screen — it opens like an app','ib.how':'How?',
     'ib.ios.help':'Tap <b>Share</b> at the bottom of the screen, scroll the list and choose <b>Add to Home Screen</b>. Adil will sit next to your other apps and open without the address bar.',
+    'promo.top':'TOP','promo.hot':'Hot','promo.d1':'day','promo.d2':'days','promo.d5':'days',
+    'promo.h1':'hour','promo.h2':'hours','promo.h5':'hours',
+    'promo.set':'Promotion','promo.top.on':'TOP','promo.hot.on':'Hot','promo.off':'Remove',
+    'promo.days':'For how many days?','toast.promoOn':'✓ Promotion enabled','toast.promoOff':'Promotion removed',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
     'toast.photosOnly':'⚠️ Only photos can be uploaded','auth.avatar.remove':'Remove photo',
@@ -1501,13 +1531,17 @@ async function loadMyListings(){
     var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
     var s=ownerStats[item._kind+'#'+item.id]||{};
+    var promo='';
+    if(isTop(item)) promo+='<span class="top">'+t('promo.top')+' · '+promoLeft(item.top_until)+'</span>';
+    if(isHot(item)) promo+='<span class="hot">'+t('promo.hot')+' · '+promoLeft(item.hot_until)+'</span>';
+    promo=promo?'<div class="mlc-promo">'+promo+'</div>':'';
     var stats='<div class="mlc-stats">'
       +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.views||0)+'</div><div class="mlc-stat-l">'+t('st.views')+'</div></div>'
       +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.views_7d||0)+'</div><div class="mlc-stat-l">'+t('st.views7')+'</div></div>'
       +'<div class="mlc-stat"><div class="mlc-stat-n'+(s.pending>0?' hot':'')+'">'+(s.requests||0)+'</div><div class="mlc-stat-l">'+t('st.requests')+'</div></div>'
       +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.confirmed||0)+'</div><div class="mlc-stat-l">'+t('st.confirmed')+'</div></div>'
       +'</div>';
-    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+stats+'<div class="mlc-actions"><button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
+    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+stats+'<div class="mlc-actions"><button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
 }
 async function deleteMyListing(kind,id){
@@ -1955,7 +1989,7 @@ function renderMarkers(){
     var label=(a.price||0).toLocaleString()+' SAR';
     var marker=L.marker([a.lat,a.lng],{
       icon:L.divIcon({
-        className:'price-pin',
+        className:'price-pin'+(isTop(a)?' pin-top':''),
         html:'<div class="pp'+(a.is_short_term?' short':'')+'">'+label+'</div>',
         iconAnchor:[0,0]
       }),
@@ -2049,6 +2083,12 @@ function renderAdminList(){
     } else {
       btns+='<button class="admin-btn" style="background:#2A2110;color:#FBBF24" data-kind="'+kind+'" data-id="'+id+'" onclick="adminUnarchive(this.dataset.kind,this.dataset.id)">↩ Восстановить</button>';
     }
+    if(!isArchived){
+      btns+='<button class="admin-btn" style="background:#2A2114;color:#E8CFA0" data-kind="'+kind+'" data-id="'+id+'" onclick="adminPromo(this.dataset.kind,this.dataset.id,\'top\')">'
+        +(isTop(item)?'★ '+t('promo.top')+' · '+promoLeft(item.top_until):'★ '+t('promo.top'))+'</button>';
+      btns+='<button class="admin-btn" style="background:#2A1D0C;color:#F3A952" data-kind="'+kind+'" data-id="'+id+'" onclick="adminPromo(this.dataset.kind,this.dataset.id,\'hot\')">'
+        +(isHot(item)?'🔥 '+t('promo.hot')+' · '+promoLeft(item.hot_until):'🔥 '+t('promo.hot'))+'</button>';
+    }
     btns+='<button class="admin-btn reject" data-kind="'+kind+'" data-id="'+id+'" onclick="adminDelete(this.dataset.kind,this.dataset.id)">✕ Удалить</button>';
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden">'
       +'<div style="display:flex;gap:12px;padding:14px">'+imgEl
@@ -2091,6 +2131,20 @@ async function adminUnarchive(kind,id){
   if(!sb) return;
   await sb.from(kind==='apt'?'apartments':'cars').update({is_archived:false}).eq('id',id);
   showToast('↩ Восстановлено'); loadAdmin(); loadApts(); loadCars();
+}
+// Включение продвижения. Пустой ответ снимает — так одна кнопка делает и то,
+// и другое, без отдельной кнопки «снять» на каждый вид.
+async function adminPromo(kind,id,what){
+  if(!sb) return;
+  var days=prompt(t('promo.days')+' (0 — '+t('promo.off').toLowerCase()+')','7');
+  if(days===null) return;
+  var n=parseInt(days,10);
+  var until=(!n||n<=0)?null:new Date(Date.now()+n*86400000).toISOString();
+  var patch={}; patch[what==='top'?'top_until':'hot_until']=until;
+  var res=await sb.from(kind==='apt'?'apartments':'cars').update(patch).eq('id',id);
+  if(res.error){ showToast(res.error.message); return; }
+  showToast(until?t('toast.promoOn'):t('toast.promoOff'));
+  loadAdmin(); loadApts(); loadCars();
 }
 async function adminDelete(kind,id){
   if(!sb) return;
@@ -2430,6 +2484,33 @@ window.addEventListener('beforeinstallprompt', function(e){
 });
 window.addEventListener('appinstalled', function(){ dismissInstall(); });
 
+// ─── ПРОДВИЖЕНИЕ ─────────────────────────────────────────────────
+// ТОП поднимает объявление над остальными, Горячее — только подсвечивает.
+// Срок хранится датой окончания, поэтому снимается сам.
+function promoActive(until){ return !!until && new Date(until).getTime() > Date.now(); }
+function isTop(item){ return promoActive(item && item.top_until); }
+function isHot(item){ return promoActive(item && item.hot_until); }
+function promoBadges(item, cls){
+  var out='';
+  if(isTop(item)) out+='<span class="top">'+t('promo.top')+'</span>';
+  if(isHot(item)) out+='<span class="hot">'+t('promo.hot')+'</span>';
+  return out?'<div class="'+cls+'">'+out+'</div>':'';
+}
+// ТОП всегда выше — независимо от выбранной пользователем сортировки.
+function topFirst(list){
+  var top=[], rest=[];
+  list.forEach(function(x){ (isTop(x)?top:rest).push(x); });
+  return top.concat(rest);
+}
+function promoLeft(until){
+  var ms=new Date(until).getTime()-Date.now();
+  if(ms<=0) return '';
+  // округляем вверх: при остатке 4 дня 23 часа честнее сказать «5 дней»
+  var d=Math.ceil(ms/86400000), h=Math.ceil(ms/3600000);
+  if(h>24) return d+' '+plural(d,t('promo.d1'),t('promo.d2'),t('promo.d5'));
+  return h+' '+plural(h,t('promo.h1'),t('promo.h2'),t('promo.h5'));
+}
+
 // ─── РАССТОЯНИЕ ДО МЕЧЕТИ ПРОРОКА ────────────────────────────────
 // Для гостей Медины это главный параметр выбора жилья — важнее района,
 // этажа и удобств. Считаем сами из координат метки, ничего не покупая.
@@ -2708,8 +2789,10 @@ function cardHtml(item,kind){
   var src=imgSrc(item, 600);
   var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
   var favOn=isFav(kind,item.id);
-  return '<div class="l-card" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
+  var promoCls=(isTop(item)?' is-top':'')+(isHot(item)?' is-hot':'')+((isTop(item)||isHot(item))?' is-promo':'');
+  return '<div class="l-card'+promoCls+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
     +'<div class="l-card-img-wrap">'+imgEl
+    +promoBadges(item,'promo')
     +(isNew?'<div class="tag-new">'+t('card.new')+'</div>':'')
     +'<div class="tag-type">'+typeLabel+'</div>'
     +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
@@ -2745,7 +2828,7 @@ function getFilteredApts(){
     var wa=walkTo(a), wb=walkTo(b);
     return (wa?wa.meters:1e9)-(wb?wb.meters:1e9);
   });
-  return fl;
+  return topFirst(fl);
 }
 function setAptF(el,f){
   aptF=f;
@@ -2809,7 +2892,7 @@ function getFilteredCars(){
   if(carSort==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
   else if(carSort==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
   else if(carSort==='new') fl.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
-  return fl;
+  return topFirst(fl);
 }
 function setCarF(el,f){
   carF=f;
@@ -2843,6 +2926,8 @@ function openDetail(kind,id){
   document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
   document.getElementById('m-role').textContent=kind==='apt'?t('detail.owner'):t('detail.landlord');
   document.getElementById('m-price').textContent=pStr(item);
+  var mp=document.getElementById('m-promo');
+  if(mp) mp.innerHTML=promoBadges(item,'m-promo').replace(/^<div class="m-promo">|<\/div>$/g,'');
   var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
   var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
