@@ -226,6 +226,9 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .mlc-stat-l{font-size:10px;color:var(--muted);margin-top:1px}
 .sec-badge{background:var(--brand);color:var(--on-brand);font-size:10px;font-weight:700;border-radius:10px;padding:1px 7px;margin-left:6px;vertical-align:middle}
 
+.walk{display:inline-flex;align-items:center;margin-left:8px;padding:1px 8px;border-radius:20px;background:var(--brand-light);color:var(--gold-soft);font-size:11px;font-weight:600;white-space:nowrap}
+.walk-chip{background:var(--brand-light);color:var(--gold-soft);padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+
 /* SEARCH */
 .search-bar{position:relative;margin:12px 16px 0}
 .search-bar input{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--white);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 38px 12px 40px;outline:none;-webkit-appearance:none}
@@ -615,12 +618,21 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <div class="fp-sep">—</div>
         <div class="fp-field"><label class="fp-label" data-i18n="filter.priceTo">Цена до (SAR)</label><input class="fp-input" type="number" id="price-to" placeholder="99999"></div>
       </div>
+      <label class="fp-label" data-i18n="filter.walk">Пешком до Мечети Пророка</label>
+      <select class="fp-sort" id="walk-sel">
+        <option value="" data-i18n="filter.walk.any">Не важно</option>
+        <option value="10" data-i18n="filter.walk.10">До 10 минут</option>
+        <option value="15" data-i18n="filter.walk.15">До 15 минут</option>
+        <option value="20" data-i18n="filter.walk.20">До 20 минут</option>
+        <option value="30" data-i18n="filter.walk.30">До 30 минут</option>
+      </select>
       <label class="fp-label" data-i18n="filter.sort">Сортировка</label>
       <select class="fp-sort" id="sort-sel">
         <option value="" data-i18n="filter.sort.default">По умолчанию</option>
         <option value="price-asc" data-i18n="filter.sort.priceAsc">Цена: дешевле</option>
         <option value="price-desc" data-i18n="filter.sort.priceDesc">Цена: дороже</option>
         <option value="new" data-i18n="filter.sort.new">Сначала новые</option>
+        <option value="walk" data-i18n="filter.sort.walk">Ближе к мечети</option>
       </select>
       <div class="fp-actions">
         <button class="fp-apply" onclick="applyFilter()" data-i18n="filter.apply">Применить</button>
@@ -993,7 +1005,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div class="bn-plus-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><div class="bn-plus-lbl" data-i18n="nav.add.plain">Сдать</div>
   </button>
   <button class="bn" onclick="goSection('fav')" id="bn-fav"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.5-4.6-9.8-9.3C.7 7.6 2.3 4.5 5.4 4a4.6 4.6 0 0 1 6.6 2 4.6 4.6 0 0 1 6.6-2c3.1.5 4.7 3.6 3.2 6.9-2.3 4.7-9.8 9.3-9.8 9.3Z"/></svg></div><div class="bn-badge" id="fav-badge" style="display:none">0</div><div class="bn-lbl" data-i18n="fav.title">Избранное</div></button>
-  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl" data-i18n="nav.profile">Профиль</div></button>
+  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-badge" id="bookings-badge" style="display:none">0</div><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl" data-i18n="nav.profile">Профиль</div></button>
 </nav>
 
 <!-- DESKTOP FOOTER -->
@@ -1140,6 +1152,18 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <textarea class="fi fi-ta" id="bk-msg" data-i18n-ph="bk.msg.ph" placeholder="Сколько человек, во сколько заезд, вопросы..."></textarea>
     </div>
     <button class="btn-book" id="bk-submit" onclick="submitBooking()" data-i18n="bk.send">Отправить заявку</button>
+    <div id="bk-done" style="display:none">
+      <div style="text-align:center;padding:6px 0 14px">
+        <div style="font-size:38px;line-height:1">✓</div>
+        <div style="font-family:var(--fh);font-size:17px;font-weight:700;margin-top:6px" data-i18n="bk.done">Заявка отправлена</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6" data-i18n="bk.done.sub">Хозяин увидит её в приложении. Чтобы ответили быстрее — продублируй в WhatsApp, там сообщение придёт сразу.</div>
+      </div>
+      <button class="btn-wa" onclick="bookingToWhatsApp()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span data-i18n="bk.wa">Сообщить хозяину в WhatsApp</span>
+      </button>
+      <button class="bk-btn gray" style="width:100%;margin-top:8px;padding:12px" onclick="closeBooking()" data-i18n="bk.later">Позже</button>
+    </div>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5" data-i18n="bk.note">Оплата напрямую хозяину. Adil не берёт деньги за аренду и не участвует в расчётах.</div>
     <div style="height:12px"></div>
   </div>
@@ -1168,6 +1192,8 @@ var I18N = {
     'filter.priceFrom':'Цена от (SAR)','filter.priceTo':'Цена до (SAR)','filter.sort':'Сортировка',
     'filter.sort.default':'По умолчанию','filter.sort.priceAsc':'Цена: дешевле','filter.sort.priceDesc':'Цена: дороже','filter.sort.new':'Сначала новые',
     'filter.apply':'Применить','filter.reset':'Сбросить','map.hint':'Нажми на маркер',
+    'filter.walk':'Пешком до Мечети Пророка','filter.walk.any':'Не важно','filter.walk.10':'До 10 минут','filter.walk.15':'До 15 минут','filter.walk.20':'До 20 минут','filter.walk.30':'До 30 минут',
+    'filter.sort.walk':'Ближе к мечети','walk.min':'мин','walk.m':'м','walk.km':'км',
     'search.apt.ph':'Район, название объявления...','search.car.ph':'Марка, модель...','card.nothingFound':'По запросу ничего не найдено',
     'common.back':'← Назад','common.save':'Сохранить',
     'add.typeApt':'🏠 Квартира','add.typeCar':'🚗 Машина','add.tip':'✓ Бесплатно. Объявление появится после модерации.',
@@ -1224,7 +1250,9 @@ var I18N = {
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'просмотров','st.views7':'за 7 дней','st.requests':'заявок','st.confirmed':'подтверждено',
     'toast.loginToBook':'Войдите, чтобы забронировать','toast.ownListing':'Это ваше объявление',
-    'toast.bookingSent':'✓ Заявка отправлена хозяину',
+    'toast.bookingSent':'✓ Заявка отправлена хозяину','bk.done':'Заявка отправлена',
+    'bk.done.sub':'Хозяин увидит её в приложении. Чтобы ответили быстрее — продублируй в WhatsApp, там сообщение придёт сразу.',
+    'bk.wa':'Сообщить хозяину в WhatsApp','bk.later':'Позже',
     'legal.section':'Правовая информация','legal.about':'О приложении','legal.about.sub':'Как работает Adil',
     'legal.terms':'Пользовательское соглашение','legal.terms.sub':'Условия использования',
     'legal.privacy':'Конфиденциальность','legal.privacy.sub':'Какие данные мы храним',
@@ -1250,6 +1278,8 @@ var I18N = {
     'filter.priceFrom':'Price from (SAR)','filter.priceTo':'Price to (SAR)','filter.sort':'Sort',
     'filter.sort.default':'Default','filter.sort.priceAsc':'Price: low to high','filter.sort.priceDesc':'Price: high to low','filter.sort.new':'Newest first',
     'filter.apply':'Apply','filter.reset':'Reset','map.hint':'Tap a marker',
+    'filter.walk':'Walk to the Prophet\'s Mosque','filter.walk.any':'Any','filter.walk.10':'Up to 10 min','filter.walk.15':'Up to 15 min','filter.walk.20':'Up to 20 min','filter.walk.30':'Up to 30 min',
+    'filter.sort.walk':'Closest to the mosque','walk.min':'min','walk.m':'m','walk.km':'km',
     'search.apt.ph':'District, listing name...','search.car.ph':'Make, model...','card.nothingFound':'Nothing matches your search',
     'common.back':'← Back','common.save':'Save',
     'add.typeApt':'🏠 Apartment','add.typeCar':'🚗 Car','add.tip':'✓ Free. The listing will appear after moderation.',
@@ -1306,7 +1336,9 @@ var I18N = {
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views','st.views7':'last 7 days','st.requests':'requests','st.confirmed':'confirmed',
     'toast.loginToBook':'Log in to book','toast.ownListing':'This is your own listing',
-    'toast.bookingSent':'✓ Request sent to the owner',
+    'toast.bookingSent':'✓ Request sent to the owner','bk.done':'Request sent',
+    'bk.done.sub':'The owner will see it in the app. For a faster reply, send it on WhatsApp too — that arrives instantly.',
+    'bk.wa':'Message the owner on WhatsApp','bk.later':'Later',
     'legal.section':'Legal','legal.about':'About','legal.about.sub':'How Adil works',
     'legal.terms':'Terms of Service','legal.terms.sub':'Conditions of use',
     'legal.privacy':'Privacy Policy','legal.privacy.sub':'What data we store',
@@ -1371,7 +1403,7 @@ var section='apt', aptView='map', aptF='all', carF='all', addType='apt', prevSec
 var liveApts=[], liveCars=[], dbReady=false;
 var detailItem=null, detailKind='apt', imgIdx=0;
 var favs=JSON.parse(localStorage.getItem('adil_favs')||'[]');
-var priceFrom=0, priceTo=999999, sortVal='';
+var priceFrom=0, priceTo=999999, sortVal='', walkMax=0;
 var photoFiles={apt:[],car:[]};
 
 // ─── SUPABASE AUTH ────────────────────────────────────────────────
@@ -2282,10 +2314,35 @@ function renderLegal(){
   var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0;
 }
 
+// ─── РАССТОЯНИЕ ДО МЕЧЕТИ ПРОРОКА ────────────────────────────────
+// Для гостей Медины это главный параметр выбора жилья — важнее района,
+// этажа и удобств. Считаем сами из координат метки, ничего не покупая.
+function haversineM(lat1,lng1,lat2,lng2){
+  var R=6371000, rad=Math.PI/180;
+  var dLat=(lat2-lat1)*rad, dLng=(lng2-lng1)*rad;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)
+       +Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+// По прямой идти нельзя — улицы дают крюк. Множитель 1.25 приближает
+// реальный пеший путь, скорость 4.5 км/ч учитывает жару и толпу у Харама.
+var WALK_DETOUR=1.25, WALK_KMH=4.5;
+function walkTo(item){
+  if(!item||item.lat==null||item.lng==null) return null;
+  var meters=haversineM(item.lat,item.lng,MOSQUE[0],MOSQUE[1])*WALK_DETOUR;
+  return {meters:Math.round(meters), minutes:Math.max(1,Math.round(meters/1000/WALK_KMH*60))};
+}
+function walkLabel(item){
+  var w=walkTo(item);
+  if(!w||w.minutes>90) return '';   // за полтора часа пешком уже не ходят
+  var dist=w.meters<1000?(w.meters+' '+t('walk.m')):((w.meters/1000).toFixed(1)+' '+t('walk.km'));
+  return '🕌 '+w.minutes+' '+t('walk.min')+' · '+dist;
+}
+
 // ─── БРОНИРОВАНИЕ ────────────────────────────────────────────────
 // Деньги через приложение не проходят: заявка фиксирует даты и контакты,
 // расчёт остаётся между людьми.
-var bkItem=null, bkKind='apt', bkBusy=[];
+var bkItem=null, bkKind='apt', bkBusy=[], lastBooking=null;
 function ymd(d){ return d.toISOString().slice(0,10); }
 function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
 function fmtDate(s){
@@ -2313,6 +2370,10 @@ async function openBooking(){
   document.getElementById('bk-obj').textContent=(bkItem.title_ru||'')+' · '+pStr(bkItem);
   document.getElementById('bk-err').classList.remove('on');
   document.getElementById('bk-msg').value='';
+  document.getElementById('bk-done').style.display='none';
+  document.getElementById('bk-submit').style.display='flex';
+  document.querySelector('.bk-total').style.display='flex';
+  document.querySelectorAll('.bk-sheet .row2, .bk-sheet .fg').forEach(function(e){ e.style.display=''; });
   document.getElementById('bk-guests-wrap').style.display=bkKind==='apt'?'block':'none';
   var today=ymd(new Date());
   var f=document.getElementById('bk-from'), tt=document.getElementById('bk-to');
@@ -2367,9 +2428,17 @@ async function submitBooking(){
   }]);
   btn.disabled=false; btn.textContent=t('bk.send');
   if(res.error){ bkErr(res.error.message); return; }
-  closeBooking();
+  // Не закрываем окно: предлагаем сразу продублировать заявку в WhatsApp —
+  // push и почту без внешних ключей не сделать, а WhatsApp у всех и так открыт.
+  lastBooking={item:bkItem, from:from, to:to,
+    guests:bkKind==='apt'?document.getElementById('bk-guests').value:null,
+    msg:document.getElementById('bk-msg').value.trim()};
+  ['bk-from','bk-to','bk-guests-wrap','bk-msg','bk-submit','bk-total','bk-busy'].forEach(function(id){
+    var e=document.getElementById(id); if(e&&e.parentNode) (id==='bk-from'||id==='bk-to'?e.closest('.row2'):e.closest('.fg')||e).style.display='none';
+  });
+  document.querySelector('.bk-total').style.display='none';
+  document.getElementById('bk-done').style.display='block';
   document.getElementById('detail-overlay').classList.remove('open');
-  showToast(t('toast.bookingSent'));
   loadBookings();
 }
 
@@ -2411,6 +2480,22 @@ function bkCard(b,asOwner){
     +(acts?'<div class="bk-acts">'+acts+'</div>':'')
     +'</div>';
 }
+function bookingToWhatsApp(){
+  if(!lastBooking) return;
+  var b=lastBooking, num=waDigits(b.item.phone);
+  if(!num){ showToast(t('toast.noPhone')); return; }
+  var lines=[
+    (lang==='en'?'Hello! I sent a booking request on Adil.':'Здравствуйте! Я отправил заявку на бронь через Adil.'),
+    (lang==='en'?'Listing: ':'Объявление: ')+(b.item.title_ru||''),
+    (lang==='en'?'Dates: ':'Даты: ')+fmtDate(b.from)+' — '+fmtDate(b.to),
+    b.guests?((lang==='en'?'Guests: ':'Гостей: ')+b.guests):'',
+    (lang==='en'?'Name: ':'Имя: ')+myName(),
+    b.msg||''
+  ].filter(Boolean);
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
+  closeBooking();
+  showToast(t('toast.bookingSent'));
+}
 function waTo(phone){
   var num=waDigits(phone);
   if(!num){ showToast(t('toast.noPhone')); return; }
@@ -2421,6 +2506,8 @@ function renderBookings(){
   var pend=incoming.filter(function(b){return b.status==='pending';}).length;
   var badge=document.getElementById('incoming-badge');
   if(badge){ badge.textContent=pend||''; badge.style.display=pend?'inline-block':'none'; }
+  var navBadge=document.getElementById('bookings-badge');
+  if(navBadge){ navBadge.textContent=pend||''; navBadge.style.display=pend?'block':'none'; }
   var incSec=document.getElementById('incoming-section');
   if(incSec) incSec.style.display=incoming.length?'block':'none';
   if(inc) inc.innerHTML=incoming.map(function(b){return bkCard(b,true);}).join('');
@@ -2513,7 +2600,7 @@ function cardHtml(item,kind){
     +'</div>'
     +'<div class="l-card-body">'
     +'<div class="l-card-title">'+esc(item.title_ru||item.title||'')+'</div>'
-    +'<div class="l-card-meta">'+(kind==='apt'?'📍 '+esc(item.district_ru||''):esc(item.specs_ru||''))+'</div>'
+    +'<div class="l-card-meta">'+(kind==='apt'?('📍 '+esc(item.district_ru||'')+(walkLabel(item)?'<span class="walk">'+walkLabel(item)+'</span>':'')):esc(item.specs_ru||''))+'</div>'
     +'<div class="l-card-row"><div class="l-price">'+pStr(item)+'</div>'
     +'<button class="wa-quick" data-kind="'+kind+'" data-id="'+item.id+'" onclick="quickWA(event,this.dataset.kind,this.dataset.id)">'+waIco()+' WA</button></div>'
     +'<div class="l-badges">'+badges+'</div>'
@@ -2531,11 +2618,17 @@ function getFilteredApts(){
       ||aptF==='short'&&a.is_short_term
       ||aptF==='furnished'&&a.is_furnished;
     var priceOk=a.price>=priceFrom&&a.price<=priceTo;
-    return typeOk&&priceOk&&matchQ(a,aptQ,'apt');
+    var w=walkMax?walkTo(a):null;
+    var walkOk=!walkMax||(w&&w.minutes<=walkMax);
+    return typeOk&&priceOk&&walkOk&&matchQ(a,aptQ,'apt');
   });
   if(sortVal==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
   else if(sortVal==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
   else if(sortVal==='new') fl.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
+  else if(sortVal==='walk') fl.sort(function(a,b){
+    var wa=walkTo(a), wb=walkTo(b);
+    return (wa?wa.meters:1e9)-(wb?wb.meters:1e9);
+  });
   return fl;
 }
 function setAptF(el,f){
@@ -2558,12 +2651,14 @@ function applyFilter(){
   priceFrom=parseInt(document.getElementById('price-from').value)||0;
   priceTo=parseInt(document.getElementById('price-to').value)||999999;
   sortVal=document.getElementById('sort-sel').value;
+  walkMax=parseInt(document.getElementById('walk-sel').value)||0;
   var btn=document.getElementById('filter-btn');
-  if(btn) btn.classList.toggle('on',priceFrom>0||priceTo<999999||sortVal);
+  if(btn) btn.classList.toggle('on',priceFrom>0||priceTo<999999||!!sortVal||!!walkMax);
   renderApts(); renderMarkers();
 }
 function resetFilter(){
-  priceFrom=0; priceTo=999999; sortVal='';
+  priceFrom=0; priceTo=999999; sortVal=''; walkMax=0;
+  var ws=document.getElementById('walk-sel'); if(ws) ws.value='';
   var pf=document.getElementById('price-from'); if(pf) pf.value='';
   var pt=document.getElementById('price-to'); if(pt) pt.value='';
   var ss=document.getElementById('sort-sel'); if(ss) ss.value='';
@@ -2636,7 +2731,8 @@ function openDetail(kind,id){
   var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   if(kind==='apt'){
-    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+esc(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+esc(item.district_ru||'')+'</strong></span>'+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
+    var wl=walkLabel(item);
+    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+esc(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+esc(item.district_ru||'')+'</strong></span>'+(wl?'<span class="walk-chip">'+wl+'</span>':'')+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
   } else {
     var fuelMapRu={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
     var fuelMapEn={petrol:'⛽ Petrol',diesel:'🛢 Diesel',hybrid:'🔋 Hybrid',electric:'⚡ Electric'};
@@ -2905,6 +3001,8 @@ document.addEventListener('DOMContentLoaded', async function(){
   await loadApts();
   await loadCars();
   updateFavBadge();
+  // Владелец узнаёт о новых заявках, вернувшись в приложение.
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadBookings(); });
   goSection('apt');
   initListMap();
 });
