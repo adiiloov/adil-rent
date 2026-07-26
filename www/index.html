@@ -148,7 +148,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* price markers */
 .price-pin{background:none!important;border:none!important}
 /* .pp сам себя центрирует над точкой — ширина зависит от длины цены */
-.price-pin .pp{background:var(--brand);color:var(--on-brand);font-size:11px;font-weight:700;font-family:var(--fb);padding:5px 9px;border-radius:13px;white-space:nowrap;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.28);position:absolute;left:0;top:-7px;transform:translate(-50%,-100%);transform-origin:50% 100%;transition:transform .12s}
+.price-pin .pp{background:linear-gradient(180deg,#C9A365,#A8813C);color:var(--on-brand);font-size:11px;font-weight:700;font-family:var(--fb);padding:5px 9px;border-radius:13px;white-space:nowrap;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.28);position:absolute;left:0;top:-7px;transform:translate(-50%,-100%);transform-origin:50% 100%;transition:transform .12s}
 .price-pin .pp::after{content:'';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--brand)}
 .price-pin .pp.short{background:#F59E0B}
 .price-pin .pp.short::after{border-top-color:#F59E0B}
@@ -526,6 +526,115 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* TOAST */
 .toast{position:fixed;bottom:calc(var(--bot-h) + 12px);left:50%;transform:translateX(-50%) translateY(16px);background:#1B2A45;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:12px;font-size:14px;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;border-left:3px solid var(--brand)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══ СТЕКЛО ═══════════════════════════════════════════════════════
+   Размытие фона — вещь дорогая, поэтому оно только на закреплённых
+   панелях, которых на экране единицы. Всё, что попадает в прокрутку
+   (карточки, метки, кнопки в списках), получает тот же вид слоистыми
+   градиентами и бликом по кромке — без размытия, чтобы не дёргалось.
+   Опознавательный признак стекла — светлая линия по верхнему краю. */
+
+/* поверхности с размытием */
+.top-nav,.bottom-nav,.ib,.map-hint,.pick-hint,#support-fab,
+.gallery-back,.gallery-prev,.gallery-next,.m-nav{
+  backdrop-filter:blur(22px) saturate(170%);
+  -webkit-backdrop-filter:blur(22px) saturate(170%);
+}
+.top-nav{
+  background:linear-gradient(180deg,rgba(22,36,60,.82),rgba(10,20,36,.9));
+  border-bottom:1px solid rgba(255,255,255,.07);
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,.35)
+}
+.bottom-nav{
+  background:linear-gradient(180deg,rgba(20,32,54,.86),rgba(10,20,36,.94));
+  border-top:1px solid rgba(255,255,255,.09);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 -8px 28px rgba(0,0,0,.4)
+}
+.ib{
+  background:linear-gradient(180deg,rgba(28,44,72,.9),rgba(14,25,44,.94));
+  border:1px solid rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 12px 36px rgba(0,0,0,.55)
+}
+.map-hint,.pick-hint{
+  background:linear-gradient(180deg,rgba(26,42,68,.86),rgba(14,25,44,.9));
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 16px rgba(0,0,0,.4)
+}
+
+/* стекло без размытия — для всего, что живёт в прокрутке */
+.pill,.filter-btn,.view-toggle,.btn-call,.m-close,.fav-btn,.tag-type,
+.badge,.am,.back-btn,.bk-btn.gray,.mlc-btn.edit,.lang-row,.btn-login{
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09)
+}
+.fav-btn,.tag-type{
+  background:linear-gradient(180deg,rgba(6,12,24,.62),rgba(6,12,24,.78));
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:none;-webkit-backdrop-filter:none
+}
+.vbtn.active{
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 2px 8px rgba(0,0,0,.35)
+}
+
+/* золотые кнопки: блик сверху, тень снизу — эффект налитой капли */
+.f-sub,.auth-btn,.btn-book,.s-btn,.empty-btn,.fp-apply,.dfn-plus,
+.btn-signup,.pill.active,.bn-plus-circle,.ib-go,.lb.active{
+  background:linear-gradient(180deg,#E8C57F 0%,#D4A257 46%,#C08A2E 100%);
+  border:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),
+             inset 0 -1px 0 rgba(0,0,0,.16),
+             0 4px 14px rgba(212,162,87,.3)
+}
+.bn-plus-circle{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 20px rgba(212,162,87,.45)}
+.f-sub:disabled,.auth-btn:disabled,.btn-book:disabled{
+  background:linear-gradient(180deg,#33456349,#2A3B58);box-shadow:none
+}
+.btn-wa{
+  background:linear-gradient(180deg,#3BE07A,#22C35C);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 14px rgba(37,211,102,.28)
+}
+.wa-quick{
+  background:linear-gradient(180deg,#3BE07A,#22C35C);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 10px rgba(37,211,102,.25)
+}
+
+/* карточки и листы: блик по верхней кромке */
+.l-card,.form-card,.bk-card,.my-listing-card,.admin-stat{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055)
+}
+.l-card.is-top{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),
+  0 0 0 1px rgba(212,162,87,.22),0 8px 26px rgba(0,0,0,.5)}
+.modal-sheet,.auth-modal,.bk-sheet{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 -10px 46px rgba(0,0,0,.6)
+}
+.price-pin .pp{box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 3px 10px rgba(0,0,0,.4)}
+
+/* нажатие: кнопка чуть проседает — как у нативных элементов */
+button,.pill,.am,.l-card,.profile-menu-item,.bn,.bn-plus{
+  transition:transform .16s cubic-bezier(.32,.72,0,1),
+             background .18s ease, box-shadow .18s ease, border-color .18s ease
+}
+button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale(.955)}
+.l-card:active{transform:scale(.985)}
+.profile-menu-item:active{transform:scale(.99);opacity:.75}
+
+/* появление разделов */
+@keyframes sec-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sec-anim{animation:sec-in .3s cubic-bezier(.32,.72,0,1)}
+
+/* Если размытие не поддерживается, подставляем плотный фон:
+   иначе панели окажутся полупрозрачными и текст поедет по контенту. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .top-nav{background:#0C1728}
+  .bottom-nav{background:#101B30}
+  .ib,.map-hint,.pick-hint{background:#16243C}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .sec-anim{animation:none}
+}
 
 /* DESKTOP */
 @media(min-width:768px){
@@ -1990,7 +2099,7 @@ function renderMarkers(){
     var marker=L.marker([a.lat,a.lng],{
       icon:L.divIcon({
         className:'price-pin'+(isTop(a)?' pin-top':''),
-        html:'<div class="pp'+(a.is_short_term?' short':'')+'">'+label+'</div>',
+        html:'<div class="pp'+(a.is_short_term?' short':'')+'">'+(isTop(a)?'★ ':'')+label+'</div>',
         iconAnchor:[0,0]
       }),
       riseOnHover:true
@@ -3118,6 +3227,8 @@ function goSection(s){
   if(hero) hero.style.display=(s==='apt'||s==='car')?'block':'none';
   if(s==='admin') loadAdmin();
   if(s==='legal') renderLegal();
+  var shown=document.getElementById('sec-'+s);
+  if(shown){ shown.classList.remove('sec-anim'); void shown.offsetWidth; shown.classList.add('sec-anim'); }
   var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0; window.scrollTo(0,0);
 }
 function goBack(){ goSection(prevSec||'apt'); }
