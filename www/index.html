@@ -928,7 +928,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div id="auth-signup-form" style="display:none">
       <div class="auth-field"><label class="auth-label" data-i18n="auth.name">Имя</label><input class="auth-input" type="text" id="signup-name" placeholder="Азамат"></div>
       <div class="auth-field"><label class="auth-label" data-i18n="auth.email">Email</label><input class="auth-input" type="email" id="signup-email" placeholder="your@email.com"></div>
-      <div class="auth-field"><label class="auth-label" data-i18n="auth.pass">Пароль</label><input class="auth-input" type="password" id="signup-pass" data-i18n-ph="auth.pass.min.ph" placeholder="Минимум 6 символов"></div>
+      <div class="auth-field"><label class="auth-label" data-i18n="auth.pass">Пароль</label><input class="auth-input" type="password" id="signup-pass" data-i18n-ph="auth.pass.min.ph" placeholder="Минимум 8 символов, буквы и цифры"></div>
       <button class="auth-btn" onclick="doSignup()" id="signup-btn" data-i18n="auth.createAccount">Создать аккаунт</button>
       <div class="auth-divider"><span data-i18n="auth.or">или</span></div>
       <div style="font-size:13px;text-align:center;color:var(--muted)"><span data-i18n="auth.haveAccount">Уже есть аккаунт?</span> <span style="color:var(--brand);cursor:pointer;font-weight:600" onclick="switchAuthTab('login')" data-i18n="nav.login">Войти</span></div>
@@ -1022,7 +1022,7 @@ var I18N = {
     'admin.title':'⚙️ Панель администратора','admin.sub':'Управление объявлениями','admin.noAccess':'Нет доступа','admin.adminsOnly':'Только для администраторов',
     'detail.whatsapp':'Написать в WhatsApp','detail.call':'Позвонить','detail.maps':'Открыть в навигаторе','detail.owner':'Владелец','detail.landlord':'Арендодатель','detail.ownerFallback':'Хозяин','detail.shortTerm':'Посуточно',
     'auth.welcome':'Добро пожаловать в Adil','auth.welcome.sub':'Войди или создай аккаунт','auth.email':'Email','auth.pass':'Пароль','auth.or':'или',
-    'auth.noAccount':'Нет аккаунта?','auth.signupLink':'Зарегистрируйся','auth.name':'Имя','auth.pass.min.ph':'Минимум 6 символов',
+    'auth.noAccount':'Нет аккаунта?','auth.signupLink':'Зарегистрируйся','auth.name':'Имя','auth.pass.min.ph':'Минимум 8 символов, буквы и цифры',
     'auth.createAccount':'Создать аккаунт','auth.haveAccount':'Уже есть аккаунт?','auth.phone':'Телефон',
     'auth.editTitle':'Редактировать профиль','auth.editSub':'Имя и телефон',
     'support.telegram.title':'Поддержка в Telegram',
@@ -1082,7 +1082,7 @@ var I18N = {
     'admin.title':'⚙️ Admin panel','admin.sub':'Listing management','admin.noAccess':'No access','admin.adminsOnly':'Admins only',
     'detail.whatsapp':'Message on WhatsApp','detail.call':'Call','detail.maps':'Open in maps','detail.owner':'Owner','detail.landlord':'Landlord','detail.ownerFallback':'Owner','detail.shortTerm':'Daily',
     'auth.welcome':'Welcome to Adil','auth.welcome.sub':'Log in or create an account','auth.email':'Email','auth.pass':'Password','auth.or':'or',
-    'auth.noAccount':'No account?','auth.signupLink':'Sign up','auth.name':'Name','auth.pass.min.ph':'Minimum 6 characters',
+    'auth.noAccount':'No account?','auth.signupLink':'Sign up','auth.name':'Name','auth.pass.min.ph':'At least 8 characters, letters and digits',
     'auth.createAccount':'Create account','auth.haveAccount':'Already have an account?','auth.phone':'Phone',
     'auth.editTitle':'Edit profile','auth.editSub':'Name and phone',
     'support.telegram.title':'Support on Telegram',
@@ -1292,7 +1292,10 @@ async function doSignup(){
   var email=document.getElementById('signup-email').value.trim();
   var pass=document.getElementById('signup-pass').value;
   if(!name||!email||!pass){ showErr(lang==='en'?'Fill in all fields':'Заполни все поля'); return; }
-  if(pass.length<6){ showErr(lang==='en'?'Password must be at least 6 characters':'Пароль минимум 6 символов'); return; }
+  // Требования должны совпадать с настройками Supabase Auth, иначе человек
+  // получит невнятную ошибку от сервера вместо понятной подсказки.
+  if(pass.length<8){ showErr(lang==='en'?'Password must be at least 8 characters':'Пароль минимум 8 символов'); return; }
+  if(!/[0-9]/.test(pass)||!/[a-zA-Zа-яА-Я]/.test(pass)){ showErr(lang==='en'?'Password must contain letters and digits':'Пароль должен содержать буквы и цифры'); return; }
   var btn=document.getElementById('signup-btn');
   btn.disabled=true; btn.textContent=t('btn.creatingAccount');
   var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});
