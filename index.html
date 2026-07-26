@@ -171,6 +171,16 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .pick-pin{background:none!important;border:none!important}
 .pick-pin .pk{width:30px;height:42px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
 
+/* SEARCH */
+.search-bar{position:relative;margin:12px 16px 0}
+.search-bar input{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--white);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 38px 12px 40px;outline:none;-webkit-appearance:none}
+.search-bar input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(212,162,87,.15)}
+.search-bar input::placeholder{color:var(--muted)}
+.search-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;pointer-events:none}
+.search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:none;border-radius:50%;background:var(--surface-2);color:var(--muted);font-size:14px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center}
+.search-clear.on{display:flex}
+@media(min-width:768px){.search-bar{margin:16px 32px 0;max-width:520px}}
+
 /* CARDS */
 .card-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
 .l-card{background:var(--white);border:1px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .2s}
@@ -221,7 +231,12 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 /* DETAIL MODAL */
 .m-imgs{position:relative;height:260px;background:var(--bg);cursor:pointer;flex-shrink:0}
 .m-imgs img{width:100%;height:100%;object-fit:cover;display:block}
-.m-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.m-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2}
+.m-dot{cursor:pointer}
+.m-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:none;background:rgba(6,12,24,.55);color:#fff;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.m-nav.prev{left:8px}
+.m-nav.next{right:8px}
+.m-nav:active{background:rgba(6,12,24,.8)}
 .m-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5)}
 .m-dot.on{background:#fff;width:18px;border-radius:3px}
 .m-body{padding:16px}
@@ -512,6 +527,11 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
   <!-- APARTMENTS -->
   <div id="sec-apt">
+    <div class="search-bar">
+      <svg class="search-ico" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="text" id="apt-q" data-i18n-ph="search.apt.ph" placeholder="Район, название объявления..." oninput="onSearch('apt',this.value)">
+      <button class="search-clear" id="apt-q-clear" onclick="clearSearch('apt')" aria-label="×">✕</button>
+    </div>
     <div class="pills" id="apt-pills">
       <button class="pill active" onclick="setAptF(this,'all')" data-i18n="f.all">Все</button>
       <button class="pill" onclick="setAptF(this,'studio')" data-i18n="apt.studio">Студия</button>
@@ -568,6 +588,11 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
   <!-- CARS -->
   <div id="sec-car" style="display:none">
+    <div class="search-bar">
+      <svg class="search-ico" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="text" id="car-q" data-i18n-ph="search.car.ph" placeholder="Марка, модель..." oninput="onSearch('car',this.value)">
+      <button class="search-clear" id="car-q-clear" onclick="clearSearch('car')" aria-label="×">✕</button>
+    </div>
     <div class="pills" id="car-pills">
       <button class="pill active" onclick="setCarF(this,'all')" data-i18n="f.all">Все</button>
       <button class="pill" onclick="setCarF(this,'sedan')" data-i18n="car.sedan">Седан</button>
@@ -576,6 +601,29 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <button class="pill" onclick="setCarF(this,'luxury')" data-i18n="car.luxury">Премиум</button>
       <button class="pill" onclick="setCarF(this,'daily')" data-i18n="car.daily">Посуточно</button>
       <button class="pill" onclick="setCarF(this,'monthly')" data-i18n="car.monthly">Помесячно</button>
+    </div>
+    <div class="view-toggle" style="justify-content:flex-end">
+      <button class="filter-btn" onclick="document.getElementById('car-filter-panel').classList.toggle('open')" id="car-filter-btn">
+        ⚙ <span data-i18n="apt.filter">Фильтр</span>
+      </button>
+    </div>
+    <div class="filter-panel" id="car-filter-panel">
+      <div class="fp-row">
+        <div class="fp-field"><label class="fp-label" data-i18n="filter.priceFrom">Цена от (SAR)</label><input class="fp-input" type="number" id="car-price-from" placeholder="0"></div>
+        <div class="fp-sep">—</div>
+        <div class="fp-field"><label class="fp-label" data-i18n="filter.priceTo">Цена до (SAR)</label><input class="fp-input" type="number" id="car-price-to" placeholder="99999"></div>
+      </div>
+      <label class="fp-label" data-i18n="filter.sort">Сортировка</label>
+      <select class="fp-sort" id="car-sort-sel">
+        <option value="" data-i18n="filter.sort.default">По умолчанию</option>
+        <option value="price-asc" data-i18n="filter.sort.priceAsc">Цена: дешевле</option>
+        <option value="price-desc" data-i18n="filter.sort.priceDesc">Цена: дороже</option>
+        <option value="new" data-i18n="filter.sort.new">Сначала новые</option>
+      </select>
+      <div class="fp-actions">
+        <button class="fp-apply" onclick="applyCarFilter()" data-i18n="filter.apply">Применить</button>
+        <button class="fp-reset" onclick="resetCarFilter()" data-i18n="filter.reset">Сбросить</button>
+      </div>
     </div>
     <div class="sec-hdr"><h2 data-i18n="car.title">Аренда машин</h2><span id="car-cnt"></span></div>
     <div id="car-cards" class="card-list"></div>
@@ -773,10 +821,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           </div>
           <div class="pmi-arrow">›</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" onclick="toggleLang()">
           <div class="pmi-left">
             <div class="pmi-ico gray">🌐</div>
-            <div><div class="pmi-label" data-i18n="profile.lang">Язык</div><div class="pmi-sub">Русский / English</div></div>
+            <div><div class="pmi-label" data-i18n="profile.lang">Язык</div><div class="pmi-sub" data-i18n="profile.lang.switch">Переключить на English</div></div>
           </div>
           <div class="pmi-arrow">›</div>
         </div>
@@ -869,8 +917,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <div class="modal-sheet">
     <div class="drag-line"></div>
     <div class="modal-scroll">
-      <div class="m-imgs" id="m-imgs" onclick="openGallery(detailItem&&detailItem.photos?detailItem.photos:[],imgIdx)" style="cursor:zoom-in">
-        <img id="m-img" src="" alt="" decoding="async">
+      <div class="m-imgs" id="m-imgs" style="cursor:zoom-in">
+        <img id="m-img" src="" alt="" decoding="async" onclick="openGallery(detailItem&&detailItem.photos?detailItem.photos:[],imgIdx)">
+        <button class="m-nav prev" id="m-prev" onclick="stepImg(event,-1)" aria-label="Предыдущее фото">‹</button>
+        <button class="m-nav next" id="m-next" onclick="stepImg(event,1)" aria-label="Следующее фото">›</button>
         <div class="m-dots" id="m-dots"></div>
       </div>
       <div class="m-body">
@@ -991,6 +1041,7 @@ var I18N = {
     'filter.priceFrom':'Цена от (SAR)','filter.priceTo':'Цена до (SAR)','filter.sort':'Сортировка',
     'filter.sort.default':'По умолчанию','filter.sort.priceAsc':'Цена: дешевле','filter.sort.priceDesc':'Цена: дороже','filter.sort.new':'Сначала новые',
     'filter.apply':'Применить','filter.reset':'Сбросить','map.hint':'Нажми на маркер',
+    'search.apt.ph':'Район, название объявления...','search.car.ph':'Марка, модель...','card.nothingFound':'По запросу ничего не найдено',
     'common.back':'← Назад','common.save':'Сохранить',
     'add.typeApt':'🏠 Квартира','add.typeCar':'🚗 Машина','add.tip':'✓ Бесплатно. Объявление появится после модерации.',
     'add.f.title':'Заголовок','add.f.title.ph':'Уютная студия у Мечети Пророка',
@@ -1028,6 +1079,7 @@ var I18N = {
     'support.telegram.title':'Поддержка в Telegram',
     'card.new':'Новое','card.notFound':'Ничего не найдено','card.notFoundCar':'Ничего не найдено',
     'fav.empty':'Пока ничего нет.<br>Нажми ♡ на объявлении','fav.viewApts':'Смотреть квартиры',
+    'fav.gone':'Сохранённые объявления больше недоступны —<br>их сняли с публикации','profile.lang.switch':'Переключить на English',
     'price.month':'/мес','price.day':'/сутки','price.week':'/неделя','price.year':'/год',
     'toast.noPhone':'⚠️ Хозяин не указал телефон',
     'count.listings':' объявлений','count.cars':' машин','count.saved':' сохранено',
@@ -1052,6 +1104,7 @@ var I18N = {
     'filter.priceFrom':'Price from (SAR)','filter.priceTo':'Price to (SAR)','filter.sort':'Sort',
     'filter.sort.default':'Default','filter.sort.priceAsc':'Price: low to high','filter.sort.priceDesc':'Price: high to low','filter.sort.new':'Newest first',
     'filter.apply':'Apply','filter.reset':'Reset','map.hint':'Tap a marker',
+    'search.apt.ph':'District, listing name...','search.car.ph':'Make, model...','card.nothingFound':'Nothing matches your search',
     'common.back':'← Back','common.save':'Save',
     'add.typeApt':'🏠 Apartment','add.typeCar':'🚗 Car','add.tip':'✓ Free. The listing will appear after moderation.',
     'add.f.title':'Title','add.f.title.ph':'Cozy studio near the Prophet\'s Mosque',
@@ -1089,6 +1142,7 @@ var I18N = {
     'support.telegram.title':'Support on Telegram',
     'card.new':'New','card.notFound':'Nothing found','card.notFoundCar':'Nothing found',
     'fav.empty':'Nothing here yet.<br>Tap ♡ on a listing','fav.viewApts':'Browse apartments',
+    'fav.gone':'Saved listings are no longer available —<br>they were unpublished','profile.lang.switch':'Переключить на русский',
     'price.month':'/mo','price.day':'/day','price.week':'/week','price.year':'/year',
     'toast.noPhone':'⚠️ The owner did not provide a phone number',
     'count.listings':' listings','count.cars':' cars','count.saved':' saved',
@@ -1113,6 +1167,9 @@ function applyI18n(){
   document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ el.placeholder=t(el.getAttribute('data-i18n-ph')); });
   document.querySelectorAll('[data-i18n-title]').forEach(function(el){ el.title=t(el.getAttribute('data-i18n-title')); });
 }
+// Отдельная функция, а не выражение в onclick: в inline-обработчике имя
+// lang разрешается в одноимённый атрибут элемента, а не в эту переменную.
+function toggleLang(){ setLang(lang==='ru'?'en':'ru'); }
 function setLang(l){
   lang=l;
   localStorage.setItem('adil_lang', l);
@@ -1120,6 +1177,7 @@ function setLang(l){
   document.getElementById('lb-en').classList.toggle('active', l==='en');
   applyI18n();
   updatePickStatus(); // applyI18n затирает статус метки дефолтной строкой
+  buildAllAm();          // метки удобств перестраиваем, выбор сохраняется
   if(currentUser){ onLogin(); } else { onLogout(); }
   renderApts(); renderMarkers(); renderCars();
   if(section==='fav') renderFavs();
@@ -1321,23 +1379,19 @@ function requireAuth(cb){
 
 // ─── LOAD DATA ────────────────────────────────────────────────────
 async function loadApts(){
-  if(!sb||!dbReady){ liveApts=demoApts; renderApts(); renderMarkers(); updateStats(); return; }
+  if(!sb||!dbReady){ liveApts=demoApts; renderApts(); renderMarkers(); return; }
   var {data}=await sb.from('apartments').select('*').eq('is_active',true).order('created_at',{ascending:false});
   liveApts=(data&&data.length)?data:demoApts;
-  renderApts(); renderMarkers(); updateStats();
+  renderApts(); renderMarkers();
 }
 async function loadCars(){
   if(!sb||!dbReady){ liveCars=demoCars; renderCars(); return; }
   var {data}=await sb.from('cars').select('*').eq('is_active',true).order('created_at',{ascending:false});
   liveCars=(data&&data.length)?data:demoCars;
-  renderCars(); updateStats();
+  renderCars();
 }
-function updateStats(){
-  var e1=document.getElementById('stat-apts');
-  var e2=document.getElementById('stat-cars');
-  if(e1) e1.textContent=liveApts.length+'+';
-  if(e2) e2.textContent=liveCars.length+'+';
-}
+// updateStats удалена: писала в элементы stat-apts/stat-cars, которых нет
+// в вёрстке со времён переделки главной.
 
 // ─── SUBMIT LISTINGS ──────────────────────────────────────────────
 
@@ -1434,8 +1488,7 @@ async function submitApt(){
   }
   var btn=document.getElementById('apt-submit-btn');
   btn.disabled=true; btn.textContent=t('btn.publishing');
-  var amenities=[];
-  document.querySelectorAll('#am-apt .am.on').forEach(function(a){amenities.push(a.textContent.trim());});
+  var am=pickedAm('am-apt');
   var photoUrls=await uploadMedia('apt',function(n,total){ btn.textContent=t('btn.compressing')+' '+n+'/'+total; });
   btn.textContent=t('btn.publishing');
   var data={
@@ -1451,9 +1504,9 @@ async function submitApt(){
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
     price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
-    is_furnished:amenities.includes('Мебель'),
+    is_furnished:am.ru.indexOf('Мебель')!==-1,
     is_short_term:document.getElementById('f-period').value==='daily',
-    badges_ru:amenities, photos:photoUrls, is_active:false
+    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:false
   };
   if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('apartments').insert([data]);
@@ -1471,8 +1524,7 @@ async function submitCar(){
   if(!model||!price||!phone){ showToast(lang==='en'?'⚠️ Fill in the model, price and phone':'⚠️ Заполни модель, цену и телефон'); return; }
   var btn=document.getElementById('car-submit-btn');
   btn.disabled=true; btn.textContent=t('btn.publishing');
-  var opts=[];
-  document.querySelectorAll('#am-car .am.on').forEach(function(a){opts.push(a.textContent.trim());});
+  var am=pickedAm('am-car');
   var photoUrls=await uploadMedia('car',function(n,total){ btn.textContent=t('btn.compressing')+' '+n+'/'+total; });
   btn.textContent=t('btn.publishing');
   var period=document.getElementById('fc-period').value;
@@ -1491,7 +1543,7 @@ async function submitCar(){
     owner_avatar:myAvatar()||null,
     call_phone:callPhone||phone,
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
-    badges_ru:opts, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
+    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
   };
   if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('cars').insert([data]);
@@ -1915,6 +1967,51 @@ function refreshAvatars(){
   if(rm) rm.style.display=url?'block':'none';
 }
 
+// ─── ПОИСК ───────────────────────────────────────────────────────
+var aptQ='', carQ='', qTimer=null;
+var carPriceFrom=0, carPriceTo=999999, carSort='';
+function normQ(s){ return String(s||'').toLowerCase().replace(/ё/g,'е').trim(); }
+function onSearch(kind,val){
+  var clear=document.getElementById(kind+'-q-clear');
+  if(clear) clear.classList.toggle('on',!!val);
+  // Перерисовка списка не мгновенная: набор текста не должен дёргать карту.
+  clearTimeout(qTimer);
+  qTimer=setTimeout(function(){
+    if(kind==='apt'){ aptQ=normQ(val); renderApts(); renderMarkers(); }
+    else { carQ=normQ(val); renderCars(); }
+  },200);
+}
+function clearSearch(kind){
+  var inp=document.getElementById(kind+'-q');
+  if(inp) inp.value='';
+  var clear=document.getElementById(kind+'-q-clear');
+  if(clear) clear.classList.remove('on');
+  if(kind==='apt'){ aptQ=''; renderApts(); renderMarkers(); } else { carQ=''; renderCars(); }
+}
+function matchQ(item,q,kind){
+  if(!q) return true;
+  var hay=[item.title_ru,item.title_en,item.description_ru];
+  if(kind==='apt') hay.push(item.district_ru,item.district_en);
+  else hay.push(item.make,item.model,item.specs_ru,item.color);
+  hay=hay.concat(item.badges_ru||[]);
+  return normQ(hay.filter(Boolean).join(' ')).indexOf(q)!==-1;
+}
+function applyCarFilter(){
+  carPriceFrom=parseInt(document.getElementById('car-price-from').value)||0;
+  carPriceTo=parseInt(document.getElementById('car-price-to').value)||999999;
+  carSort=document.getElementById('car-sort-sel').value;
+  var b=document.getElementById('car-filter-btn');
+  if(b) b.classList.toggle('on',carPriceFrom>0||carPriceTo<999999||!!carSort);
+  renderCars();
+}
+function resetCarFilter(){
+  carPriceFrom=0; carPriceTo=999999; carSort='';
+  ['car-price-from','car-price-to'].forEach(function(id){var e=document.getElementById(id); if(e) e.value='';});
+  var s=document.getElementById('car-sort-sel'); if(s) s.value='';
+  var b=document.getElementById('car-filter-btn'); if(b) b.classList.remove('on');
+  renderCars();
+}
+
 // ─── RENDER HELPERS ──────────────────────────────────────────────────────────
 var USP='https://images.unsplash.com/';
 function imgSrc(item, size){
@@ -1939,6 +2036,12 @@ function pStr(item){
 }
 function waIco(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; }
 function isFav(kind,id){ return favs.some(function(f){return f.kind===kind&&f.id==id;}); }
+var NEW_DAYS=7;
+function isRecent(item){
+  if(!item||!item.created_at) return false;
+  var age=(Date.now()-new Date(item.created_at).getTime())/86400000;
+  return age>=0 && age<NEW_DAYS;
+}
 
 function cardHtml(item,kind){
   var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
@@ -1946,8 +2049,10 @@ function cardHtml(item,kind){
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
   var typeLabel = typeMap[catKey] || catKey;
-  var badges=(item.badges_ru||[]).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
-  var isNew=item.is_new||item.is_new===true;
+  var badges=badgesOf(item).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
+  // Раньше бралось поле is_new: в базе оно по умолчанию true и никогда не
+  // снималось, поэтому метка висела на всех объявлениях вечно.
+  var isNew=isRecent(item);
   var src=imgSrc(item, 600);
   var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
   var favOn=isFav(kind,item.id);
@@ -1977,11 +2082,11 @@ function getFilteredApts(){
       ||aptF==='short'&&a.is_short_term
       ||aptF==='furnished'&&a.is_furnished;
     var priceOk=a.price>=priceFrom&&a.price<=priceTo;
-    return typeOk&&priceOk;
+    return typeOk&&priceOk&&matchQ(a,aptQ,'apt');
   });
   if(sortVal==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
   else if(sortVal==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
-  else if(sortVal==='new') fl.sort(function(a,b){return (b.is_new?1:0)-(a.is_new?1:0);});
+  else if(sortVal==='new') fl.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
   return fl;
 }
 function setAptF(el,f){
@@ -2020,7 +2125,7 @@ function renderApts(){
   var fl=getFilteredApts();
   var cnt=fl.length+t('count.listings');
   var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
-  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t('card.notFound')+'</div></div>';
+  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t(aptQ?'card.nothingFound':'card.notFound')+'</div></div>';
   if(aptView==='map'){
     var mc=document.getElementById('apt-map-cards'); if(mc) mc.innerHTML=h2;
     var ac=document.getElementById('apt-map-cnt'); if(ac) ac.textContent=cnt;
@@ -2032,16 +2137,19 @@ function renderApts(){
 
 // ─── RENDER CARS ─────────────────────────────────────────────────
 function getFilteredCars(){
-  return liveCars.filter(function(c){
+  var fl=liveCars.filter(function(c){
     var cat=c.cat||c.body_type||'';
-    if(carF==='sedan') return cat==='sedan';
-    if(carF==='suv') return cat==='suv';
-    if(carF==='van') return cat==='van';
-    if(carF==='luxury') return cat==='luxury';
-    if(carF==='daily') return c.is_daily;
-    if(carF==='monthly') return c.is_monthly;
-    return true;
+    var catOk = carF==='all' ? true
+      : carF==='daily' ? !!c.is_daily
+      : carF==='monthly' ? !!c.is_monthly
+      : cat===carF;
+    var priceOk=c.price>=carPriceFrom&&c.price<=carPriceTo;
+    return catOk&&priceOk&&matchQ(c,carQ,'car');
   });
+  if(carSort==='price-asc') fl.sort(function(a,b){return a.price-b.price;});
+  else if(carSort==='price-desc') fl.sort(function(a,b){return b.price-a.price;});
+  else if(carSort==='new') fl.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
+  return fl;
 }
 function setCarF(el,f){
   carF=f;
@@ -2052,7 +2160,7 @@ function setCarF(el,f){
 function renderCars(){
   var fl=getFilteredCars();
   var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=fl.length+t('count.cars');
-  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t('card.notFoundCar')+'</div></div>';
+  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t(carQ?'card.nothingFound':'card.notFoundCar')+'</div></div>';
 }
 
 // ─── DETAIL MODAL ─────────────────────────────────────────────────
@@ -2066,7 +2174,10 @@ function openDetail(kind,id){
   var mi=document.getElementById('m-imgs');
   if(firstSrc){ mi.style.display='block'; document.getElementById('m-img').src=firstSrc; }
   else { mi.style.display='none'; }
-  document.getElementById('m-dots').innerHTML=photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'"></div>';}).join('');
+  var multi=photos.length>1;
+  document.getElementById('m-dots').innerHTML=multi?photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'" onclick="event.stopPropagation();showImg('+i+')"></div>';}).join(''):'';
+  document.getElementById('m-prev').style.display=multi?'flex':'none';
+  document.getElementById('m-next').style.display=multi?'flex':'none';
   document.getElementById('m-title').textContent=item.title_ru||item.title||'';
   paintAva(document.getElementById('m-ava'),item.owner_name||'',item.owner_avatar||'');
   document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
@@ -2084,7 +2195,7 @@ function openDetail(kind,id){
     var fuelLabel=item.fuel_type?(fuelMap[item.fuel_type]||item.fuel_type):'';
     document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+esc(item.specs_ru||((item.make||'')+' '+(item.model||'')).trim())+'</strong></span>'+(fuelLabel?'<span>'+esc(fuelLabel)+'</span>':'');
   }
-  document.getElementById('m-tags').innerHTML=(item.badges_ru||[]).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
+  document.getElementById('m-tags').innerHTML=badgesOf(item).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
   document.getElementById('m-desc').textContent=item.description_ru||'';
   document.querySelector('.modal-scroll').scrollTop=0;
   var mapsBtn=document.getElementById('m-maps-btn');
@@ -2093,16 +2204,33 @@ function openDetail(kind,id){
   if(callBtn){ callBtn.style.display=(item.call_phone||item.phone)?'flex':'none'; }
   document.getElementById('detail-overlay').classList.add('open');
 }
-function nextImg(){
+// Листание фото внутри карточки. Раньше функция существовала, но её никто
+// не вызывал: точки под фото были нарисованы и ни на что не реагировали.
+function showImg(i){
   if(!detailItem) return;
   var photos=detailItem.photos||[];
-  if(photos.length<2) return;
-  imgIdx=(imgIdx+1)%photos.length;
+  if(!photos.length) return;
+  imgIdx=(i+photos.length)%photos.length;
   var p=photos[imgIdx]||'';
-  var src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
-  document.getElementById('m-img').src=src;
-  document.querySelectorAll('.m-dot').forEach(function(d,i){d.classList.toggle('on',i===imgIdx);});
+  document.getElementById('m-img').src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
+  document.querySelectorAll('#m-dots .m-dot').forEach(function(d,n){d.classList.toggle('on',n===imgIdx);});
 }
+function stepImg(e,d){ if(e) e.stopPropagation(); showImg(imgIdx+d); }
+// Свайп по фотографии в карточке
+(function(){
+  var x0=null,y0=null;
+  document.addEventListener('touchstart',function(e){
+    var box=document.getElementById('m-imgs');
+    if(!box||!box.contains(e.target)){ x0=null; return; }
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null) return;
+    var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    x0=null;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)) showImg(imgIdx+(dx<0?1:-1));
+  },{passive:true});
+})();
 function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
 
 // ─── FULLSCREEN GALLERY ──────────────────────────────────────────
@@ -2208,9 +2336,17 @@ function renderFavs(){
     grid.innerHTML='<div class="empty"><div class="empty-ico">&#9825;</div><div class="empty-txt">'+t('fav.empty')+'</div><button class="empty-btn" onclick="goSection(&quot;apt&quot;)">'+t('fav.viewApts')+'</button></div>';
     return;
   }
-  cnt.textContent=favs.length+t('count.saved');
-  var items=favs.map(function(f){ return f.kind==='apt'?liveApts.find(function(x){return x.id==f.id;}):liveCars.find(function(x){return x.id==f.id;}); }).filter(Boolean);
-  grid.innerHTML=items.map(function(item){ var kind=liveApts.indexOf(item)!==-1?'apt':'car'; return cardHtml(item,kind); }).join('');
+  // Считаем только то, что реально показано: объявление могли снять или удалить.
+  var items=favs.map(function(f){
+    var it=f.kind==='apt'?liveApts.find(function(x){return x.id==f.id;}):liveCars.find(function(x){return x.id==f.id;});
+    return it?{item:it,kind:f.kind}:null;
+  }).filter(Boolean);
+  cnt.textContent=items.length+t('count.saved');
+  if(!items.length){
+    grid.innerHTML='<div class="empty"><div class="empty-ico">&#9825;</div><div class="empty-txt">'+t('fav.gone')+'</div><button class="empty-btn" onclick="goSection(&quot;apt&quot;)">'+t('fav.viewApts')+'</button></div>';
+    return;
+  }
+  grid.innerHTML=items.map(function(x){ return cardHtml(x.item,x.kind); }).join('');
 }
 
 // ─── SECTION NAV ─────────────────────────────────────────────────
@@ -2241,9 +2377,57 @@ function setAddType(t){
 function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
 
 // ─── AMENITIES BUILD ─────────────────────────────────────────────
+// ─── УДОБСТВА И ОПЦИИ ────────────────────────────────────────────
+// Метки — наши константы, поэтому переводятся. В объявление сохраняем обе
+// версии: русскую в badges_ru (как было, старые объявления не ломаются)
+// и английскую в badges_en — колонка в базе есть и до сих пор пустовала.
+var AM_APT=[
+ ['Мебель','Furniture'],['Кондиционер','Air conditioning'],['Wi-Fi','Wi-Fi'],['Парковка','Parking'],
+ ['Кухня','Kitchen'],['Стиральная машина','Washing machine'],['Холодильник','Fridge'],['Smart TV','Smart TV'],
+ ['Балкон','Balcony'],['Лифт','Elevator'],['Охрана','Security'],['Бассейн','Pool'],
+ ['Вид на мечеть','Mosque view'],['Генератор','Generator'],['Горячая вода 24ч','Hot water 24/7'],['Газ','Gas'],
+ ['Интернет 100Мбит','Internet 100 Mbps'],['Телевизор','TV'],['Микроволновка','Microwave'],
+ ['Посудомоечная машина','Dishwasher'],['Сейф','Safe'],['Гардероб','Wardrobe'],['Детская кроватка','Baby cot'],
+ ['Утюг','Iron'],['Фен','Hair dryer'],['Полотенца и постельное бельё','Towels and linen'],
+ ['Уборка включена','Cleaning included'],['Домофон','Intercom'],['CCTV камеры','CCTV cameras'],
+ ['Пожарная сигнализация','Fire alarm']
+];
+var AM_CAR=[
+ ['Автомат (АКПП)','Automatic'],['Кондиционер','Air conditioning'],['GPS/Навигатор','GPS / Navigation'],
+ ['Камера заднего вида','Rear view camera'],['Камера 360°','360° camera'],['Кожаный салон','Leather interior'],
+ ['Bluetooth','Bluetooth'],['USB зарядка','USB charging'],['Беспроводная зарядка','Wireless charging'],
+ ['Детское кресло','Child seat'],['4WD / Полный привод','4WD'],['Люк/Панорама','Sunroof / Panoramic'],
+ ['Без лимита км','Unlimited mileage'],['Страховка включена','Insurance included'],
+ ['Водитель по запросу','Driver on request'],['Доставка авто','Car delivery'],['Парктроник','Parking sensors'],
+ ['Круиз-контроль','Cruise control'],['Подогрев сидений','Heated seats'],['Вентиляция сидений','Ventilated seats'],
+ ['Массаж сидений','Massage seats'],['Apple CarPlay','Apple CarPlay'],['Android Auto','Android Auto'],
+ ['Подключение к интернету','Internet connection'],['Шторки на окнах','Window curtains'],['Тонировка','Tinted windows']
+];
 function buildAm(list,id){
   var el=document.getElementById(id); if(!el) return;
-  el.innerHTML=list.map(function(a){return '<div class="am" onclick="this.classList.toggle(&quot;on&quot;)">'+a+'</div>';}).join('');
+  var chosen={};
+  el.querySelectorAll('.am.on').forEach(function(a){ chosen[a.dataset.ru]=true; });
+  el.innerHTML=list.map(function(a){
+    return '<div class="am'+(chosen[a[0]]?' on':'')+'" data-ru="'+esc(a[0])+'" data-en="'+esc(a[1])+'"'
+      +' onclick="this.classList.toggle(&quot;on&quot;)">'+esc(lang==='en'?a[1]:a[0])+'</div>';
+  }).join('');
+}
+function buildAllAm(){ buildAm(AM_APT,'am-apt'); buildAm(AM_CAR,'am-car'); }
+// Возвращает выбранные метки на обоих языках.
+function pickedAm(id){
+  var ru=[], en=[];
+  document.querySelectorAll('#'+id+' .am.on').forEach(function(a){ ru.push(a.dataset.ru); en.push(a.dataset.en); });
+  return {ru:ru, en:en};
+}
+// Для показа: если у объявления есть английские метки — берём их, иначе
+// подставляем перевод по русской, иначе показываем как есть.
+var AM_RU2EN={};
+AM_APT.concat(AM_CAR).forEach(function(a){ AM_RU2EN[a[0]]=a[1]; });
+function badgesOf(item){
+  var ru=item.badges_ru||[];
+  if(lang!=='en') return ru;
+  if(item.badges_en&&item.badges_en.length) return item.badges_en;
+  return ru.map(function(b){ return AM_RU2EN[b]||b; });
 }
 
 // ─── TOAST ────────────────────────────────────────────────────────
@@ -2258,8 +2442,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('lb-ru').classList.toggle('active', lang==='ru');
   document.getElementById('lb-en').classList.toggle('active', lang==='en');
   applyI18n();
-  buildAm(['Мебель','Кондиционер','Wi-Fi','Парковка','Кухня','Стиральная машина','Холодильник','Smart TV','Балкон','Лифт','Охрана','Бассейн','Вид на мечеть','Генератор','Горячая вода 24ч','Газ','Интернет 100Мбит','Телевизор','Микроволновка','Посудомоечная машина','Сейф','Гардероб','Детская кроватка','Утюг','Фен','Полотенца и постельное бельё','Уборка включена','Домофон','CCTV камеры','Пожарная сигнализация'],'am-apt');
-  buildAm(['Автомат (АКПП)','Кондиционер','GPS/Навигатор','Камера заднего вида','Камера 360°','Кожаный салон','Bluetooth','USB зарядка','Беспроводная зарядка','Детское кресло','4WD / Полный привод','Люк/Панорама','Без лимита км','Страховка включена','Водитель по запросу','Доставка авто','Парктроник','Круиз-контроль','Подогрев сидений','Вентиляция сидений','Массаж сидений','Apple CarPlay','Android Auto','Подключение к интернету','Шторки на окнах','Тонировка'],'am-car');
+  buildAllAm();
   dbReady=initSupabase();
   if(dbReady) await checkSession();
   await loadApts();
