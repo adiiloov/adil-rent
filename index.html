@@ -84,18 +84,23 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .sl{font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-top:2px}
 
 /* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:rgba(16,29,51,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--border);height:var(--bot-h);padding-bottom:var(--safe-bot);display:flex;align-items:stretch}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:6px 2px;position:relative}
-.bn-ico{font-size:20px;line-height:1}
-.bn-ico svg{width:22px;height:22px;display:block;stroke:var(--muted)}
+/* Пять равных колонок с общей базовой линией: подписи всех пунктов
+   стоят на одной высоте, значки — тоже. Раньше это был флекс, и пункты
+   разъезжались, а кружок «Сдать» сплющивался в овал, потому что флекс
+   давил его по высоте. */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:rgba(16,29,51,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--border);height:calc(var(--bot-h) + var(--safe-bot));padding-bottom:var(--safe-bot);display:grid;grid-template-columns:repeat(5,1fr);align-items:end}
+.bn,.bn-plus{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;border:none;background:none;cursor:pointer;padding:0 2px 9px;height:100%;position:relative}
+.bn-ico{height:24px;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
+.bn-ico svg{width:23px;height:23px;display:block;stroke:var(--muted)}
 .bn.active .bn-ico svg{stroke:var(--brand)}
 .bn-plus-circle svg{width:22px;height:22px;stroke:var(--on-brand)}
-.bn-lbl{font-size:10px;font-weight:500;color:var(--muted);font-family:var(--fb)}
+.bn-lbl,.bn-plus-lbl{font-size:10px;line-height:13px;height:13px;font-family:var(--fb)}
+.bn-lbl{font-weight:500;color:var(--muted)}
 .bn.active .bn-lbl{color:var(--brand);font-weight:700}
-.bn-plus{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;padding:4px 2px}
-.bn-plus-circle{width:44px;height:44px;background:var(--brand);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--on-brand);box-shadow:0 4px 16px rgba(212,162,87,.45);margin-top:-16px}
-.bn-plus-lbl{font-size:10px;font-weight:700;color:var(--brand);font-family:var(--fb)}
-.bn-badge{background:var(--brand);color:var(--on-brand);font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px;position:absolute;top:4px;right:calc(50% - 14px);line-height:1.4;min-width:16px;text-align:center}
+/* flex-shrink:0 — то, из-за отсутствия чего кружок и превращался в овал */
+.bn-plus-circle{width:46px;height:46px;flex-shrink:0;background:var(--brand);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--on-brand);margin-top:-20px}
+.bn-plus-lbl{font-weight:700;color:var(--brand)}
+.bn-badge{background:var(--brand);color:var(--on-brand);font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px;position:absolute;top:6px;right:calc(50% - 16px);line-height:1.4;min-width:16px;text-align:center}
 
 /* PILLS */
 .pills{display:flex;gap:7px;padding:14px 16px 10px;overflow-x:auto;scrollbar-width:none}
@@ -299,23 +304,37 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
   justify-content:center;gap:22px;background:radial-gradient(ellipse 120% 100% at 50% 38%,#16243C,#060C18 72%)}
 #splash.done{opacity:0;pointer-events:none;transition:opacity .45s ease}
 #splash svg{width:104px;height:104px;overflow:visible}
-/* Штрихи рисуются обводкой: длина линии равна её же длине, а сдвиг
-   уводит её за край — по мере уменьшения сдвига линия «прочерчивается». */
+/* Длина контура считается в браузере через getTotalLength: задавать её
+   числом нельзя — у дуги с ножками она около 44, и при заниженном
+   значении последний участок не прочерчивался, буква оставалась
+   недорисованной. */
 #splash .stroke{fill:none;stroke:url(#sgrad);stroke-width:2.6;stroke-linecap:square;
-  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
-  animation:draw .85s cubic-bezier(.62,.02,.34,1) forwards}
-#splash .arc{--len:34}
-#splash .bar{--len:18;animation-delay:.5s}
-#splash .word{font-family:var(--fh);font-size:30px;font-weight:700;color:#fff;letter-spacing:-.01em;text-align:center;
-  opacity:0;animation:rise .5s cubic-bezier(.32,.72,0,1) .95s forwards}
-#splash .tag{font-size:13px;color:rgba(255,255,255,.55);opacity:0;
-  animation:rise .5s cubic-bezier(.32,.72,0,1) 1.12s forwards;text-align:center;padding:0 32px}
+  stroke-linejoin:round;visibility:hidden}
+#splash .stroke.go{visibility:visible}
 @keyframes draw{to{stroke-dashoffset:0}}
+#splash .word{font-family:var(--fh);font-size:30px;font-weight:700;color:#fff;letter-spacing:-.01em;text-align:center;
+  opacity:0;animation:rise .5s cubic-bezier(.32,.72,0,1) 1.25s forwards}
+#splash .tag{font-size:13px;color:rgba(255,255,255,.55);opacity:0;
+  animation:rise .5s cubic-bezier(.32,.72,0,1) 1.42s forwards;text-align:center;padding:0 32px}
 @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
-  #splash .stroke{animation:none;stroke-dashoffset:0}
+  #splash .stroke{animation:none!important;stroke-dashoffset:0!important}
   #splash .word,#splash .tag{animation:none;opacity:1}
 }
+
+/* ШАГИ ФОРМЫ */
+.steps{display:flex;gap:6px;margin-bottom:15px}
+.step-dot{flex:1;height:3px;border-radius:3px;background:var(--border);transition:background .25s}
+.step-dot.on{background:var(--brand)}
+.step-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.step-hd h3{font-family:var(--fh);font-size:17px;font-weight:700;color:var(--text)}
+.step-hd span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.step{display:none}
+.step.on{display:block;animation:sec-in .28s cubic-bezier(.32,.72,0,1)}
+.step-nav{display:flex;gap:9px;margin-top:8px}
+.step-back{flex:0 0 auto;background:var(--surface-2);color:var(--text);border:1px solid var(--border);
+  border-radius:12px;padding:15px 20px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--fb)}
+.step-next{flex:1;margin-top:0}
 
 /* SEARCH */
 .search-bar{position:relative;margin:12px 16px 0}
@@ -944,6 +963,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       </div>
       <!-- APT FORM -->
       <div class="form-card" id="form-apt">
+        <div class="steps"><div class="step-dot on" id="ad-1"></div><div class="step-dot" id="ad-2"></div><div class="step-dot" id="ad-3"></div></div>
+        <div class="step-hd"><h3 id="ad-title" data-i18n="step.a1">Об объекте</h3><span id="ad-count">1 / 3</span></div>
+        <div class="step on" id="ad-step-1">
         <div class="f-tip" data-i18n="add.tip">✓ Бесплатно. Объявление появится после модерации.</div>
         <div class="fg"><label class="fl" data-i18n="add.f.title">Заголовок</label><input class="fi" id="f-title" type="text" data-i18n-ph="add.f.title.ph" placeholder="Уютная студия у Мечети Пророка"></div>
         <div class="row2">
@@ -968,6 +990,8 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           </div>
           <div class="fg"><label class="fl" data-i18n="add.f.price">Цена (SAR)</label><input class="fi" id="f-price" type="number" placeholder="2000"></div>
         </div>
+        </div>
+        <div class="step" id="ad-step-2">
         <div class="fg"><label class="fl" data-i18n="add.f.district">Район Медины *</label>
           <input class="fi" id="f-district" type="text" data-i18n-ph="add.f.district.ph" placeholder="Напишите район (обязательно)" required>
         </div>
@@ -993,6 +1017,8 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
             <button type="button" class="pick-reset" id="pick-reset-btn" onclick="pickReset()" style="display:none" data-i18n="add.f.point.reset">Сбросить</button>
           </div>
         </div>
+        </div>
+        <div class="step" id="ad-step-3">
         <div class="fg">
           <label class="fl" data-i18n="add.f.photos">Фотографии</label>
           <div class="photo-upload-area" id="apt-upload-area">
@@ -1003,7 +1029,12 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="photo-previews" id="apt-previews"></div>
         </div>
         <div class="fg"><label class="fl" data-i18n="add.f.amenities">Удобства</label><div class="am-grid" id="am-apt"></div></div>
-        <button class="f-sub" id="apt-submit-btn" onclick="submitApt()" data-i18n="add.f.submit">Опубликовать бесплатно</button>
+        </div>
+        <div class="step-nav">
+          <button class="step-back" id="ad-back" onclick="formStep(-1)" style="display:none" data-i18n="step.back">Назад</button>
+          <button class="f-sub step-next" id="ad-next" onclick="formStep(1)" data-i18n="step.next">Далее</button>
+          <button class="f-sub step-next" id="apt-submit-btn" onclick="submitApt()" style="display:none" data-i18n="add.f.submit">Опубликовать бесплатно</button>
+        </div>
       </div>
       <!-- CAR FORM -->
       <div class="form-card" id="form-car" style="display:none">
@@ -1551,8 +1582,13 @@ var I18N = {
     'promo.pay.note':'После заказа откроется WhatsApp с номером заказа. Продвижение включится сразу после подтверждения оплаты.',
     'promo.until':'осталось','promo.remind':'Напомнить об оплате',
     'promo.st.pending':'Ждёт оплаты','promo.st.paid':'Оплачено','promo.st.cancelled':'Отменён',
-    'exp.left':'Снимется через','exp.gone':'Срок истёк — объявление скрыто','exp.renew':'Продлить 7 дней',
-    'toast.promoOrdered':'Заказ создан — подтвердите оплату','toast.renewed':'✓ Объявление продлено на 7 дней',
+    'exp.left':'Снимется через','exp.gone':'Срок истёк — объявление скрыто','exp.renew':'Продлить 30 дней',
+    'toast.promoOrdered':'Заказ создан — подтвердите оплату','toast.renewed':'✓ Объявление продлено на 30 дней',
+    'step.a1':'Об объекте','step.a2':'Где и за сколько','step.a3':'Фото и удобства',
+    'step.next':'Далее','step.back':'Назад',
+    'step.err.title':'⚠️ Напиши заголовок','step.err.price':'⚠️ Укажи цену',
+    'step.err.district':'⚠️ Укажи район Медины','step.err.desc':'⚠️ Описание минимум 20 символов',
+    'step.err.phone':'⚠️ Укажи номер WhatsApp',
     'promo.top':'ТОП','promo.hot':'Горячее','promo.d1':'день','promo.d2':'дня','promo.d5':'дней',
     'promo.h1':'час','promo.h2':'часа','promo.h5':'часов',
     'promo.set':'Продвижение','promo.top.on':'ТОП','promo.hot.on':'Горячее','promo.off':'Снять',
@@ -1654,8 +1690,13 @@ var I18N = {
     'promo.pay.note':'WhatsApp will open with your order number. Promotion starts as soon as payment is confirmed.',
     'promo.until':'left','promo.remind':'Remind about payment',
     'promo.st.pending':'Awaiting payment','promo.st.paid':'Paid','promo.st.cancelled':'Cancelled',
-    'exp.left':'Hides in','exp.gone':'Expired — listing is hidden','exp.renew':'Extend 7 days',
-    'toast.promoOrdered':'Order created — confirm the payment','toast.renewed':'✓ Listing extended by 7 days',
+    'exp.left':'Hides in','exp.gone':'Expired — listing is hidden','exp.renew':'Extend 30 days',
+    'toast.promoOrdered':'Order created — confirm the payment','toast.renewed':'✓ Listing extended by 30 days',
+    'step.a1':'About the place','step.a2':'Where and how much','step.a3':'Photos and amenities',
+    'step.next':'Next','step.back':'Back',
+    'step.err.title':'⚠️ Write a title','step.err.price':'⚠️ Set a price',
+    'step.err.district':'⚠️ Specify a district in Medina','step.err.desc':'⚠️ Description must be at least 20 characters',
+    'step.err.phone':'⚠️ Add a WhatsApp number',
     'promo.top':'TOP','promo.hot':'Hot','promo.d1':'day','promo.d2':'days','promo.d5':'days',
     'promo.h1':'hour','promo.h2':'hours','promo.h5':'hours',
     'promo.set':'Promotion','promo.top.on':'TOP','promo.hot.on':'Hot','promo.off':'Remove',
@@ -2196,7 +2237,7 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearAptForm(){ showStep(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
 function clearCarForm(){ ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
@@ -2742,11 +2783,72 @@ window.addEventListener('appinstalled', function(){ dismissInstall(); });
 
 // Заставка держится, пока идёт первая загрузка, но не дольше — иначе
 // при медленной сети человек смотрит на логотип вместо приложения.
+// Прочерчиваем штрихи: длина берётся у самого контура, поэтому линия
+// доходит до конца при любой геометрии знака.
+(function drawSplash(){
+  var paths=document.querySelectorAll('#splash .stroke');
+  if(!paths.length) return;
+  paths.forEach(function(pth,i){
+    var L=pth.getTotalLength();
+    pth.style.strokeDasharray=L;
+    pth.style.strokeDashoffset=L;
+    pth.classList.add('go');
+    // Именно анимация, а не переход: переход требует, чтобы браузер успел
+    // зафиксировать начальное состояние, и второй штрих его не дожидался —
+    // перекладина оставалась непрорисованной.
+    pth.style.animation='draw .78s cubic-bezier(.62,.02,.34,1) '+(i*0.42)+'s forwards';
+  });
+})();
+
 function hideSplash(){
   var s=document.getElementById('splash');
   if(!s||s.classList.contains('done')) return;
   s.classList.add('done');
   setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); },600);
+}
+
+// ─── ШАГИ ФОРМЫ ──────────────────────────────────────────────────
+// Одиннадцать полей подряд отпугивают: человек бросает публикацию
+// на середине. Разбиваем на три понятных шага с проверкой на каждом.
+var addStep=1, ADD_STEPS=3;
+function stepTitle(n){ return t('step.a'+n); }
+function showStep(n){
+  addStep=Math.min(Math.max(n,1),ADD_STEPS);
+  for(var i=1;i<=ADD_STEPS;i++){
+    var s=document.getElementById('ad-step-'+i); if(s) s.classList.toggle('on',i===addStep);
+    var d=document.getElementById('ad-'+i);      if(d) d.classList.toggle('on',i<=addStep);
+  }
+  document.getElementById('ad-title').textContent=stepTitle(addStep);
+  document.getElementById('ad-count').textContent=addStep+' / '+ADD_STEPS;
+  document.getElementById('ad-back').style.display=addStep>1?'block':'none';
+  var last=addStep===ADD_STEPS;
+  document.getElementById('ad-next').style.display=last?'none':'block';
+  document.getElementById('apt-submit-btn').style.display=last?'block':'none';
+  var w=document.getElementById('sec-add'); if(w) w.scrollIntoView({block:'start'});
+  var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0;
+  // карта живёт на втором шаге и должна пересчитать размеры, когда её показали
+  if(addStep===2) setTimeout(function(){ if(typeof pickMap!=='undefined'&&pickMap) pickMap.invalidateSize(); },60);
+}
+// Проверяем шаг перед переходом: иначе человек дойдёт до конца и только
+// там узнает, что забыл заполнить первое поле.
+function stepValid(n){
+  if(n===1){
+    if(!document.getElementById('f-title').value.trim()){ showToast(t('step.err.title')); return false; }
+    if(!document.getElementById('f-price').value){ showToast(t('step.err.price')); return false; }
+    return true;
+  }
+  if(n===2){
+    if(!document.getElementById('f-district').value.trim()){ showToast(t('step.err.district')); return false; }
+    if(document.getElementById('f-desc').value.trim().length<20){ showToast(t('step.err.desc')); return false; }
+    if(!document.getElementById('f-phone').value.trim()){ showToast(t('step.err.phone')); return false; }
+    if(!pickedPoint){ showToast(t('toast.needPoint')); return false; }
+    return true;
+  }
+  return true;
+}
+function formStep(delta){
+  if(delta>0 && !stepValid(addStep)) return;
+  showStep(addStep+delta);
 }
 
 // ─── ПОКУПКА ПРОДВИЖЕНИЯ ─────────────────────────────────────────
@@ -3487,6 +3589,7 @@ function goSection(s){
   // он занимал экран впустую.
   var hero=document.getElementById('hero');
   if(hero) hero.style.display=(s==='apt'||s==='car')?'block':'none';
+  if(s==='add' && addType==='apt') showStep(1);
   if(s==='admin') loadAdmin();
   if(s==='legal') renderLegal();
   var shown=document.getElementById('sec-'+s);
@@ -3581,7 +3684,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   initListMap();
   maybeShowInstallBanner();
   // 1.6 с — столько идёт сборка буквы с появлением подписи
-  setTimeout(hideSplash,1600);
+  setTimeout(hideSplash,2050);
 });
 
 </script>
