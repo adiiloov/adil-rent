@@ -1038,6 +1038,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       </div>
       <!-- CAR FORM -->
       <div class="form-card" id="form-car" style="display:none">
+        <div class="steps"><div class="step-dot on" id="cd-1"></div><div class="step-dot" id="cd-2"></div><div class="step-dot" id="cd-3"></div></div>
+        <div class="step-hd"><h3 id="cd-title" data-i18n="step.c1">Что за машина</h3><span id="cd-count">1 / 3</span></div>
+        <div class="step on" id="cd-step-1">
         <div class="f-tip" data-i18n="add.tip">✓ Бесплатно. Объявление появится после модерации.</div>
         <div class="row2">
           <div class="fg"><label class="fl" data-i18n="add.fc.make">Марка</label>
@@ -1073,13 +1076,6 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           </div>
         </div>
         <div class="row2">
-          <div class="fg"><label class="fl" data-i18n="add.f.period">Период</label>
-            <select class="fi" id="fc-period"><option value="daily" data-i18n="add.f.period.daily">Посуточно</option><option value="monthly" data-i18n="car.monthly">Помесячно</option><option value="both" data-i18n="add.fc.period.both">Оба варианта</option></select>
-          </div>
-          <div class="fg"><label class="fl" data-i18n="add.f.price">Цена (SAR)</label><input class="fi" id="fc-price" type="number" placeholder="300"></div>
-        </div>
-        <div class="fg"><label class="fl" data-i18n="add.fc.desc">Описание</label><textarea class="fi fi-ta" id="fc-desc" data-i18n-ph="add.fc.desc.ph" placeholder="Состояние, условия, залог..."></textarea></div>
-        <div class="row2">
           <div class="fg">
             <label class="fl" data-i18n="add.fc.fuel">Тип топлива</label>
             <select class="fi" id="fc-fuel" onchange="toggleCustomFuel(this)">
@@ -1096,8 +1092,19 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
             <input class="fi" id="fc-color" type="text" data-i18n-ph="add.fc.color.ph" placeholder="Белый, Чёрный...">
           </div>
         </div>
+        </div>
+        <div class="step" id="cd-step-2">
+        <div class="row2">
+          <div class="fg"><label class="fl" data-i18n="add.f.period">Период</label>
+            <select class="fi" id="fc-period"><option value="daily" data-i18n="add.f.period.daily">Посуточно</option><option value="monthly" data-i18n="car.monthly">Помесячно</option><option value="both" data-i18n="add.fc.period.both">Оба варианта</option></select>
+          </div>
+          <div class="fg"><label class="fl" data-i18n="add.f.price">Цена (SAR)</label><input class="fi" id="fc-price" type="number" placeholder="300"></div>
+        </div>
+        <div class="fg"><label class="fl" data-i18n="add.fc.desc">Описание</label><textarea class="fi fi-ta" id="fc-desc" data-i18n-ph="add.fc.desc.ph" placeholder="Состояние, условия, залог..."></textarea></div>
         <div class="fg"><label class="fl" data-i18n="add.f.callPhone">📞 Телефон для звонков</label><input class="fi" id="fc-call-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
         <div class="fg"><label class="fl" data-i18n="add.f.whatsapp">💬 WhatsApp</label><input class="fi" id="fc-phone" type="tel" placeholder="+7 / +998 / +992..."></div>
+        </div>
+        <div class="step" id="cd-step-3">
         <div class="fg">
           <label class="fl" data-i18n="add.fc.photos">📷 Фотографии</label>
           <div class="photo-upload-area" id="car-upload-area">
@@ -1108,7 +1115,12 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="photo-previews" id="car-previews"></div>
         </div>
         <div class="fg"><label class="fl" data-i18n="add.fc.options">Опции</label><div class="am-grid" id="am-car"></div></div>
-        <button class="f-sub" id="car-submit-btn" onclick="submitCar()" data-i18n="add.f.submit">Опубликовать бесплатно</button>
+        </div>
+        <div class="step-nav">
+          <button class="step-back" id="cd-back" onclick="formStep(-1)" style="display:none" data-i18n="step.back">Назад</button>
+          <button class="f-sub step-next" id="cd-next" onclick="formStep(1)" data-i18n="step.next">Далее</button>
+          <button class="f-sub step-next" id="car-submit-btn" onclick="submitCar()" style="display:none" data-i18n="add.f.submit">Опубликовать бесплатно</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1585,6 +1597,8 @@ var I18N = {
     'exp.left':'Снимется через','exp.gone':'Срок истёк — объявление скрыто','exp.renew':'Продлить 30 дней',
     'toast.promoOrdered':'Заказ создан — подтвердите оплату','toast.renewed':'✓ Объявление продлено на 30 дней',
     'step.a1':'Об объекте','step.a2':'Где и за сколько','step.a3':'Фото и удобства',
+    'step.c1':'Что за машина','step.c2':'Цена и контакты','step.c3':'Фото и опции',
+    'step.err.model':'⚠️ Укажи модель','step.err.year':'⚠️ Укажи год выпуска',
     'step.next':'Далее','step.back':'Назад',
     'step.err.title':'⚠️ Напиши заголовок','step.err.price':'⚠️ Укажи цену',
     'step.err.district':'⚠️ Укажи район Медины','step.err.desc':'⚠️ Описание минимум 20 символов',
@@ -1693,6 +1707,8 @@ var I18N = {
     'exp.left':'Hides in','exp.gone':'Expired — listing is hidden','exp.renew':'Extend 30 days',
     'toast.promoOrdered':'Order created — confirm the payment','toast.renewed':'✓ Listing extended by 30 days',
     'step.a1':'About the place','step.a2':'Where and how much','step.a3':'Photos and amenities',
+    'step.c1':'About the car','step.c2':'Price and contacts','step.c3':'Photos and options',
+    'step.err.model':'⚠️ Enter the model','step.err.year':'⚠️ Enter the year',
     'step.next':'Next','step.back':'Back',
     'step.err.title':'⚠️ Write a title','step.err.price':'⚠️ Set a price',
     'step.err.district':'⚠️ Specify a district in Medina','step.err.desc':'⚠️ Description must be at least 20 characters',
@@ -2237,8 +2253,8 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ showStep(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
-function clearCarForm(){ ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
+function clearAptForm(){ showStep('apt',1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearCarForm(){ showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
 
@@ -2808,47 +2824,63 @@ function hideSplash(){
 }
 
 // ─── ШАГИ ФОРМЫ ──────────────────────────────────────────────────
-// Одиннадцать полей подряд отпугивают: человек бросает публикацию
-// на середине. Разбиваем на три понятных шага с проверкой на каждом.
-var addStep=1, ADD_STEPS=3;
-function stepTitle(n){ return t('step.a'+n); }
-function showStep(n){
-  addStep=Math.min(Math.max(n,1),ADD_STEPS);
+// Десяток полей подряд отпугивает: человек бросает публикацию на середине.
+// Разбиваем обе формы на три шага с проверкой на каждом.
+var stepAt={apt:1,car:1}, ADD_STEPS=3;
+var STEP_CFG={
+  apt:{p:'ad', submit:'apt-submit-btn', titles:['step.a1','step.a2','step.a3']},
+  car:{p:'cd', submit:'car-submit-btn', titles:['step.c1','step.c2','step.c3']}
+};
+function showStep(kind,n){
+  var c=STEP_CFG[kind]; if(!c) return;
+  n=Math.min(Math.max(n,1),ADD_STEPS);
+  stepAt[kind]=n;
   for(var i=1;i<=ADD_STEPS;i++){
-    var s=document.getElementById('ad-step-'+i); if(s) s.classList.toggle('on',i===addStep);
-    var d=document.getElementById('ad-'+i);      if(d) d.classList.toggle('on',i<=addStep);
+    var s=document.getElementById(c.p+'-step-'+i); if(s) s.classList.toggle('on',i===n);
+    var d=document.getElementById(c.p+'-'+i);      if(d) d.classList.toggle('on',i<=n);
   }
-  document.getElementById('ad-title').textContent=stepTitle(addStep);
-  document.getElementById('ad-count').textContent=addStep+' / '+ADD_STEPS;
-  document.getElementById('ad-back').style.display=addStep>1?'block':'none';
-  var last=addStep===ADD_STEPS;
-  document.getElementById('ad-next').style.display=last?'none':'block';
-  document.getElementById('apt-submit-btn').style.display=last?'block':'none';
-  var w=document.getElementById('sec-add'); if(w) w.scrollIntoView({block:'start'});
+  var ttl=document.getElementById(c.p+'-title'); if(ttl) ttl.textContent=t(c.titles[n-1]);
+  var cnt=document.getElementById(c.p+'-count'); if(cnt) cnt.textContent=n+' / '+ADD_STEPS;
+  var back=document.getElementById(c.p+'-back'); if(back) back.style.display=n>1?'block':'none';
+  var last=n===ADD_STEPS;
+  var next=document.getElementById(c.p+'-next'); if(next) next.style.display=last?'none':'block';
+  var sub=document.getElementById(c.submit);     if(sub)  sub.style.display=last?'block':'none';
   var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0;
-  // карта живёт на втором шаге и должна пересчитать размеры, когда её показали
-  if(addStep===2) setTimeout(function(){ if(typeof pickMap!=='undefined'&&pickMap) pickMap.invalidateSize(); },60);
+  // карта живёт на втором шаге квартиры и пересчитывает размеры, когда её показали
+  if(kind==='apt'&&n===2) setTimeout(function(){ if(typeof pickMap!=='undefined'&&pickMap) pickMap.invalidateSize(); },60);
 }
-// Проверяем шаг перед переходом: иначе человек дойдёт до конца и только
-// там узнает, что забыл заполнить первое поле.
-function stepValid(n){
-  if(n===1){
-    if(!document.getElementById('f-title').value.trim()){ showToast(t('step.err.title')); return false; }
-    if(!document.getElementById('f-price').value){ showToast(t('step.err.price')); return false; }
-    return true;
-  }
-  if(n===2){
-    if(!document.getElementById('f-district').value.trim()){ showToast(t('step.err.district')); return false; }
-    if(document.getElementById('f-desc').value.trim().length<20){ showToast(t('step.err.desc')); return false; }
-    if(!document.getElementById('f-phone').value.trim()){ showToast(t('step.err.phone')); return false; }
-    if(!pickedPoint){ showToast(t('toast.needPoint')); return false; }
-    return true;
+// Проверяем шаг при переходе: иначе человек дойдёт до конца и только там
+// узнает, что забыл заполнить первое поле.
+function stepValid(kind,n){
+  var v=function(id){ var e=document.getElementById(id); return e?e.value.trim():''; };
+  if(kind==='apt'){
+    if(n===1){
+      if(!v('f-title')){ showToast(t('step.err.title')); return false; }
+      if(!v('f-price')){ showToast(t('step.err.price')); return false; }
+    }
+    if(n===2){
+      if(!v('f-district')){ showToast(t('step.err.district')); return false; }
+      if(v('f-desc').length<20){ showToast(t('step.err.desc')); return false; }
+      if(!v('f-phone')){ showToast(t('step.err.phone')); return false; }
+      if(!pickedPoint){ showToast(t('toast.needPoint')); return false; }
+    }
+  } else {
+    if(n===1){
+      if(!v('fc-model')){ showToast(t('step.err.model')); return false; }
+      if(!v('fc-year')){ showToast(t('step.err.year')); return false; }
+    }
+    if(n===2){
+      if(!v('fc-price')){ showToast(t('step.err.price')); return false; }
+      if(v('fc-desc').length<20){ showToast(t('step.err.desc')); return false; }
+      if(!v('fc-phone')){ showToast(t('step.err.phone')); return false; }
+    }
   }
   return true;
 }
 function formStep(delta){
-  if(delta>0 && !stepValid(addStep)) return;
-  showStep(addStep+delta);
+  var kind=addType;
+  if(delta>0 && !stepValid(kind,stepAt[kind])) return;
+  showStep(kind,stepAt[kind]+delta);
 }
 
 // ─── ПОКУПКА ПРОДВИЖЕНИЯ ─────────────────────────────────────────
@@ -3589,7 +3621,7 @@ function goSection(s){
   // он занимал экран впустую.
   var hero=document.getElementById('hero');
   if(hero) hero.style.display=(s==='apt'||s==='car')?'block':'none';
-  if(s==='add' && addType==='apt') showStep(1);
+  if(s==='add') showStep(addType,1);
   if(s==='admin') loadAdmin();
   if(s==='legal') renderLegal();
   var shown=document.getElementById('sec-'+s);
@@ -3603,6 +3635,7 @@ function setAddType(t){
   document.getElementById('form-car').style.display=t==='car'?'block':'none';
   document.getElementById('att-apt').classList.toggle('active',t==='apt');
   document.getElementById('att-car').classList.toggle('active',t==='car');
+  showStep(t,stepAt[t]||1);
 }
 function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.scrollTo({top:0,behavior:'smooth'}); }
 
