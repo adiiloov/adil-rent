@@ -322,6 +322,11 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
   #splash .word,#splash .tag{animation:none;opacity:1}
 }
 
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:13px;border:2px solid var(--border);border-radius:12px;background:var(--surface-2);
+  color:var(--muted);font-size:14px;font-weight:600;font-family:var(--fb);cursor:pointer;transition:all .15s}
+.seg button.on{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+
 /* ШАГИ ФОРМЫ */
 .steps{display:flex;gap:6px;margin-bottom:15px}
 .step-dot{flex:1;height:3px;border-radius:3px;background:var(--border);transition:background .25s}
@@ -981,6 +986,12 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
             <select class="fi" id="f-rooms"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select>
           </div>
         </div>
+        <div class="fg"><label class="fl" data-i18n="add.f.furn">Мебель</label>
+          <div class="seg" id="f-furn">
+            <button type="button" class="on" data-v="1" onclick="pickFurn(1)" data-i18n="add.f.furn.yes">С мебелью</button>
+            <button type="button" data-v="0" onclick="pickFurn(0)" data-i18n="add.f.furn.no">Без мебели</button>
+          </div>
+        </div>
         <div class="row2">
           <div class="fg"><label class="fl" data-i18n="add.f.period">Период</label>
             <select class="fi" id="f-period">
@@ -1576,7 +1587,7 @@ var I18N = {
     'bk.confirmCancel':'Отменить заявку?','bk.notePrompt':'Сообщение для гостя (можно пропустить):',
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
-    'st.views':'просмотров','st.views7':'за 7 дней','st.requests':'заявок','st.confirmed':'подтверждено',
+    'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
     'toast.loginToBook':'Войдите, чтобы забронировать','toast.ownListing':'Это ваше объявление',
     'toast.bookingSent':'✓ Заявка отправлена хозяину','bk.done':'Заявка отправлена',
     'bk.done.sub':'Хозяин увидит её в приложении. Чтобы ответили быстрее — продублируй в WhatsApp, там сообщение придёт сразу.',
@@ -1597,6 +1608,7 @@ var I18N = {
     'exp.left':'Снимется через','exp.gone':'Срок истёк — объявление скрыто','exp.renew':'Продлить 30 дней',
     'toast.promoOrdered':'Заказ создан — подтвердите оплату','toast.renewed':'✓ Объявление продлено на 30 дней',
     'step.a1':'Об объекте','step.a2':'Где и за сколько','step.a3':'Фото и удобства',
+    'add.f.furn':'Мебель','add.f.furn.yes':'С мебелью','add.f.furn.no':'Без мебели',
     'step.c1':'Что за машина','step.c2':'Цена и контакты','step.c3':'Фото и опции',
     'step.err.model':'⚠️ Укажи модель','step.err.year':'⚠️ Укажи год выпуска',
     'step.next':'Далее','step.back':'Назад',
@@ -1686,7 +1698,7 @@ var I18N = {
     'bk.confirmCancel':'Cancel this request?','bk.notePrompt':'Message for the guest (optional):',
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
-    'st.views':'views','st.views7':'last 7 days','st.requests':'requests','st.confirmed':'confirmed',
+    'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
     'toast.loginToBook':'Log in to book','toast.ownListing':'This is your own listing',
     'toast.bookingSent':'✓ Request sent to the owner','bk.done':'Request sent',
     'bk.done.sub':'The owner will see it in the app. For a faster reply, send it on WhatsApp too — that arrives instantly.',
@@ -1707,6 +1719,7 @@ var I18N = {
     'exp.left':'Hides in','exp.gone':'Expired — listing is hidden','exp.renew':'Extend 30 days',
     'toast.promoOrdered':'Order created — confirm the payment','toast.renewed':'✓ Listing extended by 30 days',
     'step.a1':'About the place','step.a2':'Where and how much','step.a3':'Photos and amenities',
+    'add.f.furn':'Furniture','add.f.furn.yes':'Furnished','add.f.furn.no':'Unfurnished',
     'step.c1':'About the car','step.c2':'Price and contacts','step.c3':'Photos and options',
     'step.err.model':'⚠️ Enter the model','step.err.year':'⚠️ Enter the year',
     'step.next':'Next','step.back':'Back',
@@ -1774,6 +1787,7 @@ var demoCars = [];
 
 // ─── APP STATE ────────────────────────────────────────────────────
 var section='apt', aptView='map', aptF='all', carF='all', addType='apt', prevSec='apt';
+var furnished=1;   // «С мебелью» по умолчанию — так чаще всего и сдают
 var liveApts=[], liveCars=[], dbReady=false;
 var detailItem=null, detailKind='apt', imgIdx=0;
 var favs=JSON.parse(localStorage.getItem('adil_favs')||'[]');
@@ -2097,7 +2111,7 @@ async function submitApt(){
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
     price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
-    is_furnished:am.ru.indexOf('Мебель')!==-1,
+    is_furnished:furnished===1,
     is_short_term:document.getElementById('f-period').value==='daily',
     badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:false
   };
@@ -2253,7 +2267,7 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ showStep('apt',1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearAptForm(){ showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
 function clearCarForm(){ showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
@@ -2876,6 +2890,12 @@ function stepValid(kind,n){
     }
   }
   return true;
+}
+function pickFurn(v){
+  furnished=v;
+  document.querySelectorAll('#f-furn button').forEach(function(b){
+    b.classList.toggle('on', String(v)===b.dataset.v);
+  });
 }
 function formStep(delta){
   var kind=addType;
@@ -3645,7 +3665,7 @@ function scrollToTop(){ var ab=document.getElementById('app-body'); if(ab) ab.sc
 // версии: русскую в badges_ru (как было, старые объявления не ломаются)
 // и английскую в badges_en — колонка в базе есть и до сих пор пустовала.
 var AM_APT=[
- ['Мебель','Furniture'],['Кондиционер','Air conditioning'],['Wi-Fi','Wi-Fi'],['Парковка','Parking'],
+['Кондиционер','Air conditioning'],['Wi-Fi','Wi-Fi'],['Парковка','Parking'],
  ['Кухня','Kitchen'],['Стиральная машина','Washing machine'],['Холодильник','Fridge'],['Smart TV','Smart TV'],
  ['Балкон','Balcony'],['Лифт','Elevator'],['Охрана','Security'],['Бассейн','Pool'],
  ['Вид на мечеть','Mosque view'],['Генератор','Generator'],['Горячая вода 24ч','Hot water 24/7'],['Газ','Gas'],
