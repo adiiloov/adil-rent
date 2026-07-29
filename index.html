@@ -85,17 +85,17 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .app-body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--bot-h) + var(--safe-bot) + 8px)}
 
 /* HERO */
-.hero{background:radial-gradient(ellipse 120% 100% at 50% 0%,#16243C,#060C18 70%);padding:24px 16px 22px;position:relative;overflow:hidden}
+.hero{background:radial-gradient(ellipse 120% 100% at 50% 0%,#16243C,#060C18 70%);padding:12px 16px 12px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(212,162,87,.20),transparent);pointer-events:none}
-.hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.7);margin-bottom:12px}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:10.5px;color:rgba(255,255,255,.7);margin-bottom:7px}
 .hero-type-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px}
 .htp{padding:8px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--fb);white-space:nowrap}
 .htp:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
 .hdot{width:6px;height:6px;border-radius:50%;background:var(--brand);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hero-title{font-family:var(--fh);font-size:24px;font-weight:700;color:#fff;line-height:1.2;letter-spacing:-.5px;margin-bottom:6px}
+.hero-title{font-family:var(--fh);font-size:19px;font-weight:700;color:#fff;line-height:1.25;letter-spacing:-.3px;margin-bottom:3px}
 .hero-title em{color:var(--brand);font-style:normal}
-.hero-sub{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:20px;line-height:1.6;max-width:480px;margin-left:auto;margin-right:auto}
+.hero-sub{font-size:12.5px;color:rgba(255,255,255,.5);margin-bottom:0;line-height:1.45;max-width:480px}
 .search-box{background:var(--white);border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:10}
 .search-box input,.search-box select{border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);background:var(--surface-2);outline:none;font-family:var(--fb);width:100%}
 .search-box input:focus,.search-box select:focus{border-color:var(--brand)}
@@ -249,6 +249,13 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .bk-btn.gray{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
 
 /* аналитика объявления */
+.en-block{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:6px;background:rgba(255,255,255,.02)}
+.en-block summary{font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;list-style:none}
+.en-block summary::-webkit-details-marker{display:none}
+.en-block[open] summary{color:var(--text);margin-bottom:10px}
+.en-note{font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}
+.mlc-line{font-size:12px;color:var(--muted);padding:8px 0 2px;border-top:1px solid var(--border);margin-top:9px}
+.mlc-line.hot b{color:var(--brand)}
 .mlc-stats{display:flex;gap:14px;padding:9px 0 2px;border-top:1px solid var(--border);margin-top:9px}
 .mlc-stat{text-align:center;flex:1}
 .mlc-stat-n{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--text)}
@@ -764,6 +771,27 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
   .desktop-footer{display:none}
 }
 
+/* ─── ЖИВАЯ ШАПКА КАРТОЧКИ ────────────────────────────────────────
+   Пока видно фотографию, полосы нет. Стоит пролистать ниже — она
+   выезжает сверху с названием, ценой и теми же кнопками. */
+.m-bar{
+  position:absolute;top:0;left:0;right:0;z-index:6;
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  background:linear-gradient(180deg,rgba(22,36,60,.98),rgba(16,29,51,.94));
+  backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.09);border-radius:24px 24px 0 0;
+  box-shadow:0 6px 24px rgba(0,0,0,.35);
+  opacity:0;transform:translateY(-102%);pointer-events:none;
+  transition:opacity .18s ease,transform .26s cubic-bezier(.32,.72,0,1)
+}
+.m-bar.on{opacity:1;transform:none;pointer-events:auto}
+.m-bar-txt{flex:1;min-width:0}
+.m-bar-t{font-family:var(--fh);font-size:14px;font-weight:700;line-height:1.2;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-bar-p{font-size:12.5px;font-weight:600;color:var(--brand);margin-top:1px}
+.m-bar .m-close{width:32px;height:32px;font-size:14px}
+.m-bar .m-share-btn svg{width:15px;height:15px}
+
 /* Заглушка в полноэкранной галерее. Здесь она отдельным блоком, а не
    фоном самой картинки: до загрузки у снимка нет своих размеров и
    вписанный по contain тег схлопывается в точку — подсвечивать было бы
@@ -966,20 +994,8 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <!-- HERO -->
   <div class="hero" id="hero">
     <div class="hero-tag"><span class="hdot"></span><span data-i18n="hero.tag">Медина, Саудовская Аравия</span></div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px">
-  <svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Adil">
-    <defs><linearGradient id="aglh" gradientUnits="userSpaceOnUse" x1="7" y1="6" x2="25" y2="26">
-      <stop offset="0" stop-color="#F0DDB4"/><stop offset="1" stop-color="#C08A2E"/>
-    </linearGradient></defs>
-    <path d="M10.5 26V12.8a5.5 5.5 0 0 1 11 0V26" stroke="url(#aglh)" stroke-width="2.6" fill="none" stroke-linecap="square"/>
-    <path d="M7 20.2h18" stroke="url(#aglh)" stroke-width="2.6" stroke-linecap="square"/>
-  </svg>
-  <span style="font-family:var(--fh);font-size:32px;font-weight:700;color:#fff">Adil</span>
-</div>
-<h1 class="hero-title" style="margin-bottom:8px"><span id="h-t1" data-i18n="hero.title">Жильё и транспорт в Медине</span></h1>
+    <h1 class="hero-title"><span id="h-t1" data-i18n="hero.title">Жильё и транспорт в Медине</span></h1>
     <p class="hero-sub" id="h-sub" data-i18n="hero.sub">Квартиры и машины в аренду. Быстро и прозрачно.</p>
-
-
   </div>
 
   <!-- APARTMENTS -->
@@ -1223,6 +1239,20 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="photo-previews" id="apt-previews"></div>
         </div>
         <div class="fg"><label class="fl" data-i18n="add.f.amenities">Удобства</label><div class="am-grid" id="am-apt"></div></div>
+        <!-- Английские тексты пишет человек: машинному переводу тут не место.
+             Блок свёрнут, чтобы не пугать тех, кому он не нужен. -->
+        <details class="en-block">
+          <summary data-i18n="en.block">🇬🇧 Английская версия — по желанию</summary>
+          <div class="en-inner">
+            <div class="en-note" data-i18n="en.note">Если заполнишь, гости с английским языком увидят эти тексты вместо русских.</div>
+            <div class="fg"><label class="fl" data-i18n="en.title">Заголовок по-английски</label>
+              <input class="fi" id="f-title-en" type="text" placeholder="Cozy studio near the Prophet's Mosque"></div>
+            <div class="fg"><label class="fl" data-i18n="en.district">Район по-английски</label>
+              <input class="fi" id="f-district-en" type="text" placeholder="Hay Nasr"></div>
+            <div class="fg"><label class="fl" data-i18n="en.desc">Описание по-английски</label>
+              <textarea class="fi" id="f-desc-en" rows="3" placeholder="5th floor, lift, view of Uhud"></textarea></div>
+          </div>
+        </details>
         </div>
         <div class="step-nav">
           <button class="step-back" id="ad-back" onclick="formStep(-1)" style="display:none" data-i18n="step.back">Назад</button>
@@ -1309,6 +1339,16 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
           <div class="photo-previews" id="car-previews"></div>
         </div>
         <div class="fg"><label class="fl" data-i18n="add.fc.options">Опции</label><div class="am-grid" id="am-car"></div></div>
+        <details class="en-block">
+          <summary data-i18n="en.block">🇬🇧 Английская версия — по желанию</summary>
+          <div class="en-inner">
+            <div class="en-note" data-i18n="en.note">Если заполнишь, гости с английским языком увидят эти тексты вместо русских.</div>
+            <div class="fg"><label class="fl" data-i18n="en.specs">Характеристики по-английски</label>
+              <input class="fi" id="fc-specs-en" type="text" placeholder="Toyota Camry 2025, automatic"></div>
+            <div class="fg"><label class="fl" data-i18n="en.desc">Описание по-английски</label>
+              <textarea class="fi" id="fc-desc-en" rows="3" placeholder="Daily and monthly, excellent condition"></textarea></div>
+          </div>
+        </details>
         </div>
         <div class="step-nav">
           <button class="step-back" id="cd-back" onclick="formStep(-1)" style="display:none" data-i18n="step.back">Назад</button>
@@ -1497,6 +1537,18 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 <!-- DETAIL MODAL -->
 <div class="overlay" id="detail-overlay" onclick="closeDetailModal(event)">
   <div class="modal-sheet">
+    <!-- Узкая полоса выезжает сверху, когда фотография ушла вверх: чтобы
+         не листать обратно ради названия, цены и кнопки «Поделиться». -->
+    <div class="m-bar" id="m-bar">
+      <div class="m-bar-txt">
+        <div class="m-bar-t" id="m-bar-title"></div>
+        <div class="m-bar-p" id="m-bar-price"></div>
+      </div>
+      <button class="m-close m-share-btn" onclick="shareListing()" aria-label="Поделиться">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+      </button>
+      <button class="m-close" onclick="closeDetail()">✕</button>
+    </div>
     <div class="drag-line"></div>
     <div class="modal-scroll">
       <div class="m-imgs" id="m-imgs" style="cursor:zoom-in">
@@ -1784,6 +1836,10 @@ var I18N = {
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
     'ptr.done':'Обновлено',
+    'en.block':'🇬🇧 Английская версия — по желанию',
+    'en.note':'Если заполнишь, гости с английским языком увидят эти тексты вместо русских.',
+    'en.title':'Заголовок по-английски','en.district':'Район по-английски',
+    'en.desc':'Описание по-английски','en.specs':'Характеристики по-английски','st.per7':'за неделю','st.newReq':'· есть новые',
     'own.mode':'Публикую за владельца','own.tag':'ЗА ВЛАДЕЛЬЦА',
     'own.tip':'✓ Заведено вручную: объявление появится в каталоге сразу.',
     'own.hint':'Объявление выйдет сразу, без проверки. В карточке будут контакты хозяина.',
@@ -1836,8 +1892,8 @@ var I18N = {
     'btn.publishing':'Публикуем...','btn.compressing':'Готовим фото','btn.saving':'Сохраняем...','btn.loggingIn':'Входим...','btn.creatingAccount':'Создаём аккаунт...'
   },
   en:{
-    'nav.apt':'🏠 Apartments','nav.car':'🚗 Cars','nav.add':'+ List','nav.login':'Log in','nav.signup':'Sign up',
-    'nav.apt.plain':'Apartments','nav.car.plain':'Cars','nav.add.plain':'List','nav.profile':'Profile',
+    'nav.apt':'🏠 Apartments','nav.car':'🚗 Cars','nav.add':'+ Post a listing','nav.login':'Log in','nav.signup':'Sign up',
+    'nav.apt.plain':'Apartments','nav.car.plain':'Cars','nav.add.plain':'Post','nav.profile':'Profile',
     'nav.addListing':'＋ Add listing','nav.favPlus':'♡ Favorites','nav.profilePlus':'👤 Profile',
     'hero.tag':'Medina, Saudi Arabia','hero.title':'Housing and transport in Medina','hero.sub':'Apartments and cars for rent. Fast and transparent.','hero.happy':'satisfied',
     'f.all':'All',
@@ -1907,6 +1963,10 @@ var I18N = {
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
     'ptr.done':'Updated',
+    'en.block':'🇬🇧 English version — optional',
+    'en.note':'Fill this in and English-speaking guests will see these texts instead of the Russian ones.',
+    'en.title':'Title in English','en.district':'District in English',
+    'en.desc':'Description in English','en.specs':'Specs in English','st.per7':'this week','st.newReq':'· new ones',
     'own.mode':'Posting on behalf of an owner','own.tag':'ON BEHALF',
     'own.tip':'✓ Added manually: the listing appears in the catalogue right away.',
     'own.hint':'The listing goes live immediately, without review. It shows the owner\'s contacts.',
@@ -2078,17 +2138,19 @@ async function loadMyListings(){
     if(isTop(item)) promo+='<span class="top">'+t('promo.top')+' · '+promoLeft(item.top_until)+'</span>';
     if(isHot(item)) promo+='<span class="hot">'+t('promo.hot')+' · '+promoLeft(item.hot_until)+'</span>';
     promo=promo?'<div class="mlc-promo">'+promo+'</div>':'';
-    var stats='<div class="mlc-stats">'
-      +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.views||0)+'</div><div class="mlc-stat-l">'+t('st.views')+'</div></div>'
-      +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.views_7d||0)+'</div><div class="mlc-stat-l">'+t('st.views7')+'</div></div>'
-      +'<div class="mlc-stat"><div class="mlc-stat-n'+(s.pending>0?' hot':'')+'">'+(s.requests||0)+'</div><div class="mlc-stat-l">'+t('st.requests')+'</div></div>'
-      +'<div class="mlc-stat"><div class="mlc-stat-n">'+(s.confirmed||0)+'</div><div class="mlc-stat-l">'+t('st.confirmed')+'</div></div>'
-      +'</div>';
+    // Четыре плитки, три из которых нули, выглядели как приговор.
+    // Оставляем одну живую строку: сколько смотрели и сколько написали.
+    var vs=s.views||0, rq=s.requests||0;
+    var line=[vs+' '+(lang==='en'?plural(vs,'view','views'):plural(vs,'просмотр','просмотра','просмотров'))];
+    if(rq) line.push(rq+' '+(lang==='en'?plural(rq,'request','requests'):plural(rq,'заявка','заявки','заявок')));
+    if(s.views_7d) line.push(s.views_7d+' '+t('st.per7'));
+    var stats='<div class="mlc-line'+(s.pending>0?' hot':'')+'">'+line.join(' · ')
+      +(s.pending>0?' <b>'+t('st.newReq')+'</b>':'')+'</div>';
     var ex=expiryInfo(item);
     var expHtml=ex?('<div class="mlc-exp'+(ex.expired?' gone':(parseInt(ex.left)<=2?' soon':''))+'">'
       +(ex.expired?t('exp.gone'):(t('exp.left')+' '+ex.left))+'</div>'):'';
-    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+expHtml+stats+'<div class="mlc-actions">'
-      +'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>'
+    return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(locTitle(item)||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+expHtml+stats+'<div class="mlc-actions">'
+      +(promoUnlocked()?'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>':'')
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="renewListing(this.dataset.kind,this.dataset.id)">'+t('exp.renew')+'</button>'
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="shareListing(this.dataset.kind,this.dataset.id)">↗ '+t('share.btn')+'</button>'
       +'<button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
@@ -2339,6 +2401,7 @@ async function submitApt(){
     owner_avatar:forOwner?null:(myAvatar()||null),
     added_by_admin:forOwner,
     district_ru:district,
+    title_en:enVal('f-title-en'), district_en:enVal('f-district-en'), description_en:enVal('f-desc-en'),
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
     price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
@@ -2386,7 +2449,8 @@ async function submitCar(){
     added_by_admin:forOwner,
     call_phone:callPhone||phone,
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
-    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:forOwner, cat:document.getElementById('fc-body').value
+    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:forOwner, cat:document.getElementById('fc-body').value,
+    specs_en:enVal('fc-specs-en'), description_en:enVal('fc-desc-en')
   };
   if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('cars').insert([data]);
@@ -2503,8 +2567,8 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
-function clearCarForm(){ resetOwnerMode(); showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
+function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc','f-title-en','f-district-en','f-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearCarForm(){ resetOwnerMode(); showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc','fc-specs-en','fc-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
 
@@ -2527,7 +2591,7 @@ function initListMap(){
   L.marker(MOSQUE,{
     icon:L.divIcon({className:'mosque-pin',html:'<div class="mp">🕌</div>',iconSize:[26,26],iconAnchor:[13,13]}),
     zIndexOffset:-100
-  }).addTo(lMap).bindTooltip('Масджид ан-Набави',{className:'pin-tip',direction:'top'});
+  }).addTo(lMap).bindTooltip(lang==='en'?'Al-Masjid an-Nabawi':'Масджид ан-Набави',{className:'pin-tip',direction:'top'});
   renderMarkers();
 }
 // Карта живёт в скрытом контейнере, пока раздел не открыт — Leaflet
@@ -2554,7 +2618,7 @@ function renderMarkers(){
       }),
       riseOnHover:true
     }).addTo(lMap);
-    marker.bindTooltip('<b>'+esc(a.title_ru||'')+'</b><span>'+pStr(a)+'</span>',{className:'pin-tip',direction:'top',offset:[0,-38]});
+    marker.bindTooltip('<b>'+esc(locTitle(a))+'</b><span>'+pStr(a)+'</span>',{className:'pin-tip',direction:'top',offset:[0,-38]});
     marker.on('click',function(){ openDetail('apt',a.id); });
     lMarkers.push(marker);
     pts.push([a.lat,a.lng]);
@@ -2580,9 +2644,25 @@ function isAdmin(){ return currentUser && ADMIN_EMAILS.indexOf(currentUser.email
 // телефон в нём — владельца, гости пишут ему напрямую. Когда хозяин
 // всё-таки зарегистрируется, объявление передаётся ему кнопкой ниже
 // вместе со всей накопленной статистикой.
+// ─── КОГДА ВКЛЮЧАТЬ ПЛАТНОЕ ПРОДВИЖЕНИЕ ──────────────────────────
+// Поднять объявление «в топ», когда в каталоге их три, — предложение
+// ни о чём: оно и так первое. Пока объявлений мало, платные кнопки
+// спрятаны и появятся сами, как только каталог дорастёт до порога.
+// Никакой ручной правки для этого не нужно.
+var PROMO_MIN=20;
+function promoUnlocked(){
+  return (liveApts.length + liveCars.length) >= PROMO_MIN;
+}
 function ownerMode(){
   var c=document.getElementById('f-for-owner');
   return !!(isAdmin()&&c&&c.checked);
+}
+// Пустое поле кладём как null, иначе в базе появятся пустые строки и
+// проверка «есть ли английский текст» перестанет работать.
+function enVal(id){
+  var el=document.getElementById(id);
+  var v=el?el.value.trim():'';
+  return v||null;
 }
 function ownerNameValue(){
   var el=document.getElementById('f-owner-name');
@@ -2919,9 +2999,9 @@ function clearSearch(kind){
 }
 function matchQ(item,q,kind){
   if(!q) return true;
-  var hay=[item.title_ru,item.title_en,item.description_ru];
+  var hay=[item.title_ru,item.title_en,item.description_ru,item.description_en];
   if(kind==='apt') hay.push(item.district_ru,item.district_en);
-  else hay.push(item.make,item.model,item.specs_ru,item.color);
+  else hay.push(item.make,item.model,item.specs_ru,item.specs_en,item.color);
   hay=hay.concat(item.badges_ru||[]);
   return normQ(hay.filter(Boolean).join(' ')).indexOf(q)!==-1;
 }
@@ -3216,7 +3296,7 @@ function openPromo(kind,id){
   var item=list.find(function(x){return x.id==id;});
   if(!item||!currentUser) return;
   promoItem=item; promoKind=kind;
-  document.getElementById('pm-obj').textContent=item.title_ru||'';
+  document.getElementById('pm-obj').textContent=locTitle(item);
   ['top','hot'].forEach(function(w){
     var on=(w==='top'?isTop(item):isHot(item));
     var el=document.getElementById('pm-'+w+'-state');
@@ -3382,7 +3462,7 @@ async function openBooking(){
   if(!currentUser){ openAuth('login'); showToast(t('toast.loginToBook')); return; }
   if(currentUser.id===detailItem.user_id){ showToast(t('toast.ownListing')); return; }
   bkItem=detailItem; bkKind=detailKind; bkBusy=[];
-  document.getElementById('bk-obj').textContent=(bkItem.title_ru||'')+' · '+pStr(bkItem);
+  document.getElementById('bk-obj').textContent=locTitle(bkItem)+' · '+pStr(bkItem);
   document.getElementById('bk-err').classList.remove('on');
   document.getElementById('bk-msg').value='';
   document.getElementById('bk-done').style.display='none';
@@ -3501,7 +3581,7 @@ function bookingToWhatsApp(){
   if(!num){ showToast(t('toast.noPhone')); return; }
   var lines=[
     (lang==='en'?'Hello! I sent a booking request on Adil.':'Здравствуйте! Я отправил заявку на бронь через Adil.'),
-    (lang==='en'?'Listing: ':'Объявление: ')+(b.item.title_ru||''),
+    (lang==='en'?'Listing: ':'Объявление: ')+locTitle(b.item),
     (lang==='en'?'Dates: ':'Даты: ')+fmtDate(b.from)+' — '+fmtDate(b.to),
     b.guests?((lang==='en'?'Guests: ':'Гостей: ')+b.guests):'',
     (lang==='en'?'Name: ':'Имя: ')+myName(),
@@ -3605,6 +3685,20 @@ function imgSrc(item, size){
   var w = size || 600;
   return USP + p + (p.indexOf('?')>-1 ? '&' : '?') + 'w='+w+'&q=75&auto=format';
 }
+// ─── ТЕКСТЫ ОБЪЯВЛЕНИЯ НА ДВУХ ЯЗЫКАХ ────────────────────────────
+// Английские колонки в базе были с самого начала, но интерфейс их не
+// спрашивал: гость с английским языком видел русские заголовки, район
+// и описание. Теперь берём английское, если оно заполнено, и молча
+// откатываемся на русское, если нет.
+function locFld(item, base){
+  if(!item) return '';
+  if(lang==='en' && item[base+'_en']) return item[base+'_en'];
+  return item[base+'_ru'] || '';
+}
+function locTitle(item){ return locFld(item,'title') || (item&&item.title) || ''; }
+function locDistrict(item){ return locFld(item,'district'); }
+function locDesc(item){ return locFld(item,'description'); }
+function locSpecs(item){ return locFld(item,'specs'); }
 function pStr(item){
   var note=item.price_note||'/мес';
   var noteMap={'/мес':'price.month','/сутки':'price.day','/неделя':'price.week','/год':'price.year'};
@@ -3642,8 +3736,8 @@ function cardHtml(item,kind){
     +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
     +'</div>'
     +'<div class="l-card-body">'
-    +'<div class="l-card-title">'+esc(item.title_ru||item.title||'')+'</div>'
-    +'<div class="l-card-meta">'+(kind==='apt'?('📍 '+esc(item.district_ru||'')+(walkLabel(item)?'<span class="walk">'+walkLabel(item)+'</span>':'')):esc(item.specs_ru||''))+'</div>'
+    +'<div class="l-card-title">'+esc(locTitle(item))+'</div>'
+    +'<div class="l-card-meta">'+(kind==='apt'?('📍 '+esc(locDistrict(item))+(walkLabel(item)?'<span class="walk">'+walkLabel(item)+'</span>':'')):esc(locSpecs(item)))+'</div>'
     +'<div class="l-card-row"><div class="l-price">'+pStr(item)+'</div>'
     +'<button class="wa-quick" data-kind="'+kind+'" data-id="'+item.id+'" onclick="quickWA(event,this.dataset.kind,this.dataset.id)">'+waIco()+' WA</button></div>'
     +'<div class="l-badges">'+badges+'</div>'
@@ -3780,7 +3874,7 @@ function openDetail(kind,id,noPush){
   document.getElementById('m-dots').innerHTML=multi?photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'" onclick="event.stopPropagation();showImg('+i+')"></div>';}).join(''):'';
   document.getElementById('m-prev').style.display=multi?'flex':'none';
   document.getElementById('m-next').style.display=multi?'flex':'none';
-  document.getElementById('m-title').textContent=item.title_ru||item.title||'';
+  document.getElementById('m-title').textContent=locTitle(item);
   paintAva(document.getElementById('m-ava'),item.owner_name||'',item.owner_avatar||'');
   document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
   document.getElementById('m-role').textContent=kind==='apt'?t('detail.owner'):t('detail.landlord');
@@ -3792,16 +3886,16 @@ function openDetail(kind,id,noPush){
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   if(kind==='apt'){
     var wl=walkLabel(item);
-    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+esc(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+esc(item.district_ru||'')+'</strong></span>'+(wl?'<span class="walk-chip">'+wl+'</span>':'')+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
+    document.getElementById('m-meta').innerHTML='<span>🏠 <strong>'+esc(typeMap[item.type]||item.type||'')+'</strong></span><span>📍 <strong>'+esc(locDistrict(item))+'</strong></span>'+(wl?'<span class="walk-chip">'+wl+'</span>':'')+(item.is_short_term?'<span>🗓 <strong>'+t('detail.shortTerm')+'</strong></span>':'');
   } else {
     var fuelMapRu={petrol:'⛽ Бензин',diesel:'🛢 Дизель',hybrid:'🔋 Гибрид',electric:'⚡ Электро'};
     var fuelMapEn={petrol:'⛽ Petrol',diesel:'🛢 Diesel',hybrid:'🔋 Hybrid',electric:'⚡ Electric'};
     var fuelMap = lang==='en' ? fuelMapEn : fuelMapRu;
     var fuelLabel=item.fuel_type?(fuelMap[item.fuel_type]||item.fuel_type):'';
-    document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+esc(item.specs_ru||((item.make||'')+' '+(item.model||'')).trim())+'</strong></span>'+(fuelLabel?'<span>'+esc(fuelLabel)+'</span>':'');
+    document.getElementById('m-meta').innerHTML='<span>🚗 <strong>'+esc(locSpecs(item)||((item.make||'')+' '+(item.model||'')).trim())+'</strong></span>'+(fuelLabel?'<span>'+esc(fuelLabel)+'</span>':'');
   }
   document.getElementById('m-tags').innerHTML=badgesOf(item).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
-  document.getElementById('m-desc').textContent=item.description_ru||'';
+  document.getElementById('m-desc').textContent=locDesc(item);
   document.querySelector('.modal-scroll').scrollTop=0;
   var mapsBtn=document.getElementById('m-maps-btn');
   if(mapsBtn){ mapsBtn.style.display=(hasPoint(item)||item.gmaps_url)?'flex':'none'; }
@@ -3811,6 +3905,12 @@ function openDetail(kind,id,noPush){
   // не имеют смысла, договариваются напрямую.
   var bookBtn=document.getElementById('m-book-btn');
   if(bookBtn) bookBtn.style.display=(kind!=='apt'||(currentUser&&currentUser.id===item.user_id))?'none':'flex';
+  var barT=document.getElementById('m-bar-title');
+  var barP=document.getElementById('m-bar-price');
+  if(barT) barT.textContent=locTitle(item);
+  if(barP) barP.textContent=pStr(item);
+  var bar=document.getElementById('m-bar');
+  if(bar) bar.classList.remove('on');
   trackView(kind,id);
   document.getElementById('detail-overlay').classList.add('open');
   // Пока карточка открыта, адрес страницы указывает на само объявление:
@@ -3845,6 +3945,16 @@ function stepImg(e,d){ if(e) e.stopPropagation(); showImg(imgIdx+d); }
   },{passive:true});
 })();
 function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) closeDetail(); }
+
+// Полоса появляется, когда фотография почти ушла за край.
+(function(){
+  var sc=document.querySelector('.modal-scroll');
+  if(!sc) return;
+  sc.addEventListener('scroll',function(){
+    var bar=document.getElementById('m-bar');
+    if(bar) bar.classList.toggle('on', sc.scrollTop>170);
+  },{passive:true});
+})();
 
 // Карточку можно стянуть вниз пальцем — так на телефоне закрываются
 // системные окна, и рука делает это раньше, чем глаз ищет крестик.
@@ -3929,12 +4039,12 @@ window.addEventListener('popstate', function(){
 });
 
 function shareText(item,kind){
-  var lines=[ (item.title_ru||'')+' — '+pStr(item) ];
+  var lines=[ locTitle(item)+' — '+pStr(item) ];
   if(kind==='apt'){
     // В переписке важна не цифра, а то, что она значит: пишем словами.
     var w=walkTo(item);
     if(w&&w.minutes<=90) lines.push(w.minutes+(lang==='en'?' min walk to the Prophet\'s Mosque':' мин пешком до Мечети Пророка'));
-    if(item.district_ru) lines.push(item.district_ru);
+    if(locDistrict(item)) lines.push(locDistrict(item));
   }
   return lines.join('\n');
 }
@@ -3946,7 +4056,7 @@ async function shareListing(kind,id){
   } else { item=detailItem; kind=detailKind; }
   if(!item) return;
   var url=listingUrl(kind,item.id);
-  var data={title:item.title_ru||'AdilRent', text:shareText(item,kind), url:url};
+  var data={title:locTitle(item)||'AdilRent', text:shareText(item,kind), url:url};
   // Родной лист «Поделиться» есть на телефоне; на компьютере его обычно нет,
   // там просто кладём ссылку в буфер обмена.
   if(navigator.share){
@@ -4073,7 +4183,7 @@ function openWA(){
   if(!detailItem) return;
   var num=waDigits(detailItem.phone);
   if(!num){ showToast(t('toast.noPhone')); return; }
-  var msg=(lang==='en'?'Hello! Listing «':'Здравствуйте! Объявление «')+(detailItem.title_ru||'')+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
+  var msg=(lang==='en'?'Hello! Listing «':'Здравствуйте! Объявление «')+locTitle(detailItem)+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
   window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
 }
 // Открывает точку в навигаторе: на iOS/Android ссылка вида ?q=lat,lng
@@ -4097,7 +4207,7 @@ function quickWA(e,kind,id){
   if(!item) return;
   var num=waDigits(item.phone);
   if(!num){ showToast(t('toast.noPhone')); return; }
-  var msg=(lang==='en'?'Hello! «':'Здравствуйте! «')+(item.title_ru||item.title||'')+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
+  var msg=(lang==='en'?'Hello! «':'Здравствуйте! «')+locTitle(item)+(lang==='en'?'» on Adil. I am interested in renting.':'» на Adil. Интересует аренда.');
   window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
 }
 
