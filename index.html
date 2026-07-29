@@ -4809,6 +4809,15 @@ function tap(strong){
       if(!el.offsetParent) return;
       el.classList.toggle('pinned', el.getBoundingClientRect().top<=edge);
     });
+    // Крупный заголовок ушёл вверх — шапка подхватывает название раздела,
+    // а логотип уступает ему место.
+    var nav=document.querySelector('.top-nav');
+    var nt=document.getElementById('nav-title');
+    if(nav&&nt){
+      var show=ab.scrollTop>64 && (section==='apt'||section==='car');
+      if(show) nt.textContent=t(section==='apt'?'nav.apt.plain':'nav.car.plain');
+      nav.classList.toggle('titled',show);
+    }
   },{passive:true});
 })();
 
