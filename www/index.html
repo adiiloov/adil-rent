@@ -828,13 +828,15 @@ body.sheet-open #shell{transform:scale(.94) translateY(10px);border-radius:18px;
 
 /* Название раздела проявляется в шапке, когда крупный заголовок ушёл
    вверх, и логотип уступает ему место. */
-.nav-title{position:absolute;left:50%;top:50%;font-family:var(--fh);font-size:15px;font-weight:700;
+/* Заголовок встаёт на место логотипа, а не по центру шапки: по центру
+   он налезал на переключатель языка. Логотип на это время уходит. */
+.nav-title{position:absolute;left:16px;top:50%;font-family:var(--fh);font-size:16px;font-weight:700;
   white-space:nowrap;pointer-events:none;
-  transform:translate(-50%,calc(-50% + 7px));opacity:0;
-  transition:opacity .22s ease,transform .26s cubic-bezier(.32,.72,0,1)}
-.top-nav.titled .nav-title{opacity:1;transform:translate(-50%,-50%)}
-.top-nav .logo{transition:opacity .22s ease}
-.top-nav.titled .logo{opacity:.25}
+  transform:translateY(calc(-50% + 8px));opacity:0;
+  transition:opacity .2s ease,transform .26s cubic-bezier(.32,.72,0,1)}
+.top-nav.titled .nav-title{opacity:1;transform:translateY(-50%)}
+.top-nav .logo{transition:opacity .2s ease,transform .26s cubic-bezier(.32,.72,0,1)}
+.top-nav.titled .logo{opacity:0;transform:translateY(-6px);pointer-events:none}
 
 /* ─── ОКНА ПОДТВЕРЖДЕНИЯ ──────────────────────────────────────────
    Выезжают снизу, как системные листы действий на телефоне.
