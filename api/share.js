@@ -176,9 +176,17 @@ module.exports = async function handler(req, res) {
   const ua = req.headers['user-agent'] || '';
   const isBot = !ua || BOT.test(ua) || req.query.preview === '1';
 
-  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400');
-  if (!isBot) { res.writeHead(302, { Location: home }); return res.end(); }
+  // По одному адресу мы отдаём два разных ответа — роботу разметку, человеку
+  // перенаправление. Без этой строки сеть доставки запомнит первый ответ и
+  // начнёт показывать его всем: либо люди застрянут на странице-заглушке,
+  // либо в WhatsApp пропадёт превью.
+  res.setHeader('Vary', 'User-Agent');
+  if (!isBot) {
+    res.writeHead(302, { Location: home, 'Cache-Control': 'no-store' });
+    return res.end();
+  }
 
+  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.end(html(buildMeta(kind, item, en), kind, id, en));
 };
