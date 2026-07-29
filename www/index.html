@@ -408,6 +408,11 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .l-price small{font-size:11px;color:var(--muted);font-weight:400}
 .wa-quick{background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;box-shadow:0 2px 8px rgba(37,211,102,.3)}
 .l-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+/* Значок удобства: ровный кружок, чтобы строка читалась как ряд, а не
+   как набор разных по ширине плашек. */
+.ic-badge{width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:14px;line-height:1;background:var(--bg);border:1px solid var(--border);cursor:default}
+.ic-badge.car{background:var(--info-bg);border-color:var(--info-bd)}
 .badge{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--bg);color:var(--muted);border:1px solid var(--border);font-weight:500}
 .badge.new{background:var(--red-light);color:var(--red);border-color:var(--red-bd);font-weight:600}
 .badge.car{background:var(--info-bg);color:var(--info);border-color:var(--info-bd)}
@@ -3900,7 +3905,7 @@ function cardHtml(item,kind){
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
   var typeLabel = typeMap[catKey] || catKey;
-  var badges=badgesOf(item).slice(0,3).map(function(b){return '<span class="badge'+(kind==='car'?' car':'')+'">'+esc(b)+'</span>';}).join('');
+  var badges=badgeIcons(item,kind,5);
   // Раньше бралось поле is_new: в базе оно по умолчанию true и никогда не
   // снималось, поэтому метка висела на всех объявлениях вечно.
   var isNew=isRecent(item);
@@ -4520,8 +4525,45 @@ function pickedAm(id){
 }
 // Для показа: если у объявления есть английские метки — берём их, иначе
 // подставляем перевод по русской, иначе показываем как есть.
-var AM_RU2EN={};
-AM_APT.concat(AM_CAR).forEach(function(a){ AM_RU2EN[a[0]]=a[1]; });
+var AM_RU2EN={}, AM_EN2RU={};
+AM_APT.concat(AM_CAR).forEach(function(a){ AM_RU2EN[a[0]]=a[1]; AM_EN2RU[a[1]]=a[0]; });
+// ─── ЗНАЧКИ УДОБСТВ ──────────────────────────────────────────────
+// В карточке списка удобства занимали целую строку словами, и все
+// выглядели одинаково важными. Значок читается мгновенно и не отвлекает
+// от главного — цены и расстояния до мечети. Полные названия остаются
+// в самом объявлении и во всплывающей подсказке.
+var AM_ICON={
+  'Кондиционер':'❄️','Wi-Fi':'📶','Парковка':'🅿️','Кухня':'🍳','Стиральная машина':'🧺',
+  'Холодильник':'🧊','Smart TV':'📺','Телевизор':'📺','Балкон':'🌇','Лифт':'🛗','Охрана':'🛡️',
+  'Бассейн':'🏊','Вид на мечеть':'🕌','Генератор':'🔌','Горячая вода 24ч':'🚿','Газ':'🔥',
+  'Интернет 100Мбит':'📶','Микроволновка':'🍲','Посудомоечная машина':'🍽️','Сейф':'🔐',
+  'Гардероб':'🚪','Детская кроватка':'🍼','Утюг':'👔','Фен':'💨',
+  'Полотенца и постельное бельё':'🛏️','Уборка включена':'🧹','Домофон':'🔔',
+  'CCTV камеры':'📹','Пожарная сигнализация':'🚨',
+  'Автомат (АКПП)':'⚙️','GPS/Навигатор':'🧭','Камера заднего вида':'📹','Камера 360°':'🎥',
+  'Кожаный салон':'💺','Bluetooth':'🔵','USB зарядка':'🔌','Беспроводная зарядка':'🔋',
+  'Детское кресло':'🧒','4WD / Полный привод':'🛞','Люк/Панорама':'🌤️','Без лимита км':'♾️',
+  'Страховка включена':'📄','Водитель по запросу':'🧑‍✈️','Доставка авто':'🚚','Парктроник':'📡',
+  'Круиз-контроль':'🎚️','Подогрев сидений':'🔥','Вентиляция сидений':'🌀','Массаж сидений':'💆',
+  'Apple CarPlay':'🍏','Android Auto':'🤖','Подключение к интернету':'🌐',
+  'Шторки на окнах':'🪟','Тонировка':'🕶️',
+  // Метки из прежних версий формы — они до сих пор лежат в объявлениях.
+  'Мебель':'🛋️','Камера зад. вида':'📹','Люк':'🌤️'
+};
+// Значок ищем по русскому названию: оно же ключ и для английской версии.
+function amIcon(label){
+  if(AM_ICON[label]) return AM_ICON[label];
+  var ru=AM_EN2RU&&AM_EN2RU[label];
+  return (ru&&AM_ICON[ru])||'✓';
+}
+function badgeIcons(item,kind,limit){
+  var ru=item.badges_ru||[];
+  var shown=badgesOf(item);
+  return shown.slice(0,limit||5).map(function(label,i){
+    var key=ru[i]||label;
+    return '<span class="ic-badge'+(kind==='car'?' car':'')+'" title="'+esc(label)+'">'+amIcon(key)+'</span>';
+  }).join('');
+}
 function badgesOf(item){
   var ru=item.badges_ru||[];
   if(lang!=='en') return ru;
