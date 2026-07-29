@@ -764,6 +764,36 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
   .desktop-footer{display:none}
 }
 
+/* Заглушка в полноэкранной галерее. Здесь она отдельным блоком, а не
+   фоном самой картинки: до загрузки у снимка нет своих размеров и
+   вписанный по contain тег схлопывается в точку — подсвечивать было бы
+   нечего. */
+.gal-skl{
+  position:absolute;width:min(92%,520px);height:58%;border-radius:12px;
+  background:linear-gradient(100deg,#131f36 30%,#1b2b49 50%,#131f36 70%);
+  background-size:220% 100%;animation:ph-wave 1.4s ease-in-out infinite;
+  opacity:0;transition:opacity .2s;pointer-events:none
+}
+.gal-skl.on{opacity:1}
+
+/* ─── ПОТЯНУТЬ, ЧТОБЫ ОБНОВИТЬ ────────────────────────────────────
+   Кружок выезжает из-под шапки следом за пальцем и, дойдя до порога,
+   разворачивается стрелкой вверх — дальше можно отпускать. */
+.ptr{
+  position:fixed;top:calc(var(--safe-top,0px) + 62px);left:50%;margin-left:-19px;
+  width:38px;height:38px;border-radius:50%;z-index:290;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,rgba(28,44,72,.96),rgba(14,25,44,.96));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 24px rgba(0,0,0,.55);
+  opacity:0;pointer-events:none;transform:translateY(-54px) scale(.6)
+}
+.ptr svg{width:19px;height:19px;stroke:var(--brand);transition:transform .2s ease}
+.ptr.ready svg{transform:rotate(180deg)}
+.ptr.busy svg{animation:ptr-spin .75s linear infinite;transform:none}
+.ptr.busy.ready svg{transform:none}
+@keyframes ptr-spin{to{transform:rotate(360deg)}}
+
 /* ─── ПОДАЧА ЗА ВЛАДЕЛЬЦА ─────────────────────────────────────────
    Полоса видна только администратору и стоит над формой, чтобы режим
    было видно до того, как начал заполнять. */
@@ -1572,6 +1602,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
     <div style="width:42px"></div>
   </div>
   <div class="gallery-img-wrap" id="gallery-img-wrap">
+    <div class="gal-skl" id="gallery-skl"></div>
     <div id="gallery-spinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;z-index:1">
       <div style="width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top:3px solid #fff;border-radius:50%;animation:spin 0.8s linear infinite"></div>
     </div>
@@ -1663,6 +1694,14 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
 <div class="toast" id="toast"></div>
 
+<!-- Кружок «потянуть, чтобы обновить». Живёт вне прокрутки, положение
+     задаётся из скрипта по тому, насколько далеко утянули палец. -->
+<div class="ptr" id="ptr">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>
+  </svg>
+</div>
+
 
 <script>
 // ─── SUPABASE INIT ────────────────────────────────────────────────
@@ -1744,6 +1783,7 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
+    'ptr.done':'Обновлено',
     'own.mode':'Публикую за владельца','own.tag':'ЗА ВЛАДЕЛЬЦА',
     'own.tip':'✓ Заведено вручную: объявление появится в каталоге сразу.',
     'own.hint':'Объявление выйдет сразу, без проверки. В карточке будут контакты хозяина.',
@@ -1866,6 +1906,7 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
+    'ptr.done':'Updated',
     'own.mode':'Posting on behalf of an owner','own.tag':'ON BEHALF',
     'own.tip':'✓ Added manually: the listing appears in the catalogue right away.',
     'own.hint':'The listing goes live immediately, without review. It shows the owner\'s contacts.',
@@ -3975,6 +4016,21 @@ function openGallery(photos,startIdx){
 function closeGallery(){ document.getElementById('gallery-overlay').classList.remove('open'); }
 function galleryPrev(){ if(galleryPhotos.length<2) return; galleryIdx=(galleryIdx-1+galleryPhotos.length)%galleryPhotos.length; renderGalleryImg(); }
 function galleryNext(){ if(galleryPhotos.length<2) return; galleryIdx=(galleryIdx+1)%galleryPhotos.length; renderGalleryImg(); }
+function galSkl(on){
+  var sk=document.getElementById('gallery-skl');
+  if(sk) sk.classList.toggle('on',!!on);
+}
+// Соседние снимки подтягиваем заранее: пока человек смотрит текущий,
+// следующий успевает доехать, и листание идёт без пауз.
+function preloadNeighbours(){
+  if(galleryPhotos.length<2) return;
+  [galleryIdx+1, galleryIdx-1].forEach(function(i){
+    var n=(i+galleryPhotos.length)%galleryPhotos.length;
+    var u=galleryPhotos[n];
+    if(!u||isVideoUrl(u)) return;
+    var im=new Image(); im.decoding='async'; im.src=galleryResolve(u);
+  });
+}
 function renderGalleryImg(){
   var wrap=document.getElementById('gallery-img-wrap');
   var img=document.getElementById('gallery-img');
@@ -3991,7 +4047,14 @@ function renderGalleryImg(){
     wrap.appendChild(vid);
   } else {
     img.style.display='block';
+    galSkl(true);
+    // Снимок в галерее грузится в полном размере — это самое долгое
+    // ожидание во всём приложении, и здесь заглушка нужнее всего.
+    img.onload=function(){ galSkl(false); };
+    img.onerror=function(){ galSkl(false); };
     setImg(img,url);
+    if(img.complete&&img.naturalWidth>0) galSkl(false);
+    preloadNeighbours();
   }
   var dots=document.getElementById('gallery-dots');
   if(dots){
@@ -4183,6 +4246,108 @@ function tap(strong){
     if(navigator.vibrate) navigator.vibrate(strong?12:7);
   }catch(e){}
 }
+// ─── ПОТЯНУТЬ, ЧТОБЫ ОБНОВИТЬ ────────────────────────────────────
+// Привычка с телефона: список обновляют не кнопкой, а движением вниз.
+// Тянем только с самого верха каталога и только там, где есть что
+// перечитывать — в форме подачи и поверх открытых окон жест выключен,
+// иначе он будет мешать вместо помощи.
+(function(){
+  var THRESH=74, MAX=130;
+  var y0=0, x0=0, dist=0, tracking=false, pulling=false, busy=false;
+
+  function ind(){ return document.getElementById('ptr'); }
+  function paint(d,ready){
+    var el=ind(); if(!el) return;
+    var shift=Math.min(d,MAX);
+    el.style.opacity=String(Math.min(1,d/40));
+    el.style.transform='translateY('+(shift-54)+'px) scale('+(0.6+Math.min(0.4,d/THRESH*0.4))+')';
+    el.classList.toggle('ready',!!ready);
+  }
+  function hide(){
+    var el=ind(); if(!el) return;
+    el.style.transition='opacity .22s ease, transform .3s cubic-bezier(.32,.72,0,1)';
+    el.style.opacity='0';
+    el.style.transform='translateY(-54px) scale(.6)';
+    el.classList.remove('ready','busy');
+    setTimeout(function(){ if(el) el.style.transition=''; },320);
+  }
+  function canPull(target){
+    if(busy) return false;
+    if(['apt','car','fav','profile'].indexOf(section)===-1) return false;
+    var ab=document.getElementById('app-body');
+    if(!ab||ab.scrollTop>0) return false;
+    if(document.querySelector('.overlay.open')) return false;
+    var gal=document.getElementById('gallery-overlay');
+    if(gal&&gal.classList.contains('open')) return false;
+    var fp=document.getElementById('filter-panel');
+    if(fp&&fp.classList.contains('open')) return false;
+    // Карта тянется сама, поля ввода прокручиваются сами — их не трогаем.
+    if(target&&target.closest&&target.closest('.leaflet-container,input,textarea,select')) return false;
+    return true;
+  }
+  async function run(){
+    busy=true;
+    var el=ind();
+    if(el){
+      el.classList.add('busy');
+      el.style.transition='transform .25s cubic-bezier(.32,.72,0,1)';
+      el.style.transform='translateY('+(THRESH-54)+'px) scale(1)';
+    }
+    tap();
+    var started=Date.now();
+    try{
+      await loadApts();
+      await loadCars();
+      if(currentUser){ await loadBookings(); }
+      updateFavBadge();
+      if(section==='fav') renderFavs();
+      if(section==='profile') updateProfileUI();
+    }catch(e){}
+    // Меньше полусекунды кружок мигнёт и исчезнет — человек не поймёт,
+    // обновилось что-то или нет.
+    var left=520-(Date.now()-started);
+    setTimeout(function(){
+      busy=false; pulling=false; dist=0;
+      if(el) el.style.transition='';
+      hide();
+      showToast(t('ptr.done'));
+    }, left>0?left:0);
+  }
+
+  document.addEventListener('touchstart',function(e){
+    tracking=false; pulling=false; dist=0;
+    if(e.touches.length!==1) return;
+    if(!canPull(e.target)) return;
+    y0=e.touches[0].clientY; x0=e.touches[0].clientX; tracking=true;
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!tracking||busy) return;
+    var dy=e.touches[0].clientY-y0, dx=e.touches[0].clientX-x0;
+    if(!pulling){
+      if(Math.abs(dx)>Math.abs(dy)){ tracking=false; return; }  // это горизонтальный жест
+      if(dy<8) return;
+      pulling=true;
+      var el=ind(); if(el) el.style.transition='';
+    }
+    if(dy<0){ dist=0; paint(0,false); return; }
+    // За порогом ход тяжелеет — сразу понятно, что дальше тянуть незачем.
+    dist=dy<THRESH?dy:THRESH+(dy-THRESH)*0.35;
+    if(e.cancelable) e.preventDefault();
+    paint(dist,dist>=THRESH);
+  },{passive:false});
+
+  function release(){
+    if(!tracking||busy){ tracking=false; return; }
+    tracking=false;
+    if(!pulling) return;
+    if(dist>=THRESH) run();
+    else { pulling=false; dist=0; hide(); }
+  }
+  document.addEventListener('touchend',release,{passive:true});
+  document.addEventListener('touchcancel',release,{passive:true});
+})();
+
 function showToast(msg){
   var el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
