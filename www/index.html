@@ -25,7 +25,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='120' y1='100' x2='392' y2='400'%3E%3Cstop offset='0' stop-color='%23F0DDB4'/%3E%3Cstop offset='1' stop-color='%23C08A2E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='%230A1424'/%3E%3Cpath d='M168 400V212a88 88 0 0 1 176 0v188' stroke='url(%23g)' stroke-width='42' fill='none'/%3E%3Cpath d='M122 310h268' stroke='url(%23g)' stroke-width='42'/%3E%3C/svg%3E">
 <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='120' y1='100' x2='392' y2='400'%3E%3Cstop offset='0' stop-color='%23F0DDB4'/%3E%3Cstop offset='1' stop-color='%23C08A2E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='%230A1424'/%3E%3Cpath d='M168 400V212a88 88 0 0 1 176 0v188' stroke='url(%23g)' stroke-width='42' fill='none'/%3E%3Cpath d='M122 310h268' stroke='url(%23g)' stroke-width='42'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin>
 <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 <script src="/vendor/leaflet/leaflet.js" defer></script>
@@ -48,13 +48,18 @@
   --radius:12px;--nav-h:56px;--bot-h:60px;
   --safe-bot:env(safe-area-inset-bottom,0px);
   --safe-top:env(safe-area-inset-top,0px);
-  --fh:'Sora',sans-serif;--fb:'Inter',sans-serif;
+  /* Текст — родным шрифтом устройства: на iPhone это San Francisco,
+     на Android — Roboto. Глаз узнаёт его мгновенно, и приложение
+     перестаёт выглядеть веб-страницей. Фирменный Sora остаётся
+     заголовкам и цене. Заодно из загрузки ушёл целый шрифт. */
+  --fh:'Sora',-apple-system,BlinkMacSystemFont,sans-serif;
+  --fb:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
 }
 html,body{height:100%;overflow:hidden}
 body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;flex-direction:column}
 
 /* NAV */
-.top-nav{height:calc(var(--nav-h) + var(--safe-top));background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:var(--safe-top) 16px 0;flex-shrink:0;z-index:200;position:relative}
+.top-nav{position:relative;height:calc(var(--nav-h) + var(--safe-top));background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:var(--safe-top) 16px 0;flex-shrink:0;z-index:200;position:relative}
 .logo{font-family:var(--fh);font-size:20px;font-weight:700;cursor:pointer}
 .logo em{color:var(--brand);font-style:normal}
 .nav-r{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;min-width:0}
@@ -505,10 +510,28 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .pstat-n{font-family:var(--fh);font-size:20px;font-weight:700;color:#fff;text-align:center}
 .pstat-l{font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-top:2px}
 .profile-body{padding:16px}
-.profile-section{margin-bottom:20px}
-.profile-section-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.profile-menu-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.profile-menu-item:last-child{border-bottom:none}
+/* Профиль собран как системные настройки телефона: заголовок группы
+   мелким шрифтом снаружи, сами строки — одной карточкой со скруглением,
+   разделители не во всю ширину, а с отступом под текст. */
+.profile-section{margin-bottom:24px}
+.profile-section-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.05em;margin:0 4px 8px;padding:0}
+/* Группу образуют идущие подряд строки меню внутри раздела. */
+.profile-section .profile-menu-item,
+#admin-menu-item{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.08);border-bottom:none;
+  padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.profile-section .profile-menu-item:first-of-type{border-radius:14px 14px 0 0}
+.profile-section .profile-menu-item:last-of-type{border-radius:0 0 14px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+/* Единственная строка в группе — скругляется со всех сторон. */
+.profile-section .profile-menu-item:first-of-type:last-of-type,
+#admin-menu-item{border-radius:14px;border-bottom:1px solid rgba(255,255,255,.08)}
+/* Разделитель начинается там же, где текст, — как в настройках. */
+.profile-section .profile-menu-item:not(:last-of-type)::after{
+  content:'';position:absolute;left:62px;right:0;bottom:0;height:1px;background:rgba(255,255,255,.07)}
+.profile-section .profile-menu-item{position:relative}
+#admin-menu-item{margin-bottom:24px}
 .pmi-left{display:flex;align-items:center;gap:12px}
 .pmi-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .pmi-ico.red{background:var(--brand-light)}
@@ -517,7 +540,8 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .pmi-ico.gray{background:var(--bg)}
 .pmi-label{font-size:14px;font-weight:500}
 .pmi-sub{font-size:12px;color:var(--muted);margin-top:1px}
-.pmi-arrow{color:var(--muted);font-size:18px}
+.pmi-arrow{color:rgba(255,255,255,.28);font-size:19px;font-weight:600}
+.profile-menu-item:active{background:rgba(255,255,255,.07)}
 .logout-btn{width:100%;background:var(--red-light);color:var(--red);border:1.5px solid var(--red-bd);border-radius:12px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--fb);margin-top:8px}
 
 /* AVATARS */
@@ -732,8 +756,16 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 .profile-menu-item:active{transform:scale(.99);opacity:.75}
 
 /* появление разделов */
+/* Переключение вкладок внизу — мягкое проявление, как между разделами
+   одного уровня. Вход во вложенный экран (форма, документы, панель) —
+   выезд справа, возврат — уход обратно вправо. Это то самое движение,
+   по которому телефонное приложение отличают от сайта. */
 @keyframes sec-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .sec-anim{animation:sec-in .3s cubic-bezier(.32,.72,0,1)}
+@keyframes push-in{from{opacity:.4;transform:translateX(26%)}to{opacity:1;transform:none}}
+@keyframes push-back{from{opacity:.4;transform:translateX(-14%)}to{opacity:1;transform:none}}
+.sec-push{animation:push-in .34s cubic-bezier(.32,.72,0,1)}
+.sec-pop{animation:push-back .34s cubic-bezier(.32,.72,0,1)}
 
 /* Если размытие не поддерживается, подставляем плотный фон:
    иначе панели окажутся полупрозрачными и текст поедет по контенту. */
@@ -744,7 +776,7 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  .sec-anim{animation:none}
+  .sec-anim,.sec-push,.sec-pop{animation:none}
 }
 
 /* DESKTOP */
@@ -789,6 +821,48 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 /* ─── ЖИВАЯ ШАПКА КАРТОЧКИ ────────────────────────────────────────
    Пока видно фотографию, полосы нет. Стоит пролистать ниже — она
    выезжает сверху с названием, ценой и теми же кнопками. */
+#shell{display:flex;flex-direction:column;flex:1;min-height:0;
+  transform-origin:50% 0;
+  transition:transform .32s cubic-bezier(.32,.72,0,1),border-radius .32s ease,filter .32s ease}
+body.sheet-open #shell{transform:scale(.94) translateY(10px);border-radius:18px;overflow:hidden;filter:brightness(.78)}
+
+/* Название раздела проявляется в шапке, когда крупный заголовок ушёл
+   вверх, и логотип уступает ему место. */
+.nav-title{position:absolute;left:50%;top:50%;font-family:var(--fh);font-size:15px;font-weight:700;
+  white-space:nowrap;pointer-events:none;
+  transform:translate(-50%,calc(-50% + 7px));opacity:0;
+  transition:opacity .22s ease,transform .26s cubic-bezier(.32,.72,0,1)}
+.top-nav.titled .nav-title{opacity:1;transform:translate(-50%,-50%)}
+.top-nav .logo{transition:opacity .22s ease}
+.top-nav.titled .logo{opacity:.25}
+
+/* ─── ОКНА ПОДТВЕРЖДЕНИЯ ──────────────────────────────────────────
+   Выезжают снизу, как системные листы действий на телефоне.
+   Опасное действие — красным, отмена — отдельной кнопкой ниже. */
+.ask-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;
+  display:flex;align-items:flex-end;justify-content:center;padding:10px;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.ask-overlay.open{opacity:1;pointer-events:auto}
+.ask-sheet{width:100%;max-width:420px;display:flex;flex-direction:column;gap:8px;
+  padding-bottom:env(safe-area-inset-bottom,6px);
+  transform:translateY(14px) scale(.97);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+.ask-overlay.open .ask-sheet{transform:none}
+.ask-body{background:linear-gradient(180deg,rgba(30,46,74,.98),rgba(20,33,55,.98));
+  border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px 16px;text-align:center}
+.ask-title{font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:6px}
+.ask-text{font-size:13px;color:var(--muted);line-height:1.5}
+.ask-input{margin-top:12px;text-align:left}
+.ask-acts{display:flex;flex-direction:column;gap:8px}
+.ask-btn{width:100%;height:52px;border-radius:16px;border:1px solid rgba(255,255,255,.1);
+  font-family:var(--fb);font-size:16px;font-weight:600;cursor:pointer;
+  background:linear-gradient(180deg,rgba(30,46,74,.98),rgba(20,33,55,.98));color:var(--text);
+  transition:transform .14s cubic-bezier(.2,.8,.25,1)}
+.ask-btn:active{transform:scale(.97)}
+.ask-ok{color:var(--brand);font-weight:700}
+.ask-ok.danger{color:#FF6B6B}
+.ask-cancel{color:var(--muted)}
+
 /* ─── «СООБЩИТЕ, КОГДА ПОЯВИТСЯ» ──────────────────────────────────
    Стоит на месте пустой выдачи и выглядит как предложение, а не как
    сообщение об ошибке. */
@@ -1011,6 +1085,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   </div>
 </div>
 
+<!-- Всё «полотно» приложения: шапка, содержимое и нижнее меню. Когда
+     поверх открывается карточка объявления, полотно чуть уменьшается и
+     скругляется — появляется ощущение слоёв, как в телефоне. -->
+<div id="shell">
 <header class="top-nav">
   <div class="logo" onclick="goSection('apt')" style="display:flex;align-items:center;gap:8px;cursor:pointer">
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Adil">
@@ -1023,6 +1101,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   </svg>
   <span style="font-family:var(--fh);font-size:20px;font-weight:700;color:var(--text)"><em style="color:var(--gold-soft);font-style:normal">Adil</em></span>
 </div>
+  <div class="nav-title" id="nav-title"></div>
   <div class="nav-desktop-links">
     <button class="ndl active" onclick="goSection('apt')" id="ndl-apt" data-i18n="nav.apt">🏠 Квартиры</button>
     <button class="ndl" onclick="goSection('car')" id="ndl-car" data-i18n="nav.car">🚗 Машины</button>
@@ -1590,6 +1669,8 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   <button class="dfn" onclick="requireAuth(function(){goSection('profile');})" data-i18n="nav.profilePlus">👤 Профиль</button>
 </nav>
 
+</div><!-- /#shell -->
+
 <!-- DETAIL MODAL -->
 <div class="overlay" id="detail-overlay" onclick="closeDetailModal(event)">
   <div class="modal-sheet">
@@ -1805,6 +1886,23 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
   </div>
 </div>
 
+<!-- Окна подтверждения. Раньше здесь работали системные confirm и prompt:
+     они выглядят как окно браузера с надписью «adilrent.com сообщает» и
+     сразу выдают, что перед человеком сайт, а не приложение. -->
+<div class="ask-overlay" id="ask-overlay" onclick="askDismiss(event)">
+  <div class="ask-sheet">
+    <div class="ask-body">
+      <div class="ask-title" id="ask-title"></div>
+      <div class="ask-text" id="ask-text"></div>
+      <input class="fi ask-input" id="ask-input" style="display:none">
+    </div>
+    <div class="ask-acts">
+      <button class="ask-btn ask-ok" id="ask-ok" onclick="askResolve(true)"></button>
+      <button class="ask-btn ask-cancel" onclick="askResolve(false)" id="ask-cancel"></button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Кружок «потянуть, чтобы обновить». Живёт вне прокрутки, положение
@@ -1896,7 +1994,7 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
-    'ptr.done':'Обновлено',
+    'ptr.done':'Обновлено','bk.notePh':'Например: заезд после 14:00','ask.ok':'Продолжить','ask.cancel':'Отмена','ask.delete':'Удалить',
     'lead.title':'Сообщим, когда появится','lead.sub':'Оставь номер — напишем в WhatsApp, как только подойдёт вариант по твоим условиям.',
     'lead.ph':'Номер в WhatsApp','lead.note.ph':'Даты и пожелания — по желанию',
     'lead.send':'Сообщить мне','lead.done':'Записали. Напишем, как появится подходящее.',
@@ -2027,7 +2125,7 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
-    'ptr.done':'Updated',
+    'ptr.done':'Updated','bk.notePh':'For example: check-in after 2 pm','ask.ok':'Continue','ask.cancel':'Cancel','ask.delete':'Delete',
     'lead.title':'We will tell you when it appears','lead.sub':'Leave your number and we will message you on WhatsApp as soon as something matches.',
     'lead.ph':'WhatsApp number','lead.note.ph':'Dates and wishes — optional',
     'lead.send':'Notify me','lead.done':'Noted. We will write when something suitable shows up.',
@@ -2233,7 +2331,10 @@ async function loadMyListings(){
 }
 async function deleteMyListing(kind,id){
   if(!sb) return;
-  if(!confirm(lang==='en'?'Delete this listing?':'Удалить объявление?')) return;
+  var okDel=await askConfirm(lang==='en'?'Delete this listing?':'Удалить объявление?',
+    lang==='en'?'The listing and its statistics will be gone for good.':'Объявление и его статистика пропадут окончательно.',
+    {okText:t('ask.delete'), danger:true});
+  if(!okDel) return;
   var table=kind==='apt'?'apartments':'cars';
   await sb.from(table).delete().eq('id',id);
   showToast(t('toast.listingDeleted'));
@@ -2768,7 +2869,7 @@ async function handOver(kind,id){
   var table=kind==='apt'?'apartments':'cars';
   var item=adminItems.find(function(x){return x._kind===kind&&x.id==id;});
   var guess=item?(item.phone||''):'';
-  var phone=window.prompt(t('own.handoverAsk'), guess);
+  var phone=await askText(t('own.handoverAsk'), {value:guess, inputType:'tel', placeholder:'+966…'});
   if(!phone) return;
   var digits=waDigits(phone);
   if(!digits){ showToast(t('own.badPhone')); return; }
@@ -2784,7 +2885,7 @@ async function handOver(kind,id){
   });
   if(!match.length){ showToast(t('own.noProfile')); return; }
   var owner=match[0];
-  if(!confirm(t('own.confirm').replace('{name}',owner.name||owner.id.slice(0,8)))) return;
+  if(!await askConfirm(t('own.confirm').replace('{name}',owner.name||owner.id.slice(0,8)))) return;
   var upd={user_id:owner.id, added_by_admin:false};
   if(owner.name) upd.owner_name=owner.name;
   var {error}=await sb.from(table).update(upd).eq('id',id);
@@ -2966,7 +3067,7 @@ async function adminUnarchive(kind,id){
 // и другое, без отдельной кнопки «снять» на каждый вид.
 async function adminPromo(kind,id,what){
   if(!sb) return;
-  var days=prompt(t('promo.days')+' (0 — '+t('promo.off').toLowerCase()+')','7');
+  var days=await askText(t('promo.days'), {text:'0 — '+t('promo.off').toLowerCase(), value:'7', inputType:'number'});
   if(days===null) return;
   var n=parseInt(days,10);
   var until=(!n||n<=0)?null:new Date(Date.now()+n*86400000).toISOString();
@@ -2978,7 +3079,7 @@ async function adminPromo(kind,id,what){
 }
 async function adminDelete(kind,id){
   if(!sb) return;
-  if(!confirm('Удалить навсегда?')) return;
+  if(!await askConfirm('Удалить навсегда?','Объявление исчезнет вместе со статистикой и заявками.',{okText:t('ask.delete'),danger:true})) return;
   await sb.from(kind==='apt'?'apartments':'cars').delete().eq('id',id);
   showToast('Удалено'); loadAdmin(); loadApts(); loadCars();
 }
@@ -3741,10 +3842,10 @@ function renderBookings(){
 }
 async function setBookingStatus(id,status){
   if(!sb) return;
-  if(status==='cancelled'&&!confirm(t('bk.confirmCancel'))) return;
+  if(status==='cancelled'&&!await askConfirm(t('bk.confirmCancel'),'',{danger:true})) return;
   var patch={status:status};
   if(status==='confirmed'||status==='declined'){
-    var note=prompt(t('bk.notePrompt'),'');
+    var note=await askText(t('bk.notePrompt'), {placeholder:t('bk.notePh')});
     if(note===null) return;
     if(note.trim()) patch.owner_note=note.trim();
   }
@@ -4442,6 +4543,7 @@ function renderFavs(){
 
 // ─── SECTION NAV ─────────────────────────────────────────────────
 function goSection(s){
+  var from=section;
   prevSec=section!=='add'?section:prevSec; section=s;
   ['apt','car','add','fav','profile','admin','legal'].forEach(function(k){
     var el=document.getElementById('sec-'+k); if(el) el.style.display=k===s?'block':'none';
@@ -4466,8 +4568,16 @@ function goSection(s){
   if(s==='admin') loadAdmin();
   if(s==='legal') renderLegal();
   var shown=document.getElementById('sec-'+s);
-  if(shown){ shown.classList.remove('sec-anim'); void shown.offsetWidth; shown.classList.add('sec-anim'); }
+  if(shown){
+    // Вкладки нижнего меню — соседние экраны, между ними не «проваливаются».
+    var deep=['add','legal','admin'];
+    var cls = deep.indexOf(s)!==-1 ? 'sec-push' : (deep.indexOf(from)!==-1 ? 'sec-pop' : 'sec-anim');
+    shown.classList.remove('sec-anim','sec-push','sec-pop');
+    void shown.offsetWidth;
+    shown.classList.add(cls);
+  }
   var ab=document.getElementById('app-body'); if(ab) ab.scrollTop=0; window.scrollTo(0,0);
+  var nav=document.querySelector('.top-nav'); if(nav) nav.classList.remove('titled');
 }
 function goBack(){ goSection(prevSec||'apt'); }
 function setAddType(t){
@@ -4700,6 +4810,97 @@ function tap(strong){
       el.classList.toggle('pinned', el.getBoundingClientRect().top<=edge);
     });
   },{passive:true});
+})();
+
+// ─── СВОИ ОКНА ВМЕСТО СИСТЕМНЫХ ──────────────────────────────────
+// Возвращают обещание: true/false для подтверждения, введённый текст
+// или null — для ввода. Вызывается как обычный confirm, только с await.
+var askPending=null;
+function askOpen(opts){
+  var ov=document.getElementById('ask-overlay');
+  document.getElementById('ask-title').textContent=opts.title||'';
+  var txt=document.getElementById('ask-text');
+  txt.textContent=opts.text||''; txt.style.display=opts.text?'block':'none';
+  var inp=document.getElementById('ask-input');
+  if(opts.input){
+    inp.style.display='block';
+    inp.value=opts.value||''; inp.placeholder=opts.placeholder||'';
+    inp.type=opts.inputType||'text';
+  } else inp.style.display='none';
+  var ok=document.getElementById('ask-ok');
+  ok.textContent=opts.okText||t('ask.ok');
+  ok.classList.toggle('danger',!!opts.danger);
+  document.getElementById('ask-cancel').textContent=opts.cancelText||t('ask.cancel');
+  ov.classList.add('open');
+  if(opts.input) setTimeout(function(){ inp.focus(); },260);
+  return new Promise(function(res){ askPending={resolve:res, input:!!opts.input}; });
+}
+function askResolve(ok){
+  var ov=document.getElementById('ask-overlay');
+  ov.classList.remove('open');
+  var p=askPending; askPending=null;
+  if(!p) return;
+  tap();
+  if(p.input) p.resolve(ok?document.getElementById('ask-input').value:null);
+  else p.resolve(!!ok);
+}
+function askDismiss(e){ if(e.target===document.getElementById('ask-overlay')) askResolve(false); }
+function askConfirm(title,text,opts){
+  opts=opts||{};
+  return askOpen({title:title,text:text,okText:opts.okText,danger:opts.danger});
+}
+function askText(title,opts){
+  opts=opts||{};
+  return askOpen({title:title,text:opts.text,input:true,value:opts.value,
+    placeholder:opts.placeholder,inputType:opts.inputType,okText:opts.okText});
+}
+// Enter в поле подтверждает, Esc — закрывает.
+document.addEventListener('keydown',function(e){
+  if(!askPending) return;
+  if(e.key==='Enter'){ e.preventDefault(); askResolve(true); }
+  if(e.key==='Escape'){ e.preventDefault(); askResolve(false); }
+});
+
+// Возврат жестом от левого края — привычка с телефона: чтобы выйти из
+// формы или документов, не нужно целиться в кнопку «Назад».
+(function(){
+  var x0=null, y0=null, live=false;
+  var DEEP=['add','legal','admin'];
+  document.addEventListener('touchstart',function(e){
+    live=false;
+    if(e.touches.length!==1) return;
+    if(DEEP.indexOf(section)===-1) return;
+    if(document.querySelector('.overlay.open,.ask-overlay.open')) return;
+    var t=e.touches[0];
+    if(t.clientX>26) return;            // жест начинается только у края
+    x0=t.clientX; y0=t.clientY; live=true;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!live) return;
+    var dx=e.touches[0].clientX-x0, dy=e.touches[0].clientY-y0;
+    if(Math.abs(dy)>Math.abs(dx)){ live=false; return; }
+    if(dx>60){
+      live=false;
+      tap();
+      goSection(section==='add'?(prevSec||'apt'):(prevSec||'apt'));
+    }
+  },{passive:true});
+  document.addEventListener('touchend',function(){ live=false; },{passive:true});
+})();
+
+// Следим за тем, открыт ли поверх приложения хоть один лист: карточка,
+// вход, бронирование, галерея или окно подтверждения. Иначе пришлось бы
+// дописывать это в десяток функций открытия и закрытия.
+(function(){
+  function sync(){
+    var open=!!document.querySelector('.overlay.open, .ask-overlay.open, #gallery-overlay.open');
+    document.body.classList.toggle('sheet-open', open);
+  }
+  var mo=new MutationObserver(sync);
+  document.querySelectorAll('.overlay, .ask-overlay, #gallery-overlay').forEach(function(el){
+    mo.observe(el,{attributes:true, attributeFilter:['class']});
+  });
+  sync();
 })();
 
 function showToast(msg){
