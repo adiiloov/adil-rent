@@ -10,6 +10,16 @@
 <meta name="apple-mobile-web-app-title" content="Adil">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0A1424">
+<meta name="description" content="Аренда квартир и машин в Медине для гостей умры и хаджа. Смотри, сколько идти пешком до Мечети Пророка, и пиши хозяину напрямую.">
+<!-- Превью для WhatsApp и Telegram. У отдельного объявления теги свои —
+     их подставляет /api/share по адресам /a/12 и /c/4. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AdilRent">
+<meta property="og:title" content="AdilRent — аренда жилья и машин в Медине">
+<meta property="og:description" content="Квартиры и машины рядом с Мечетью Пророка. Видно, сколько идти пешком, связь с хозяином напрямую.">
+<meta property="og:image" content="https://www.adilrent.com/icons/icon-512.png">
+<meta property="og:url" content="https://www.adilrent.com/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='120' y1='100' x2='392' y2='400'%3E%3Cstop offset='0' stop-color='%23F0DDB4'/%3E%3Cstop offset='1' stop-color='%23C08A2E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='%230A1424'/%3E%3Cpath d='M168 400V212a88 88 0 0 1 176 0v188' stroke='url(%23g)' stroke-width='42' fill='none'/%3E%3Cpath d='M122 310h268' stroke='url(%23g)' stroke-width='42'/%3E%3C/svg%3E">
@@ -47,7 +57,18 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .top-nav{height:calc(var(--nav-h) + var(--safe-top));background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:var(--safe-top) 16px 0;flex-shrink:0;z-index:200;position:relative}
 .logo{font-family:var(--fh);font-size:20px;font-weight:700;cursor:pointer}
 .logo em{color:var(--brand);font-style:normal}
-.nav-r{display:flex;gap:8px;align-items:center}
+.nav-r{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;min-width:0}
+/* Кнопки входа стояли в блоке без своей раскладки: на экране уже 420 px
+   «Регистрация» переносилась на вторую строку и вылезала из шапки —
+   это видел каждый, кто заходил впервые. */
+#nav-auth-area{display:flex;gap:8px;align-items:center;flex-shrink:0}
+@media (max-width:430px){
+  /* На телефоне в шапке остаётся одна кнопка: регистрация всё равно
+     открывается вкладкой внутри того же окна. */
+  #nav-auth-area .btn-signup{display:none}
+  .nav-auth-btn{padding:7px 12px}
+  .logo{font-size:18px}
+}
 .lang-row{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .lb{padding:6px 11px;font-size:12px;font-weight:600;border:none;background:none;color:var(--muted);cursor:pointer;font-family:var(--fb)}
 .lb.active{background:var(--brand);color:var(--on-brand)}
@@ -413,6 +434,8 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .m-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .m-title{font-family:var(--fh);font-size:18px;font-weight:700;line-height:1.25;flex:1;margin-right:8px}
 .m-close{background:var(--bg);border:1px solid var(--border);border-radius:10px;width:36px;height:36px;font-size:16px;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.m-share-btn{margin-right:6px;color:var(--brand)}
+.m-share-btn svg{width:17px;height:17px}
 .m-price{font-family:var(--fh);font-size:25px;font-weight:700;color:var(--brand);margin-bottom:10px}
 .m-owner-row{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg);border-radius:12px;margin-bottom:12px}
 .m-ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold-soft),var(--brand));display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:15px;font-weight:700;color:var(--on-brand);flex-shrink:0}
@@ -739,6 +762,92 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 @media(max-width:767px){
   .nav-desktop-links{display:none}
   .desktop-footer{display:none}
+}
+
+/* ─── ОТКЛИК НА ПРИКОСНОВЕНИЕ ─────────────────────────────────────
+   В телефонных приложениях нажатие видно раньше, чем случится действие:
+   кнопка проседает под пальцем и отпружинивает. В вебе этого нет по
+   умолчанию, из-за чего интерфейс кажется «мёртвым» — здесь мы это
+   добавляем. Все переходы короткие (0,12–0,18 с), иначе появится
+   ощущение задержки. */
+.pill,.filter-btn,.vbtn,.am,.l-card,.my-listing-card,.mlc-btn,.bk-btn,.m-close,
+.btn-book,.btn-wa,.btn-call,.btn-maps,.f-sub,.auth-btn,.s-btn,.empty-btn,
+.fp-apply,.fp-reset,.dfn,.dfn-plus,.back-btn,.fav-btn,.lb,.nav-auth-btn,.ib-go,
+.wa-quick,.m-nav,.tab,.p-row,.promo-card{
+  transition:transform .15s cubic-bezier(.2,.8,.25,1),
+             background .16s ease, border-color .16s ease,
+             color .16s ease, box-shadow .2s ease;
+  -webkit-user-select:none;user-select:none;
+  touch-action:manipulation;
+}
+.pill:active,.filter-btn:active,.vbtn:active,.am:active,.mlc-btn:active,.bk-btn:active,
+.m-close:active,.btn-book:active,.btn-wa:active,.btn-call:active,.btn-maps:active,
+.f-sub:active,.auth-btn:active,.s-btn:active,.empty-btn:active,.fp-apply:active,
+.fp-reset:active,.dfn:active,.dfn-plus:active,.back-btn:active,.lb:active,
+.nav-auth-btn:active,.ib-go:active,.wa-quick:active,.m-nav:active{
+  transform:scale(.955)
+}
+/* карточку жмём слабее: она большая, сильное сжатие выглядит рывком */
+.l-card:active,.my-listing-card:active,.promo-card:active{transform:scale(.982)}
+.fav-btn:active{transform:scale(.86)}
+/* сердечко наливается цветом с отскоком */
+.fav-btn.on{animation:heart-pop .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes heart-pop{0%{transform:scale(1)}40%{transform:scale(1.32)}100%{transform:scale(1)}}
+
+/* ─── НИЖНЕЕ МЕНЮ ─────────────────────────────────────────────────
+   Выбранный пункт коротко подпрыгивает и подсвечивается тёплым пятном,
+   кнопка «Сдать» доворачивает плюс. Это единственное место, куда человек
+   жмёт постоянно, и именно по нему судят, «живое» приложение или нет. */
+.bn-ico{position:relative}
+.bn-ico svg{position:relative;z-index:1;transition:stroke .2s ease}
+.bn .bn-ico,.bn .bn-lbl{transition:transform .24s cubic-bezier(.34,1.56,.64,1),color .2s ease}
+.bn:active .bn-ico{transform:scale(.84)}
+.bn.active .bn-ico{animation:bn-pop .36s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bn-pop{
+  0%{transform:translateY(0) scale(1)}
+  40%{transform:translateY(-4px) scale(1.18)}
+  70%{transform:translateY(0) scale(.97)}
+  100%{transform:translateY(0) scale(1)}
+}
+.bn.active .bn-ico::after{
+  content:'';position:absolute;inset:-8px -14px;border-radius:16px;
+  background:radial-gradient(60% 60% at 50% 50%,rgba(212,162,87,.26),transparent 72%);
+  animation:bn-glow .4s ease-out both
+}
+@keyframes bn-glow{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.bn-plus-circle{transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease}
+.bn-plus-circle svg{transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.bn-plus:active .bn-plus-circle{transform:scale(.9)}
+.bn-plus:active .bn-plus-circle svg{transform:rotate(90deg)}
+
+/* ─── ПОЯВЛЕНИЕ КАРТОЧЕК ──────────────────────────────────────────
+   Список выкладывается лесенкой, а не возникает разом. Задержки только
+   для первых восьми — дальше человек всё равно листает. */
+.card-list>*{animation:card-in .36s cubic-bezier(.32,.72,0,1) both}
+@keyframes card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card-list>*:nth-child(1){animation-delay:.01s}
+.card-list>*:nth-child(2){animation-delay:.05s}
+.card-list>*:nth-child(3){animation-delay:.09s}
+.card-list>*:nth-child(4){animation-delay:.13s}
+.card-list>*:nth-child(5){animation-delay:.17s}
+.card-list>*:nth-child(6){animation-delay:.21s}
+.card-list>*:nth-child(7){animation-delay:.25s}
+.card-list>*:nth-child(n+8){animation-delay:.28s}
+
+/* ─── КАРТОЧКА ОБЪЯВЛЕНИЯ ─────────────────────────────────────────
+   Лист тянется вниз пальцем и закрывается — как системные окна на
+   телефоне. Полоска сверху из украшения становится ручкой. */
+.modal-scroll{overscroll-behavior:contain}
+.modal-sheet.dragging{transition:none}
+.drag-line{transition:width .18s ease,background .18s ease}
+.modal-sheet.dragging .drag-line{width:52px;background:var(--brand)}
+
+@media (prefers-reduced-motion:reduce){
+  .card-list>*,.bn.active .bn-ico,.bn.active .bn-ico::after,.fav-btn.on{animation:none}
+  .pill,.filter-btn,.vbtn,.am,.l-card,.my-listing-card,.mlc-btn,.bk-btn,.m-close,
+  .btn-book,.btn-wa,.btn-call,.btn-maps,.f-sub,.auth-btn,.s-btn,.empty-btn,
+  .fp-apply,.fp-reset,.dfn,.dfn-plus,.back-btn,.fav-btn,.lb,.nav-auth-btn,.ib-go,
+  .wa-quick,.m-nav{transition:none}
 }
 </style>
 </head>
@@ -1325,7 +1434,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="m-body">
         <div class="m-head">
           <div class="m-title" id="m-title"></div>
-          <button class="m-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">✕</button>
+          <button class="m-close m-share-btn" onclick="shareListing()" aria-label="Поделиться" title="Поделиться">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+          </button>
+          <button class="m-close" onclick="closeDetail()">✕</button>
         </div>
         <div class="m-owner-row">
           <div class="m-ava ava" id="m-ava"></div>
@@ -1588,6 +1700,8 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
+    'share.btn':'Поделиться','share.copied':'Ссылка скопирована','share.copy':'Скопируй ссылку:',
+    'share.gone':'Это объявление больше не размещено',
     'toast.loginToBook':'Войдите, чтобы забронировать','toast.ownListing':'Это ваше объявление',
     'toast.bookingSent':'✓ Заявка отправлена хозяину','bk.done':'Заявка отправлена',
     'bk.done.sub':'Хозяин увидит её в приложении. Чтобы ответили быстрее — продублируй в WhatsApp, там сообщение придёт сразу.',
@@ -1699,6 +1813,8 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
+    'share.btn':'Share','share.copied':'Link copied','share.copy':'Copy the link:',
+    'share.gone':'This listing is no longer available',
     'toast.loginToBook':'Log in to book','toast.ownListing':'This is your own listing',
     'toast.bookingSent':'✓ Request sent to the owner','bk.done':'Request sent',
     'bk.done.sub':'The owner will see it in the app. For a faster reply, send it on WhatsApp too — that arrives instantly.',
@@ -1828,7 +1944,7 @@ function updateProfileUI(){
   document.getElementById('p-name').textContent=name;
   document.getElementById('p-email').textContent=currentUser.email;
   document.getElementById('p-stat-favs').textContent=favs.length;
-  document.getElementById('p-fav-count').textContent=favs.length+t('count.listings');
+  document.getElementById('p-fav-count').textContent=cntListings(favs.length);
   loadMyListings();
   loadBookings();
   loadMyPromoOrders();
@@ -1841,6 +1957,10 @@ async function loadMyListings(){
   var {data:apts2}=await sb.from('apartments').select('*').eq('user_id',currentUser.id);
   var {data:cars2}=await sb.from('cars').select('*').eq('user_id',currentUser.id);
   var all=[...(apts2||[]).map(function(a){a._kind='apt';return a;}), ...(cars2||[]).map(function(c){c._kind='car';return c;})];
+  // Держим свои объявления под рукой: кнопка «Поделиться» работает и для
+  // тех, что ещё на проверке и в общий каталог не попали.
+  myListingsCache={};
+  all.forEach(function(it){ myListingsCache[it._kind+'#'+it.id]=it; });
   document.getElementById('p-stat-listings').textContent=all.length;
   if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'You have no listings yet':'У тебя пока нет объявлений')+'</div>'; return; }
   area.innerHTML=all.map(function(item){
@@ -1864,6 +1984,7 @@ async function loadMyListings(){
     return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(item.title_ru||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+expHtml+stats+'<div class="mlc-actions">'
       +'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>'
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="renewListing(this.dataset.kind,this.dataset.id)">'+t('exp.renew')+'</button>'
+      +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="shareListing(this.dataset.kind,this.dataset.id)">↗ '+t('share.btn')+'</button>'
       +'<button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
 }
@@ -3063,6 +3184,10 @@ function isDailyRate(item){
   var n=item.price_note||'';
   return n==='/сутки'||n==='/day'||!!item.is_daily||!!item.is_short_term;
 }
+// Счётчики над списками. Раньше там стояло «1 объявлений» — мелочь, но
+// именно по таким мелочам видно, что приложение писали наспех.
+function cntListings(n){ return n+' '+(lang==='en'?plural(n,'listing','listings'):plural(n,'объявление','объявления','объявлений')); }
+function cntCars(n){ return n+' '+(lang==='en'?plural(n,'car','cars'):plural(n,'машина','машины','машин')); }
 function plural(n,one,few,many){
   if(lang==='en') return n===1?one:few;
   var a=n%100, b=n%10;
@@ -3147,7 +3272,7 @@ async function submitBooking(){
   });
   document.querySelector('.bk-total').style.display='none';
   document.getElementById('bk-done').style.display='block';
-  document.getElementById('detail-overlay').classList.remove('open');
+  closeDetail();
   loadBookings();
 }
 
@@ -3240,7 +3365,7 @@ async function setBookingStatus(id,status){
 }
 
 // ─── АНАЛИТИКА ХОЗЯИНА ───────────────────────────────────────────
-var ownerStats={};
+var ownerStats={}, myListingsCache={};
 async function loadOwnerStats(){
   if(!sb||!currentUser) return;
   var res=await sb.rpc('owner_stats');
@@ -3388,7 +3513,7 @@ function resetFilter(){
 }
 function renderApts(){
   var fl=getFilteredApts();
-  var cnt=fl.length+t('count.listings');
+  var cnt=cntListings(fl.length);
   var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
   if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t(aptQ?'card.nothingFound':'card.notFound')+'</div></div>';
   if(aptView==='map'){
@@ -3425,12 +3550,12 @@ function setCarF(el,f){
 }
 function renderCars(){
   var fl=getFilteredCars();
-  var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=fl.length+t('count.cars');
+  var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=cntCars(fl.length);
   var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t(carQ?'card.nothingFound':'card.notFoundCar')+'</div></div>';
 }
 
 // ─── DETAIL MODAL ─────────────────────────────────────────────────
-function openDetail(kind,id){
+function openDetail(kind,id,noPush){
   var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
   if(!item) return;
   detailItem=item; detailKind=kind; imgIdx=0;
@@ -3477,6 +3602,9 @@ function openDetail(kind,id){
   if(bookBtn) bookBtn.style.display=(kind!=='apt'||(currentUser&&currentUser.id===item.user_id))?'none':'flex';
   trackView(kind,id);
   document.getElementById('detail-overlay').classList.add('open');
+  // Пока карточка открыта, адрес страницы указывает на само объявление:
+  // такую ссылку можно скопировать, отправить и открыть заново.
+  if(!noPush) pushDetailUrl(kind,id);
 }
 // Листание фото внутри карточки. Раньше функция существовала, но её никто
 // не вызывал: точки под фото были нарисованы и ни на что не реагировали.
@@ -3505,7 +3633,163 @@ function stepImg(e,d){ if(e) e.stopPropagation(); showImg(imgIdx+d); }
     if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)) showImg(imgIdx+(dx<0?1:-1));
   },{passive:true});
 })();
-function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) document.getElementById('detail-overlay').classList.remove('open'); }
+function closeDetailModal(e){ if(e.target===document.getElementById('detail-overlay')) closeDetail(); }
+
+// Карточку можно стянуть вниз пальцем — так на телефоне закрываются
+// системные окна, и рука делает это раньше, чем глаз ищет крестик.
+// Тянем только с верха списка: если человек уже пролистал описание,
+// движение вниз — это прокрутка, а не закрытие.
+(function(){
+  var sheet=null, scroll=null, y0=0, x0=0, dy=0, active=false, dragging=false;
+  function overlay(){ return document.getElementById('detail-overlay'); }
+  document.addEventListener('touchstart',function(e){
+    var o=overlay();
+    active=false; dragging=false;
+    if(!o||!o.classList.contains('open')) return;
+    sheet=o.querySelector('.modal-sheet'); scroll=o.querySelector('.modal-scroll');
+    if(!sheet||!sheet.contains(e.target)) return;
+    if(scroll&&scroll.scrollTop>2) return;
+    y0=e.touches[0].clientY; x0=e.touches[0].clientX; dy=0; active=true;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!active||!sheet) return;
+    var d=e.touches[0].clientY-y0, dx=e.touches[0].clientX-x0;
+    if(!dragging){
+      // Горизонтальное движение — это листание фотографий, не наше дело.
+      if(Math.abs(dx)>Math.abs(d)){ active=false; return; }
+      if(d<7) return;
+      dragging=true; sheet.classList.add('dragging');
+    }
+    dy=Math.max(0,d);
+    if(e.cancelable) e.preventDefault();
+    // после 240 px лист идёт вдвое медленнее пальца — упор, а не обрыв
+    sheet.style.transform='translateY('+(dy>240?240+(dy-240)*.5:dy)+'px)';
+    sheet.style.opacity=String(Math.max(.5,1-dy/620));
+  },{passive:false});
+  function release(){
+    if(!active||!sheet){ active=false; return; }
+    active=false;
+    if(!dragging) return;
+    dragging=false;
+    sheet.classList.remove('dragging');
+    void sheet.offsetWidth;              // чтобы вернулся плавный переход
+    if(dy>115){
+      sheet.style.transform='translateY(100%)';
+      sheet.style.opacity='0';
+      tap();
+      closeDetail();
+      setTimeout(function(){ sheet.style.transform=''; sheet.style.opacity=''; },340);
+    } else {
+      sheet.style.transform=''; sheet.style.opacity='';
+    }
+  }
+  document.addEventListener('touchend',release,{passive:true});
+  document.addEventListener('touchcancel',release,{passive:true});
+})();
+
+// ─── АДРЕС ОБЪЯВЛЕНИЯ И «ПОДЕЛИТЬСЯ» ─────────────────────────────
+// У каждого объявления теперь свой адрес: /a/12 — квартира, /c/4 — машина.
+// В нативной оболочке страница живёт по схеме capacitor://, менять адрес
+// там нечего и незачем, поэтому все обращения к истории — под проверкой.
+var SITE_ORIGIN='https://www.adilrent.com';
+function canRoute(){
+  return !(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform())
+      && location.protocol.indexOf('http')===0;
+}
+function listingPath(kind,id){ return (kind==='apt'?'/a/':'/c/')+id; }
+function listingUrl(kind,id){ return SITE_ORIGIN+listingPath(kind,id); }
+function pushDetailUrl(kind,id){
+  if(!canRoute()) return;
+  try{ history.pushState({detail:kind+':'+id}, '', listingPath(kind,id)); }catch(e){}
+}
+// fromPop — закрытие пришло от кнопки «назад», историю трогать уже не надо.
+function closeDetail(fromPop){
+  var ov=document.getElementById('detail-overlay');
+  if(!ov||!ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  detailItem=null;
+  if(!fromPop && canRoute() && history.state && history.state.detail){
+    try{ history.back(); }catch(e){}
+  }
+}
+window.addEventListener('popstate', function(){
+  var ov=document.getElementById('detail-overlay');
+  if(ov && ov.classList.contains('open')) closeDetail(true);
+});
+
+function shareText(item,kind){
+  var lines=[ (item.title_ru||'')+' — '+pStr(item) ];
+  if(kind==='apt'){
+    // В переписке важна не цифра, а то, что она значит: пишем словами.
+    var w=walkTo(item);
+    if(w&&w.minutes<=90) lines.push(w.minutes+(lang==='en'?' min walk to the Prophet\'s Mosque':' мин пешком до Мечети Пророка'));
+    if(item.district_ru) lines.push(item.district_ru);
+  }
+  return lines.join('\n');
+}
+async function shareListing(kind,id){
+  var item;
+  if(kind&&id!=null){
+    item=(kind==='apt'?liveApts:liveCars).find(function(x){return x.id==id;});
+    if(!item) item=myListingsCache[kind+'#'+id];
+  } else { item=detailItem; kind=detailKind; }
+  if(!item) return;
+  var url=listingUrl(kind,item.id);
+  var data={title:item.title_ru||'AdilRent', text:shareText(item,kind), url:url};
+  // Родной лист «Поделиться» есть на телефоне; на компьютере его обычно нет,
+  // там просто кладём ссылку в буфер обмена.
+  if(navigator.share){
+    try{ await navigator.share(data); tap(); return; }
+    catch(e){ if(e && (e.name==='AbortError'||e.name==='NotAllowedError')) return; }
+  }
+  if(await copyText(url)){ showToast(t('share.copied')); tap(); }
+  else showToast(url);
+}
+// Копирование ссылки. Современный способ работает не везде: в старых
+// браузерах и внутри веб-вида его нет — тогда копируем через невидимое поле.
+async function copyText(text){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text); return true;
+    }
+  }catch(e){}
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=text; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0,text.length);
+    var ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+
+// Заход по ссылке на объявление. Адрес приходит либо путём /a/12 (если
+// человек открыл ссылку в браузере), либо запросом ?a=12 — так нас зовёт
+// страница превью после того, как отдала мессенджеру фото и цену.
+function openFromUrl(){
+  if(!canRoute()) return;
+  var m=location.pathname.match(/^\/(a|c)\/(\d+)/);
+  var kind=null,id=null;
+  if(m){ kind=m[1]==='a'?'apt':'car'; id=m[2]; }
+  else {
+    var q=new URLSearchParams(location.search);
+    if(q.get('a')){ kind='apt'; id=q.get('a'); }
+    else if(q.get('c')){ kind='car'; id=q.get('c'); }
+  }
+  if(!kind) return;
+  // Заменяем адрес на чистый корень: тогда «назад» из карточки ведёт
+  // в каталог, а не по кругу в ту же карточку.
+  try{ history.replaceState({}, '', '/'); }catch(e){}
+  var list=kind==='apt'?liveApts:liveCars;
+  if(!list.some(function(x){return x.id==id;})){
+    showToast(t('share.gone'));
+    return;
+  }
+  goSection(kind==='apt'?'apt':'car');
+  setTimeout(function(){ openDetail(kind,id); },260);
+}
 
 // ─── FULLSCREEN GALLERY ──────────────────────────────────────────
 var galleryPhotos=[], galleryIdx=0;
@@ -3714,6 +3998,16 @@ function badgesOf(item){
 }
 
 // ─── TOAST ────────────────────────────────────────────────────────
+// Короткий отклик под пальцем. На iPhone его даёт нативный плагин, если он
+// подключён; в браузере Android — вибромотор. Где ничего нет — тихо молчим,
+// поэтому вызывать можно откуда угодно.
+function tap(strong){
+  try{
+    var H=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.Haptics;
+    if(H&&H.impact){ H.impact({style:strong?'Medium':'Light'}); return; }
+    if(navigator.vibrate) navigator.vibrate(strong?12:7);
+  }catch(e){}
+}
 function showToast(msg){
   var el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
@@ -3735,6 +4029,13 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadBookings(); });
   goSection('apt');
   initListMap();
+  // Отклик на переключение разделов и на открытие карточки: короткий
+  // толчок делает нажатие «физическим».
+  var bnav=document.querySelector('.bottom-nav');
+  if(bnav) bnav.addEventListener('click',function(e){ if(e.target.closest('.bn,.bn-plus')) tap(); },true);
+  document.addEventListener('click',function(e){ if(e.target.closest('.l-card')) tap(); },true);
+  // Пришли по ссылке на объявление — сразу открываем его карточку.
+  openFromUrl();
   maybeShowInstallBanner();
   // 1.6 с — столько идёт сборка буквы с появлением подписи
   setTimeout(hideSplash,2050);
@@ -3772,7 +4073,7 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0
       var layers = [
         ['gallery-overlay', closeGallery],
         ['booking-overlay', function(){ closeBooking(); }],
-        ['detail-overlay',  function(){ document.getElementById('detail-overlay').classList.remove('open'); }],
+        ['detail-overlay',  function(){ closeDetail(); }],
         ['auth-overlay',    function(){ document.getElementById('auth-overlay').classList.remove('open'); }]
       ];
       for(var i=0;i<layers.length;i++){

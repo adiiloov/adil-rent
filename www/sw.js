@@ -30,6 +30,11 @@ self.addEventListener('fetch', function(e){
   // Don't cache Supabase/Google API calls
   var url = e.request.url;
   if(url.includes('supabase.co') || url.includes('googleapis.com') || url.includes('maps.google')) return;
+
+  // Ссылки на объявления (/a/12, /c/4) отдаёт функция превью — она сама
+  // перенаправляет в приложение. Класть такой ответ в кэш нельзя: объявление
+  // снимут, а старый редирект останется жить в телефоне.
+  if(/\/(a|c)\/\d+/.test(new URL(url).pathname)) return;
   
   e.respondWith(
     fetch(e.request).then(function(response){

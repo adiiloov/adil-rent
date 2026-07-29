@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/a/:id", "destination": "/api/share?kind=apt&id=:id" },
+    { "source": "/c/:id", "destination": "/api/share?kind=car&id=:id" }
+  ]
+}
