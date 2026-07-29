@@ -764,6 +764,34 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
   .desktop-footer{display:none}
 }
 
+/* ─── ПОДАЧА ЗА ВЛАДЕЛЬЦА ─────────────────────────────────────────
+   Полоса видна только администратору и стоит над формой, чтобы режим
+   было видно до того, как начал заполнять. */
+.owner-mode{background:var(--gold-light);border:1px solid rgba(212,162,87,.35);border-radius:14px;padding:13px 14px;margin-bottom:12px}
+.om-row{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.om-row input{width:19px;height:19px;flex-shrink:0;margin-top:1px;accent-color:var(--brand)}
+.om-row b{font-size:14px;color:var(--brand);display:block;margin-bottom:2px}
+.om-hint{font-size:12px;color:var(--muted);line-height:1.4;display:block}
+.om-note{font-size:12px;color:var(--muted);line-height:1.4;margin-top:6px}
+#owner-fields{margin-top:12px}
+.mlc-owner-tag,.ac-owner-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;
+  background:var(--gold-light);color:var(--brand);border:1px solid rgba(212,162,87,.35);margin-bottom:6px}
+
+/* ─── ЗАГЛУШКА ПОД ФОТОГРАФИЕЙ ────────────────────────────────────
+   Хранилище отдаёт снимки без кэша и из Токио, поэтому первая
+   фотография появляется секунды через три. Всё это время в карточке
+   зияла дыра, и казалось, что объявление сломано. Теперь на её месте
+   переливается подложка, а снимок проявляется, когда дойдёт. */
+.ph{
+  background:linear-gradient(100deg,#16233c 30%,#1d2e4d 50%,#16233c 70%);
+  background-size:220% 100%;
+  animation:ph-wave 1.4s ease-in-out infinite;
+  opacity:0;transition:opacity .32s ease
+}
+.ph.ok{opacity:1;background:none;animation:none}
+.ph.fail{opacity:1;background:#16233c;animation:none}
+@keyframes ph-wave{0%{background-position:120% 0}100%{background-position:-20% 0}}
+
 /* ─── ОТКЛИК НА ПРИКОСНОВЕНИЕ ─────────────────────────────────────
    В телефонных приложениях нажатие видно раньше, чем случится действие:
    кнопка проседает под пальцем и отпружинивает. В вебе этого нет по
@@ -1074,6 +1102,22 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <div class="add-type-row">
         <button class="att active" onclick="setAddType('apt')" id="att-apt" data-i18n="add.typeApt">🏠 Квартира</button>
         <button class="att" onclick="setAddType('car')" id="att-car" data-i18n="add.typeCar">🚗 Машина</button>
+      </div>
+      <!-- ПОДАЧА ЗА ВЛАДЕЛЬЦА — только для администратора.
+           Хозяин квартиры из переписки не станет заводить аккаунт: он
+           присылает фотографии и цену, а объявление за него заводим мы.
+           Контакты в объявлении при этом его, а не наши. -->
+      <div class="owner-mode" id="owner-mode" style="display:none">
+        <label class="om-row">
+          <input type="checkbox" id="f-for-owner" onchange="toggleOwnerMode()">
+          <span><b data-i18n="own.mode">Публикую за владельца</b>
+          <span class="om-hint" data-i18n="own.hint">Объявление выйдет сразу, без проверки. В карточке будут контакты хозяина.</span></span>
+        </label>
+        <div id="owner-fields" style="display:none">
+          <div class="fg"><label class="fl" data-i18n="own.name">Имя владельца</label>
+            <input class="fi" id="f-owner-name" type="text" data-i18n-ph="own.name.ph" placeholder="Как показывать в объявлении"></div>
+          <div class="om-note" data-i18n="own.note">Телефон в форме ниже указывай тоже владельца — по нему гости будут писать в WhatsApp.</div>
+        </div>
       </div>
       <!-- APT FORM -->
       <div class="form-card" id="form-apt">
@@ -1700,6 +1744,15 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
+    'own.mode':'Публикую за владельца','own.tag':'ЗА ВЛАДЕЛЬЦА',
+    'own.tip':'✓ Заведено вручную: объявление появится в каталоге сразу.',
+    'own.hint':'Объявление выйдет сразу, без проверки. В карточке будут контакты хозяина.',
+    'own.name':'Имя владельца','own.name.ph':'Как показывать в объявлении',
+    'own.note':'Телефон в форме ниже указывай тоже владельца — по нему гости будут писать в WhatsApp.',
+    'own.needName':'⚠️ Укажи имя владельца','own.done':'Опубликовано за владельца',
+    'own.handoverAsk':'Телефон владельца, которому передаём объявление:',
+    'own.badPhone':'Не разобрал номер','own.noProfile':'Аккаунта с таким номером нет. Пусть зарегистрируется и укажет этот номер в профиле.',
+    'own.confirm':'Передать объявление пользователю {name}?','own.handedOver':'Объявление передано владельцу',
     'share.btn':'Поделиться','share.copied':'Ссылка скопирована','share.copy':'Скопируй ссылку:',
     'share.gone':'Это объявление больше не размещено',
     'toast.loginToBook':'Войдите, чтобы забронировать','toast.ownListing':'Это ваше объявление',
@@ -1813,6 +1866,15 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
+    'own.mode':'Posting on behalf of an owner','own.tag':'ON BEHALF',
+    'own.tip':'✓ Added manually: the listing appears in the catalogue right away.',
+    'own.hint':'The listing goes live immediately, without review. It shows the owner\'s contacts.',
+    'own.name':'Owner name','own.name.ph':'As shown in the listing',
+    'own.note':'Use the owner\'s phone in the form below — guests will message that number on WhatsApp.',
+    'own.needName':'⚠️ Enter the owner name','own.done':'Published on behalf of the owner',
+    'own.handoverAsk':'Phone of the owner to hand this listing over to:',
+    'own.badPhone':'Could not read the number','own.noProfile':'No account with that number. Ask them to sign up and add this number to their profile.',
+    'own.confirm':'Hand the listing over to {name}?','own.handedOver':'Listing handed over to the owner',
     'share.btn':'Share','share.copied':'Link copied','share.copy':'Copy the link:',
     'share.gone':'This listing is no longer available',
     'toast.loginToBook':'Log in to book','toast.ownListing':'This is your own listing',
@@ -1866,6 +1928,8 @@ function applyI18n(){
   });
   document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ el.placeholder=t(el.getAttribute('data-i18n-ph')); });
   document.querySelectorAll('[data-i18n-title]').forEach(function(el){ el.title=t(el.getAttribute('data-i18n-title')); });
+  // Смена языка перерисовала подсказки — возвращаем текст режима подачи.
+  if(typeof ownerMode==='function'&&ownerMode()) toggleOwnerMode();
 }
 // Отдельная функция, а не выражение в onclick: в inline-обработчике имя
 // lang разрешается в одноимённый атрибут элемента, а не в эту переменную.
@@ -1965,8 +2029,9 @@ async function loadMyListings(){
   if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'You have no listings yet':'У тебя пока нет объявлений')+'</div>'; return; }
   area.innerHTML=all.map(function(item){
     var img=item.photos&&item.photos[0]?item.photos[0]:'';
-    var imgHtml=img?'<img class="mlc-img" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var imgHtml=img?'<img class="mlc-img ph" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
+    if(item.added_by_admin) status+='<div class="mlc-owner-tag">'+t('own.tag')+'</div>';
     var s=ownerStats[item._kind+'#'+item.id]||{};
     var promo='';
     if(isTop(item)) promo+='<span class="top">'+t('promo.top')+' · '+promoLeft(item.top_until)+'</span>';
@@ -1987,6 +2052,7 @@ async function loadMyListings(){
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="shareListing(this.dataset.kind,this.dataset.id)">↗ '+t('share.btn')+'</button>'
       +'<button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
   }).join('');
+  markLoaded(area);
 }
 async function deleteMyListing(kind,id){
   if(!sb) return;
@@ -2206,6 +2272,8 @@ async function submitApt(){
   var district=document.getElementById('f-district').value.trim();
   var desc=document.getElementById('f-desc').value.trim();
   if(!title||!price||!phone){ showToast(lang==='en'?'⚠️ Fill in the title, price and phone':'⚠️ Заполни заголовок, цену и телефон'); return; }
+  var forOwner=ownerMode(), ownerName=ownerNameValue();
+  if(forOwner&&!ownerName){ showToast(t('own.needName')); return; }
   if(!district){ showToast(lang==='en'?'⚠️ Specify a district in Medina':'⚠️ Укажи район Медины'); return; }
   if(desc.length<20){ showToast(lang==='en'?'⚠️ Description must be at least 20 characters':'⚠️ Описание минимум 20 символов'); return; }
   if(!pickedPoint){
@@ -2226,21 +2294,24 @@ async function submitApt(){
     description_ru:document.getElementById('f-desc').value,
     phone:phone,
     call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
-    owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
-    owner_avatar:myAvatar()||null,
+    owner_name:forOwner?ownerName:(currentUser.user_metadata?.name||currentUser.email.split('@')[0]),
+    owner_avatar:forOwner?null:(myAvatar()||null),
+    added_by_admin:forOwner,
     district_ru:district,
     lat:pickedPoint.lat,
     lng:pickedPoint.lng,
     price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
     is_furnished:furnished===1,
     is_short_term:document.getElementById('f-period').value==='daily',
-    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:false
+    badges_ru:am.ru, badges_en:am.en, photos:photoUrls,
+    // Своё объявление ждёт модерации, заведённое администратором выходит сразу.
+    is_active:forOwner
   };
   if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('apartments').insert([data]);
   btn.disabled=false; btn.textContent=t('add.f.submit');
   if(error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+error.message); return; }
-  showToast(t('toast.published'));
+  showToast(forOwner?t('own.done'):t('toast.published'));
   clearAptForm(); goSection('apt'); loadApts();
 }
 async function submitCar(){
@@ -2250,6 +2321,8 @@ async function submitCar(){
   var phone=document.getElementById('fc-phone').value.trim();
   var callPhone=document.getElementById('fc-call-phone')?document.getElementById('fc-call-phone').value.trim():'';
   if(!model||!price||!phone){ showToast(lang==='en'?'⚠️ Fill in the model, price and phone':'⚠️ Заполни модель, цену и телефон'); return; }
+  var forOwner=ownerMode(), ownerName=ownerNameValue();
+  if(forOwner&&!ownerName){ showToast(t('own.needName')); return; }
   var btn=document.getElementById('car-submit-btn');
   btn.disabled=true; btn.textContent=t('btn.publishing');
   var am=pickedAm('am-car');
@@ -2267,17 +2340,18 @@ async function submitCar(){
     description_ru:document.getElementById('fc-desc').value,
     phone:phone,
     call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
-    owner_name:currentUser.user_metadata?.name||currentUser.email.split('@')[0],
-    owner_avatar:myAvatar()||null,
+    owner_name:forOwner?ownerName:(currentUser.user_metadata?.name||currentUser.email.split('@')[0]),
+    owner_avatar:forOwner?null:(myAvatar()||null),
+    added_by_admin:forOwner,
     call_phone:callPhone||phone,
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
-    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:false, cat:document.getElementById('fc-body').value
+    badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:forOwner, cat:document.getElementById('fc-body').value
   };
   if(!sb){ showToast(lang==='en'?'⚠️ Supabase is not configured — demo mode':'⚠️ Supabase не настроен — режим демо'); btn.disabled=false; btn.textContent=t('add.f.submit'); return; }
   var {error}=await sb.from('cars').insert([data]);
   btn.disabled=false; btn.textContent=t('add.f.submit');
   if(error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+error.message); return; }
-  showToast(t('toast.published'));
+  showToast(forOwner?t('own.done'):t('toast.published'));
   clearCarForm(); goSection('car'); loadCars();
 }
 
@@ -2388,8 +2462,8 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
-function clearCarForm(){ showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
+function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearCarForm(){ resetOwnerMode(); showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
 
@@ -2459,6 +2533,67 @@ var adminItems = [];
 
 function isAdmin(){ return currentUser && ADMIN_EMAILS.indexOf(currentUser.email) !== -1; }
 
+// ─── ПОДАЧА ЗА ВЛАДЕЛЬЦА ─────────────────────────────────────────
+// Хозяева квартир приходят из переписки и аккаунт заводить не будут.
+// Объявление создаётся от нашего имени, но живёт как обычное: имя и
+// телефон в нём — владельца, гости пишут ему напрямую. Когда хозяин
+// всё-таки зарегистрируется, объявление передаётся ему кнопкой ниже
+// вместе со всей накопленной статистикой.
+function ownerMode(){
+  var c=document.getElementById('f-for-owner');
+  return !!(isAdmin()&&c&&c.checked);
+}
+function ownerNameValue(){
+  var el=document.getElementById('f-owner-name');
+  return el?el.value.trim():'';
+}
+function toggleOwnerMode(){
+  var on=ownerMode();
+  var f=document.getElementById('owner-fields');
+  if(f) f.style.display=on?'block':'none';
+  // Обещание «появится после модерации» в этом режиме было бы неправдой:
+  // объявление, заведённое администратором, выходит сразу.
+  document.querySelectorAll('.f-tip').forEach(function(el){
+    el.textContent = on ? t('own.tip') : t('add.tip');
+  });
+}
+function resetOwnerMode(){
+  var c=document.getElementById('f-for-owner'); if(c) c.checked=false;
+  var n=document.getElementById('f-owner-name'); if(n) n.value='';
+  toggleOwnerMode();
+}
+// Передача объявления настоящему владельцу. Ищем его по номеру телефона:
+// почты у нас в профилях нет, а номер владелец и так указывает.
+async function handOver(kind,id){
+  if(!sb||!isAdmin()) return;
+  var table=kind==='apt'?'apartments':'cars';
+  var item=adminItems.find(function(x){return x._kind===kind&&x.id==id;});
+  var guess=item?(item.phone||''):'';
+  var phone=window.prompt(t('own.handoverAsk'), guess);
+  if(!phone) return;
+  var digits=waDigits(phone);
+  if(!digits){ showToast(t('own.badPhone')); return; }
+  var {data:profs,error:pe}=await sb.from('profiles').select('id,name,phone');
+  if(pe){ showToast((lang==='en'?'Error: ':'Ошибка: ')+pe.message); return; }
+  // Номера люди пишут по-разному: сравниваем только цифры и с конца,
+  // чтобы «+966 5…» и «05…» совпали.
+  var match=(profs||[]).filter(function(p){
+    var d=waDigits(p.phone||'');
+    if(!d||d.length<7) return false;
+    var a=d.slice(-9), b=digits.slice(-9);
+    return a===b;
+  });
+  if(!match.length){ showToast(t('own.noProfile')); return; }
+  var owner=match[0];
+  if(!confirm(t('own.confirm').replace('{name}',owner.name||owner.id.slice(0,8)))) return;
+  var upd={user_id:owner.id, added_by_admin:false};
+  if(owner.name) upd.owner_name=owner.name;
+  var {error}=await sb.from(table).update(upd).eq('id',id);
+  if(error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+error.message); return; }
+  showToast(t('own.handedOver'));
+  loadAdmin();
+}
+
 async function loadAdmin(){
   var blocked=document.getElementById('admin-blocked');
   var content=document.getElementById('admin-content');
@@ -2511,7 +2646,7 @@ function renderAdminList(){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
     if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=160&q=70';
     var imgEl=src
-      ?'<img style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy" decoding="async">'
+      ?'<img class="ph" style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy" decoding="async">'
       :'<div style="width:76px;height:76px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var isActive=!!item.is_active, isArchived=!!item.is_archived;
     var statusColor=isArchived?'#94A3B8':isActive?'#34D399':'#FBBF24';
@@ -2533,11 +2668,15 @@ function renderAdminList(){
       btns+='<button class="admin-btn" style="background:#2A1D0C;color:#F3A952" data-kind="'+kind+'" data-id="'+id+'" onclick="adminPromo(this.dataset.kind,this.dataset.id,\'hot\')">'
         +(isHot(item)?'🔥 '+t('promo.hot')+' · '+promoLeft(item.hot_until):'🔥 '+t('promo.hot'))+'</button>';
     }
+    if(item.added_by_admin&&!isArchived){
+      btns+='<button class="admin-btn" style="background:#2A2114;color:#E8CFA0" data-kind="'+kind+'" data-id="'+id+'" onclick="handOver(this.dataset.kind,this.dataset.id)">👤 Передать владельцу</button>';
+    }
     btns+='<button class="admin-btn reject" data-kind="'+kind+'" data-id="'+id+'" onclick="adminDelete(this.dataset.kind,this.dataset.id)">✕ Удалить</button>';
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden">'
       +'<div style="display:flex;gap:12px;padding:14px">'+imgEl
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:inline-flex;align-items:center;background:'+statusBg+';color:'+statusColor+';font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:6px">'+statusText+'</div>'
+      +(item.added_by_admin?'<span class="ac-owner-tag" style="margin-left:6px">'+t('own.tag')+'</span>':'')
       +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(item.title_ru||'Без названия')+'</div>'
       +'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">'+date+' · '+esc(item.owner_name||'')+(item.phone?' · '+esc(item.phone):'')+'</div>'
       +'<div style="font-size:16px;font-weight:700;color:var(--brand);margin-top:4px">'+(item.price||0)+' SAR'+(item.price_note||'')+'</div>'
@@ -2545,6 +2684,7 @@ function renderAdminList(){
       +'<div style="display:flex;gap:6px;padding:0 14px 14px;flex-wrap:wrap">'+btns+'</div>'
       +'</div>';
   }).join('');
+  markLoaded(list);
 }
 
 function doAdminView(kind,id){
@@ -3384,6 +3524,32 @@ function trackView(kind,id){
 
 // ─── RENDER HELPERS ──────────────────────────────────────────────────────────
 var USP='https://images.unsplash.com/';
+// ─── ЗАГЛУШКИ ПОД ФОТО ───────────────────────────────────────────
+// Событие load по дереву не всплывает, поэтому слушаем его на этапе
+// погружения — так один обработчик закрывает все картинки сразу,
+// включая те, что появятся позже.
+document.addEventListener('load',function(e){
+  var el=e.target;
+  if(el&&el.tagName==='IMG'&&el.classList.contains('ph')) el.classList.add('ok');
+},true);
+document.addEventListener('error',function(e){
+  var el=e.target;
+  if(el&&el.tagName==='IMG'&&el.classList.contains('ph')) el.classList.add('fail');
+},true);
+// Картинка из кэша успевает загрузиться до того, как мы повесим обработчик,
+// и события уже не будет — такие помечаем вручную сразу после отрисовки.
+function markLoaded(root){
+  (root||document).querySelectorAll('img.ph:not(.ok)').forEach(function(im){
+    if(im.complete&&im.naturalWidth>0) im.classList.add('ok');
+  });
+}
+// Смена снимка в уже существующем теге: гасим старый, ждём новый.
+function setImg(el,src){
+  if(!el) return;
+  el.classList.add('ph'); el.classList.remove('ok','fail');
+  el.src=src||'';
+  if(el.complete&&el.naturalWidth>0) el.classList.add('ok');
+}
 function imgSrc(item, size){
   if(!item) return '';
   var photos = item.photos;
@@ -3424,7 +3590,7 @@ function cardHtml(item,kind){
   // снималось, поэтому метка висела на всех объявлениях вечно.
   var isNew=isRecent(item);
   var src=imgSrc(item, 600);
-  var imgEl=src?'<img class="l-card-img" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
+  var imgEl=src?'<img class="l-card-img ph" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
   var favOn=isFav(kind,item.id);
   var promoCls=(isTop(item)?' is-top':'')+(isHot(item)?' is-hot':'')+((isTop(item)||isHot(item))?' is-promo':'');
   return '<div class="l-card'+promoCls+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
@@ -3517,10 +3683,10 @@ function renderApts(){
   var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
   if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t(aptQ?'card.nothingFound':'card.notFound')+'</div></div>';
   if(aptView==='map'){
-    var mc=document.getElementById('apt-map-cards'); if(mc) mc.innerHTML=h2;
+    var mc=document.getElementById('apt-map-cards'); if(mc){ mc.innerHTML=h2; markLoaded(mc); }
     var ac=document.getElementById('apt-map-cnt'); if(ac) ac.textContent=cnt;
   } else {
-    var lc=document.getElementById('apt-list-cards'); if(lc) lc.innerHTML=h2;
+    var lc=document.getElementById('apt-list-cards'); if(lc){ lc.innerHTML=h2; markLoaded(lc); }
     var alc=document.getElementById('apt-list-cnt'); if(alc) alc.textContent=cnt;
   }
 }
@@ -3551,7 +3717,11 @@ function setCarF(el,f){
 function renderCars(){
   var fl=getFilteredCars();
   var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=cntCars(fl.length);
-  var cg=document.getElementById('car-cards'); if(cg) cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t(carQ?'card.nothingFound':'card.notFoundCar')+'</div></div>';
+  var cg=document.getElementById('car-cards');
+  if(cg){
+    cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t(carQ?'card.nothingFound':'card.notFoundCar')+'</div></div>';
+    markLoaded(cg);
+  }
 }
 
 // ─── DETAIL MODAL ─────────────────────────────────────────────────
@@ -3563,7 +3733,7 @@ function openDetail(kind,id,noPush){
   var firstPhoto=photos.length?photos[0]:'';
   var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
   var mi=document.getElementById('m-imgs');
-  if(firstSrc){ mi.style.display='block'; document.getElementById('m-img').src=firstSrc; }
+  if(firstSrc){ mi.style.display='block'; setImg(document.getElementById('m-img'),firstSrc); }
   else { mi.style.display='none'; }
   var multi=photos.length>1;
   document.getElementById('m-dots').innerHTML=multi?photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'" onclick="event.stopPropagation();showImg('+i+')"></div>';}).join(''):'';
@@ -3614,7 +3784,7 @@ function showImg(i){
   if(!photos.length) return;
   imgIdx=(i+photos.length)%photos.length;
   var p=photos[imgIdx]||'';
-  document.getElementById('m-img').src=p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'';
+  setImg(document.getElementById('m-img'),p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'');
   document.querySelectorAll('#m-dots .m-dot').forEach(function(d,n){d.classList.toggle('on',n===imgIdx);});
 }
 function stepImg(e,d){ if(e) e.stopPropagation(); showImg(imgIdx+d); }
@@ -3821,7 +3991,7 @@ function renderGalleryImg(){
     wrap.appendChild(vid);
   } else {
     img.style.display='block';
-    img.src=url;
+    setImg(img,url);
   }
   var dots=document.getElementById('gallery-dots');
   if(dots){
@@ -3905,6 +4075,7 @@ function renderFavs(){
     return;
   }
   grid.innerHTML=items.map(function(x){ return cardHtml(x.item,x.kind); }).join('');
+  markLoaded(grid);
 }
 
 // ─── SECTION NAV ─────────────────────────────────────────────────
@@ -3917,7 +4088,11 @@ function goSection(s){
     var ndl=document.getElementById('ndl-'+k); if(ndl) ndl.classList.toggle('active',k===s);
   });
   if(s==='apt'){ if(aptView==='map') refreshListMap(); renderApts(); }
-  if(s==='add'){ initPickMap(); if(pickMap) setTimeout(function(){pickMap.invalidateSize();},60); }
+  if(s==='add'){
+    initPickMap(); if(pickMap) setTimeout(function(){pickMap.invalidateSize();},60);
+    var om=document.getElementById('owner-mode');
+    if(om) om.style.display=isAdmin()?'block':'none';
+  }
   if(s==='car') renderCars();
   if(s==='fav') renderFavs();
   if(s==='profile') updateProfileUI();
