@@ -784,6 +784,19 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 /* ─── ЖИВАЯ ШАПКА КАРТОЧКИ ────────────────────────────────────────
    Пока видно фотографию, полосы нет. Стоит пролистать ниже — она
    выезжает сверху с названием, ценой и теми же кнопками. */
+/* ─── «СООБЩИТЕ, КОГДА ПОЯВИТСЯ» ──────────────────────────────────
+   Стоит на месте пустой выдачи и выглядит как предложение, а не как
+   сообщение об ошибке. */
+.lead-empty{padding:34px 20px 40px}
+.lead-box{max-width:340px;margin:18px auto 0;text-align:left;
+  background:linear-gradient(180deg,rgba(212,162,87,.10),rgba(212,162,87,.04));
+  border:1px solid rgba(212,162,87,.28);border-radius:16px;padding:16px}
+.lead-t{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--brand);margin-bottom:4px}
+.lead-s{font-size:12.5px;color:var(--muted);line-height:1.45;margin-bottom:12px}
+.lead-inp{margin-bottom:9px}
+.lead-btn{width:100%;margin-top:3px}
+.lead-ok{font-size:13.5px;color:var(--brand);font-weight:600;text-align:center;line-height:1.5;padding:6px 0}
+
 /* ─── ЗАГОТОВКИ КАРТОЧЕК ──────────────────────────────────────────
    Повторяют форму настоящей карточки, поэтому список не прыгает,
    когда данные приезжают. */
@@ -1536,6 +1549,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
         <button class="admin-tab" onclick="setAdminTab(this,'cars')" id="atab-cars">🚗 Машины</button>
         <button class="admin-tab" onclick="setAdminTab(this,'archived')" id="atab-archived">📦 Архив</button>
         <button class="admin-tab" onclick="setAdminTab(this,'all')" id="atab-all">📋 Все</button>
+        <button class="admin-tab" onclick="setAdminTab(this,'leads')" id="atab-leads">🙋 Ждут <span id="admin-leads-cnt"></span></button>
       </div>
       <div class="admin-body">
         <div class="admin-stat-row">
@@ -1877,7 +1891,11 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
-    'ptr.done':'Обновлено','detail.mapsShort':'На карте',
+    'ptr.done':'Обновлено',
+    'lead.title':'Сообщим, когда появится','lead.sub':'Оставь номер — напишем в WhatsApp, как только подойдёт вариант по твоим условиям.',
+    'lead.ph':'Номер в WhatsApp','lead.note.ph':'Даты и пожелания — по желанию',
+    'lead.send':'Сообщить мне','lead.done':'Записали. Напишем, как появится подходящее.',
+    'lead.needPhone':'⚠️ Укажи номер телефона','lead.fail':'Не получилось отправить, попробуй позже','detail.mapsShort':'На карте',
     'en.block':'🇬🇧 Английская версия — по желанию',
     'en.note':'Если заполнишь, гости с английским языком увидят эти тексты вместо русских.',
     'en.title':'Заголовок по-английски','en.district':'Район по-английски',
@@ -2004,7 +2022,11 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
-    'ptr.done':'Updated','detail.mapsShort':'On the map',
+    'ptr.done':'Updated',
+    'lead.title':'We will tell you when it appears','lead.sub':'Leave your number and we will message you on WhatsApp as soon as something matches.',
+    'lead.ph':'WhatsApp number','lead.note.ph':'Dates and wishes — optional',
+    'lead.send':'Notify me','lead.done':'Noted. We will write when something suitable shows up.',
+    'lead.needPhone':'⚠️ Enter your phone number','lead.fail':'Could not send, please try later','detail.mapsShort':'On the map',
     'en.block':'🇬🇧 English version — optional',
     'en.note':'Fill this in and English-speaking guests will see these texts instead of the Russian ones.',
     'en.title':'Title in English','en.district':'District in English',
@@ -2789,6 +2811,10 @@ async function loadAdmin(){
   var e2=document.getElementById('astat-pending'); if(e2) e2.textContent=pending;
   var e3=document.getElementById('astat-active'); if(e3) e3.textContent=active2;
   var e4=document.getElementById('admin-pending-cnt'); if(e4) e4.textContent=pending>0?'('+pending+')':'';
+  var lr=await sb.from('demand_leads').select('*').order('created_at',{ascending:false}).limit(100);
+  demandLeads=lr.data||[];
+  var newLeads=demandLeads.filter(function(x){return x.status==='new';}).length;
+  var e5=document.getElementById('admin-leads-cnt'); if(e5) e5.textContent=newLeads>0?'('+newLeads+')':'';
   renderAdminList();
 }
 
@@ -2799,9 +2825,52 @@ function setAdminTab(el,tab){
   renderAdminList();
 }
 
+var demandLeads=[];
+// Люди, которые ничего не нашли и оставили номер. Здесь видно, чего
+// именно не хватает в каталоге: бюджет, сколько готовы идти пешком,
+// что искали словами.
+function renderLeads(list){
+  if(!demandLeads.length){
+    list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">Пока никто не оставлял заявок</div>';
+    return;
+  }
+  list.innerHTML=demandLeads.map(function(l){
+    var when=new Date(l.created_at).toLocaleDateString('ru-RU')+' '+new Date(l.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    var bits=[];
+    if(l.budget) bits.push('до '+l.budget+' SAR');
+    if(l.walk_max) bits.push('до '+l.walk_max+' мин пешком');
+    if(l.query) bits.push('искал(а): '+l.query);
+    var done=l.status!=='new';
+    return '<div style="background:var(--white);border:1px solid '+(done?'var(--border)':'rgba(212,162,87,.35)')+';border-radius:14px;margin-bottom:10px;padding:13px 14px'+(done?';opacity:.55':'')+'">'
+      +'<div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">'
+        +'<div style="font-size:15px;font-weight:700">'+esc(l.phone)+'</div>'
+        +'<div style="font-size:11px;color:var(--muted)">'+when+'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-top:3px">'+(l.kind==='apt'?'🏠 жильё':'🚗 машина')+(l.name?' · '+esc(l.name):'')+'</div>'
+      +(bits.length?'<div style="font-size:12.5px;margin-top:6px">'+esc(bits.join(' · '))+'</div>':'')
+      +(l.note?'<div style="font-size:13px;margin-top:5px;color:var(--text)">«'+esc(l.note)+'»</div>':'')
+      +'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'
+        +'<button class="admin-btn" style="background:#0F2D1E;color:#4ADE80" data-p="'+esc(l.phone)+'" onclick="leadWA(this.dataset.p)">Написать в WhatsApp</button>'
+        +(done?'':'<button class="admin-btn" style="background:#1B2A45;color:#92A1B9" data-id="'+l.id+'" onclick="leadDone(this.dataset.id)">Обработано</button>')
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+function leadWA(phone){
+  var num=waDigits(phone);
+  if(!num){ showToast('Не разобрал номер'); return; }
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Здравствуйте! Вы оставляли заявку на AdilRent — появился подходящий вариант.'),'_blank');
+}
+async function leadDone(id){
+  if(!sb) return;
+  var res=await sb.from('demand_leads').update({status:'done'}).eq('id',id);
+  if(res.error){ showToast(res.error.message); return; }
+  loadAdmin();
+}
 function renderAdminList(){
   var list=document.getElementById('admin-list');
   if(!list) return;
+  if(adminTab==='leads'){ renderLeads(list); return; }
   var filtered=adminItems.filter(function(x){
     if(adminTab==='pending') return !x.is_active&&!x.is_archived;
     if(adminTab==='active') return x.is_active&&!x.is_archived;
@@ -3785,6 +3854,46 @@ function showSkeletons(){
     if(el && !el.innerHTML.trim()) el.innerHTML=skeletonCards(3);
   });
 }
+// ─── ЕСЛИ НИЧЕГО НЕ НАШЛОСЬ ──────────────────────────────────────
+// Пустая выдача — самое частое, что видит гость, пока объявлений мало,
+// и раньше он просто уходил. Вместо тупика предлагаем оставить номер:
+// у нас появляется список ждущих людей, а у владельцев квартир —
+// причина разместиться именно здесь.
+function emptyWithLead(kind, text){
+  return '<div class="empty lead-empty">'
+    +'<div class="empty-ico">'+(kind==='apt'?'🔍':'🚗')+'</div>'
+    +'<div class="empty-txt">'+esc(text)+'</div>'
+    +'<div class="lead-box" id="lead-box-'+kind+'">'
+      +'<div class="lead-t">'+t('lead.title')+'</div>'
+      +'<div class="lead-s">'+t('lead.sub')+'</div>'
+      +'<input class="fi lead-inp" id="lead-phone-'+kind+'" type="tel" inputmode="tel" placeholder="'+t('lead.ph')+'">'
+      +'<input class="fi lead-inp" id="lead-note-'+kind+'" type="text" placeholder="'+t('lead.note.ph')+'">'
+      +'<button class="empty-btn lead-btn" onclick="sendLead(\''+kind+'\')">'+t('lead.send')+'</button>'
+    +'</div>'
+  +'</div>';
+}
+async function sendLead(kind){
+  var ph=document.getElementById('lead-phone-'+kind);
+  var nt=document.getElementById('lead-note-'+kind);
+  var phone=ph?ph.value.trim():'';
+  if(waDigits(phone).length<7){ showToast(t('lead.needPhone')); if(ph) ph.focus(); return; }
+  if(!sb){ showToast(t('lead.fail')); return; }
+  // Заодно сохраняем, что человек искал: это и есть самая ценная часть —
+  // видно, какого жилья и по какой цене не хватает.
+  var cap=kind==='apt'?priceTo:carPriceTo;
+  var res=await sb.from('demand_leads').insert([{
+    kind:kind, phone:phone, note:(nt?nt.value.trim():'')||null,
+    name:currentUser?myName():null,
+    budget:(cap&&cap<999999)?cap:null,
+    walk_max:kind==='apt'?(walkMax||null):null,
+    query:(kind==='apt'?aptQ:carQ)||null,
+    lang:lang, user_id:currentUser?currentUser.id:null
+  }]);
+  if(res.error){ showToast(t('lead.fail')); return; }
+  var box=document.getElementById('lead-box-'+kind);
+  if(box) box.innerHTML='<div class="lead-ok">'+t('lead.done')+'</div>';
+  tap(true);
+}
 function cardHtml(item,kind){
   var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
   var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'Apartment','2room':'Apartment','3room':'Apartment','4room':'Apartment',sedan:'Sedan',suv:'SUV',crossover:'Crossover',van:'Van',luxury:'Luxury',hatch:'Hatchback',coupe:'Coupe',pickup:'Pickup',wagon:'Wagon',bus:'Van',truck:'Truck',convertible:'Convertible'};
@@ -3887,7 +3996,7 @@ function renderApts(){
   var fl=getFilteredApts();
   var cnt=cntListings(fl.length);
   var h2=fl.map(function(a){return cardHtml(a,'apt');}).join('');
-  if(!h2) h2='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">'+t(aptQ?'card.nothingFound':'card.notFound')+'</div></div>';
+  if(!h2) h2=emptyWithLead('apt', t(aptQ?'card.nothingFound':'card.notFound'));
   if(aptView==='map'){
     var mc=document.getElementById('apt-map-cards'); if(mc){ mc.innerHTML=h2; markLoaded(mc); }
     var ac=document.getElementById('apt-map-cnt'); if(ac) ac.textContent=cnt;
@@ -3925,7 +4034,7 @@ function renderCars(){
   var cc=document.getElementById('car-cnt'); if(cc) cc.textContent=cntCars(fl.length);
   var cg=document.getElementById('car-cards');
   if(cg){
-    cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||'<div class="empty"><div class="empty-ico">🚗</div><div class="empty-txt">'+t(carQ?'card.nothingFound':'card.notFoundCar')+'</div></div>';
+    cg.innerHTML=fl.map(function(c){return cardHtml(c,'car');}).join('')||emptyWithLead('car', t(carQ?'card.nothingFound':'card.notFoundCar'));
     markLoaded(cg);
   }
 }
