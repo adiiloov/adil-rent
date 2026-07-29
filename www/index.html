@@ -370,6 +370,16 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .step-next{flex:1;margin-top:0}
 
 /* SEARCH */
+/* Поиск и фильтры прилипают к верху: сменить фильтр можно, не листая
+   обратно наверх. Полоса появляется только когда список ушёл вверх. */
+/* padding вместо внешнего отступа у поиска: иначе отступ схлопывается
+   наружу и полоса прилипает не вплотную, а на десяток пикселей ниже. */
+.stick{position:sticky;top:0;z-index:150;padding-top:10px;
+  background:linear-gradient(180deg,rgba(12,23,40,.98),rgba(10,20,36,.94));
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid transparent;transition:border-color .2s ease,box-shadow .2s ease}
+.stick.pinned{border-bottom-color:rgba(255,255,255,.08);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.stick .search-bar{margin-top:0}
 .search-bar{position:relative;margin:12px 16px 0}
 .search-bar input{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--white);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 38px 12px 40px;outline:none;-webkit-appearance:none}
 .search-bar input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(212,162,87,.15)}
@@ -774,6 +784,29 @@ button:active,.pill:active,.am:active,.bn:active,.bn-plus:active{transform:scale
 /* ─── ЖИВАЯ ШАПКА КАРТОЧКИ ────────────────────────────────────────
    Пока видно фотографию, полосы нет. Стоит пролистать ниже — она
    выезжает сверху с названием, ценой и теми же кнопками. */
+/* ─── ЗАГОТОВКИ КАРТОЧЕК ──────────────────────────────────────────
+   Повторяют форму настоящей карточки, поэтому список не прыгает,
+   когда данные приезжают. */
+.sk-card{background:var(--white);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.sk-img{height:210px;border-bottom:1px solid var(--border);
+  background:linear-gradient(100deg,#16233c 30%,#1d2e4d 50%,#16233c 70%);background-size:220% 100%;
+  animation:ph-wave 1.4s ease-in-out infinite}
+.sk-body{padding:13px 14px 15px;display:flex;flex-direction:column;gap:9px}
+.sk-line{height:11px;border-radius:6px;
+  background:linear-gradient(100deg,#16233c 30%,#1d2e4d 50%,#16233c 70%);background-size:220% 100%;
+  animation:ph-wave 1.4s ease-in-out infinite}
+.sk-line.big{height:17px}
+.sk-line.w70{width:70%}
+.sk-line.w45{width:45%}
+.sk-line.w35{width:35%}
+.m-mini-row{display:flex;gap:8px;margin-top:2px}
+.btn-mini{flex:1;height:48px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-family:var(--fb);font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.09);
+  transition:transform .15s cubic-bezier(.2,.8,.25,1),color .15s}
+.btn-mini svg{width:17px;height:17px;stroke:var(--brand)}
+.btn-mini:active{transform:scale(.95)}
 .m-bar{
   position:absolute;top:0;left:0;right:0;z-index:6;
   display:flex;align-items:center;gap:8px;padding:10px 14px;
@@ -1000,6 +1033,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
   <!-- APARTMENTS -->
   <div id="sec-apt">
+    <div class="stick">
     <div class="search-bar">
       <svg class="search-ico" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input type="text" id="apt-q" data-i18n-ph="search.apt.ph" placeholder="Район, название объявления..." oninput="onSearch('apt',this.value)">
@@ -1015,17 +1049,18 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <button class="pill" onclick="setAptF(this,'furnished')" data-i18n="apt.furnished">С мебелью</button>
     </div>
     <div class="view-toggle">
-      <button class="vbtn active" onclick="setAptView('map')" id="vb-map">
+      <button class="vbtn" onclick="setAptView('map')" id="vb-map">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
         <span data-i18n="apt.view.map">Карта</span>
       </button>
-      <button class="vbtn" onclick="setAptView('list')" id="vb-list">
+      <button class="vbtn active" onclick="setAptView('list')" id="vb-list">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>
         <span data-i18n="apt.view.list">Список</span>
       </button>
       <button class="filter-btn" onclick="toggleFilter()" id="filter-btn">
         ⚙ <span data-i18n="apt.filter">Фильтр</span>
       </button>
+    </div>
     </div>
     <div class="filter-panel" id="filter-panel">
       <div class="fp-row">
@@ -1089,6 +1124,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
 
   <!-- CARS -->
   <div id="sec-car" style="display:none">
+    <div class="stick">
     <div class="search-bar">
       <svg class="search-ico" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input type="text" id="car-q" data-i18n-ph="search.car.ph" placeholder="Марка, модель..." oninput="onSearch('car',this.value)">
@@ -1107,6 +1143,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
       <button class="filter-btn" onclick="document.getElementById('car-filter-panel').classList.toggle('open')" id="car-filter-btn">
         ⚙ <span data-i18n="apt.filter">Фильтр</span>
       </button>
+    </div>
     </div>
     <div class="filter-panel" id="car-filter-panel">
       <div class="fp-row">
@@ -1583,14 +1620,19 @@ var SUPABASE_ANON_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             <span data-i18n="detail.whatsapp">Написать в WhatsApp</span>
           </button>
-          <button class="btn-call" id="m-call-btn" onclick="openCall()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            <span data-i18n="detail.call">Позвонить</span>
-          </button>
-          <button class="btn-maps" id="m-maps-btn" onclick="openGMaps()" style="display:none">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span data-i18n="detail.maps">Открыть в навигаторе</span>
-          </button>
+          <!-- Звонок и навигатор нужны редко: раньше они были такими же
+               крупными, как «Написать», и растягивали экран на четыре
+               одинаковых кнопки. Теперь это компактная пара. -->
+          <div class="m-mini-row" id="m-mini-row">
+            <button class="btn-mini" id="m-call-btn" onclick="openCall()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              <span data-i18n="detail.call">Позвонить</span>
+            </button>
+            <button class="btn-mini" id="m-maps-btn" onclick="openGMaps()" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span data-i18n="detail.mapsShort">На карте</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1835,7 +1877,7 @@ var I18N = {
     'bk.st.pending':'На рассмотрении','bk.st.confirmed':'Подтверждено','bk.st.declined':'Отклонено',
     'bk.st.cancelled':'Отменено','bk.st.completed':'Завершено',
     'st.views':'всего просмотров','st.views7':'просм. за неделю','st.requests':'заявок','st.confirmed':'подтверждено',
-    'ptr.done':'Обновлено',
+    'ptr.done':'Обновлено','detail.mapsShort':'На карте',
     'en.block':'🇬🇧 Английская версия — по желанию',
     'en.note':'Если заполнишь, гости с английским языком увидят эти тексты вместо русских.',
     'en.title':'Заголовок по-английски','en.district':'Район по-английски',
@@ -1962,7 +2004,7 @@ var I18N = {
     'bk.st.pending':'Pending','bk.st.confirmed':'Confirmed','bk.st.declined':'Declined',
     'bk.st.cancelled':'Cancelled','bk.st.completed':'Completed',
     'st.views':'views total','st.views7':'views this week','st.requests':'requests','st.confirmed':'confirmed',
-    'ptr.done':'Updated',
+    'ptr.done':'Updated','detail.mapsShort':'On the map',
     'en.block':'🇬🇧 English version — optional',
     'en.note':'Fill this in and English-speaking guests will see these texts instead of the Russian ones.',
     'en.title':'Title in English','en.district':'District in English',
@@ -2067,7 +2109,12 @@ var demoApts = [];
 var demoCars = [];
 
 // ─── APP STATE ────────────────────────────────────────────────────
-var section='apt', aptView='map', aptF='all', carF='all', addType='apt', prevSec='apt';
+// Карта хороша, когда есть из чего выбирать по районам. Пока объявлений
+// мало, она открывается почти пустой и съедает первый экран, поэтому
+// сначала показываем список. Как только каталог дорастёт до порога,
+// приложение само начнёт открываться с карты — как и с продвижением,
+// править для этого ничего не нужно.
+var section='apt', aptView='list', aptF='all', carF='all', addType='apt', prevSec='apt';
 var furnished=1;   // «С мебелью» по умолчанию — так чаще всего и сдают
 var liveApts=[], liveCars=[], dbReady=false;
 var detailItem=null, detailKind='apt', imgIdx=0;
@@ -2653,6 +2700,10 @@ var PROMO_MIN=20;
 function promoUnlocked(){
   return (liveApts.length + liveCars.length) >= PROMO_MIN;
 }
+// Карта окупает свой экран раньше, чем платное продвижение: как только
+// объявлений становится с десяток, выбирать по районам уже осмысленно.
+var MAP_MIN=8;
+function mapWorthIt(){ return liveApts.length >= MAP_MIN; }
 function ownerMode(){
   var c=document.getElementById('f-for-owner');
   return !!(isAdmin()&&c&&c.checked);
@@ -2865,9 +2916,13 @@ async function adminDelete(kind,id){
 // ─── АВАТАРЫ ─────────────────────────────────────────────────────────────────
 // Пары для градиента заглушки. Цвет выводится из имени, поэтому у человека он
 // всегда один и тот же, а разные люди в списке различаются с одного взгляда.
+// Цвет кружка выбирается по имени владельца. Раньше в наборе были
+// зелёный, малиновый и фиолетовый — рядом с золотом на тёмно-синем они
+// смотрелись как чужие детали. Оставили оттенки самой темы: золото,
+// песок, медь и приглушённый синий.
 var AVA_COLORS=[
-  ['#D4A257','#A8722A'],['#5B8DEF','#2C5BB8'],['#4FB286','#26765A'],['#C46A8D','#8E3E5D'],
-  ['#7C6BD8','#4B3AA0'],['#D98757','#A5542B'],['#3FA9B8','#1E6C79'],['#9AA85C','#65703A']
+  ['#D4A257','#A8722A'],['#E8C57F','#C08A2E'],['#C89A5B','#8E6524'],['#B98D63','#7E5A32'],
+  ['#5C7CA8','#33507D'],['#7E93B5','#4A6284'],['#A98E6B','#6F5836'],['#8FA2BE','#54688C']
 ];
 function avaInitials(name){
   var parts=String(name||'').trim().split(/\s+/).filter(Boolean);
@@ -3714,6 +3769,22 @@ function isRecent(item){
   return age>=0 && age<NEW_DAYS;
 }
 
+// Пока список едет из базы (а после недели простоя она ещё и просыпается),
+// экран был пустым и казалось, что объявлений нет вовсе. Показываем
+// заготовки карточек — то же место, тот же ритм, только без содержимого.
+function skeletonCards(n){
+  var one='<div class="sk-card">'
+    +'<div class="sk-img"></div>'
+    +'<div class="sk-body"><div class="sk-line w70"></div><div class="sk-line w45"></div>'
+    +'<div class="sk-line w35 big"></div></div></div>';
+  return new Array(n||3).fill(one).join('');
+}
+function showSkeletons(){
+  ['apt-list-cards','apt-map-cards','car-cards'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el && !el.innerHTML.trim()) el.innerHTML=skeletonCards(3);
+  });
+}
 function cardHtml(item,kind){
   var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
   var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'Apartment','2room':'Apartment','3room':'Apartment','4room':'Apartment',sedan:'Sedan',suv:'SUV',crossover:'Crossover',van:'Van',luxury:'Luxury',hatch:'Hatchback',coupe:'Coupe',pickup:'Pickup',wagon:'Wagon',bus:'Van',truck:'Truck',convertible:'Convertible'};
@@ -3898,9 +3969,13 @@ function openDetail(kind,id,noPush){
   document.getElementById('m-desc').textContent=locDesc(item);
   document.querySelector('.modal-scroll').scrollTop=0;
   var mapsBtn=document.getElementById('m-maps-btn');
-  if(mapsBtn){ mapsBtn.style.display=(hasPoint(item)||item.gmaps_url)?'flex':'none'; }
+  var hasMaps=!!(hasPoint(item)||item.gmaps_url);
+  if(mapsBtn){ mapsBtn.style.display=hasMaps?'flex':'none'; }
   var callBtn=document.getElementById('m-call-btn');
-  if(callBtn){ callBtn.style.display=(item.call_phone||item.phone)?'flex':'none'; }
+  var hasCall=!!(item.call_phone||item.phone);
+  if(callBtn){ callBtn.style.display=hasCall?'flex':'none'; }
+  var miniRow=document.getElementById('m-mini-row');
+  if(miniRow) miniRow.style.display=(hasMaps||hasCall)?'flex':'none';
   // Бронь оставлена только для жилья: у машин даты заезда и число гостей
   // не имеют смысла, договариваются напрямую.
   var bookBtn=document.getElementById('m-book-btn');
@@ -4458,6 +4533,24 @@ function tap(strong){
   document.addEventListener('touchcancel',release,{passive:true});
 })();
 
+// Пока полоса стоит на своём месте, она сливается с фоном. Прилипла —
+// проявляется тонкая линия и тень, чтобы список «уходил» под неё.
+(function(){
+  var ab=document.getElementById('app-body');
+  if(!ab) return;
+  ab.addEventListener('scroll',function(){
+    // Отсчёт от верха прокручиваемой области, а не окна: над ней стоит
+    // шапка приложения, и в координатах окна «ноль» находится ниже.
+    // Небольшой допуск: у прилипшей полосы остаётся собственный отступ,
+    // и точное равенство здесь никогда не достигается.
+    var edge=ab.getBoundingClientRect().top+14;
+    document.querySelectorAll('.stick').forEach(function(el){
+      if(!el.offsetParent) return;
+      el.classList.toggle('pinned', el.getBoundingClientRect().top<=edge);
+    });
+  },{passive:true});
+})();
+
 function showToast(msg){
   var el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
@@ -4471,12 +4564,15 @@ document.addEventListener('DOMContentLoaded', async function(){
   applyI18n();
   buildAllAm();
   dbReady=initSupabase();
+  showSkeletons();
   if(dbReady) await checkSession();
   await loadApts();
   await loadCars();
   updateFavBadge();
   // Владелец узнаёт о новых заявках, вернувшись в приложение.
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadBookings(); });
+  // Каталог загружен — решаем, с чего открываться.
+  setAptView(mapWorthIt()?'map':'list');
   goSection('apt');
   initListMap();
   // Отклик на переключение разделов и на открытие карточки: короткий
