@@ -26,6 +26,12 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Чтобы поставить метку вашего жилья на карте при создании объявления.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Чтобы снять фото или видео объявления прямо в приложении.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Чтобы записать видео со звуком при съёмке объявления.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Чтобы выбрать фото и видео объявления из галереи.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

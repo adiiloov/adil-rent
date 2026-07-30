@@ -739,7 +739,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .gallery-dot.on{background:#fff;width:20px;border-radius:4px}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(var(--bot-h) + 12px);left:50%;transform:translateX(-50%) translateY(16px);background:#1B2A45;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:12px;font-size:14px;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;border-left:3px solid var(--brand)}
+.toast{position:fixed;bottom:calc(var(--bot-h) + 12px);left:50%;transform:translateX(-50%) translateY(16px);max-width:calc(100vw - 32px);background:#1B2A45;border:1px solid rgba(255,255,255,.12);color:#EEF2FA;padding:11px 18px;border-radius:12px;font-size:14px;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid var(--brand)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ═══ СТЕКЛО ═══════════════════════════════════════════════════════
@@ -1224,6 +1224,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
       <button class="pill" onclick="setAptF(this,'apartment')" data-i18n="apt.apartment">Квартира</button>
       <button class="pill" onclick="setAptF(this,'house')" data-i18n="apt.house">Дом</button>
       <button class="pill" onclick="setAptF(this,'villa')" data-i18n="apt.villa">Вилла</button>
+      <button class="pill" onclick="setAptF(this,'hostel')" data-i18n="apt.hostel">Хостел</button>
       <button class="pill" onclick="setAptF(this,'short')" data-i18n="apt.short">Посуточно</button>
       <button class="pill" onclick="setAptF(this,'furnished')" data-i18n="apt.furnished">С мебелью</button>
     </div>
@@ -1390,15 +1391,28 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         <div class="fg"><label class="fl" data-i18n="add.f.title">Заголовок</label><input class="fi" id="f-title" type="text" data-i18n-ph="add.f.title.ph" placeholder="Уютная студия у Мечети Пророка"></div>
         <div class="row2">
           <div class="fg"><label class="fl" data-i18n="add.f.type">Тип жилья</label>
-            <select class="fi" id="f-type">
+            <select class="fi" id="f-type" onchange="onAptTypeChange()">
               <option value="studio" data-i18n="apt.studio">Студия</option>
               <option value="apartment" data-i18n="apt.apartment">Квартира</option>
               <option value="villa" data-i18n="apt.villa">Вилла</option>
               <option value="house" data-i18n="apt.house">Дом</option>
+              <option value="hostel" data-i18n="apt.hostel">Хостел</option>
             </select>
           </div>
-          <div class="fg"><label class="fl" data-i18n="add.f.rooms">Комнат</label>
+          <div class="fg"><label class="fl" id="f-rooms-label" data-i18n="add.f.rooms">Комнат</label>
             <select class="fi" id="f-rooms"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select>
+          </div>
+        </div>
+        <div class="fg" id="hostel-fields" style="display:none">
+          <label class="fl" data-i18n="add.f.roomKind">Тип комнаты</label>
+          <div class="seg" id="f-room-kind">
+            <button type="button" class="on" data-v="dorm" onclick="pickSeg(this,'f-room-kind')" data-i18n="add.f.roomKind.dorm">Общий дорм</button>
+            <button type="button" data-v="private" onclick="pickSeg(this,'f-room-kind')" data-i18n="add.f.roomKind.private">Отдельная комната</button>
+          </div>
+          <label class="fl" style="margin-top:10px" data-i18n="add.f.kb">Кухня и санузел</label>
+          <div class="seg" id="f-kb">
+            <button type="button" class="on" data-v="shared" onclick="pickSeg(this,'f-kb')" data-i18n="add.f.kb.shared">Общие</button>
+            <button type="button" data-v="private" onclick="pickSeg(this,'f-kb')" data-i18n="add.f.kb.private">Свои</button>
           </div>
         </div>
         <div class="fg"><label class="fl" data-i18n="add.f.furn">Мебель</label>
@@ -2029,7 +2043,7 @@ var I18N = {
     'nav.addListing':'＋ Сдать объявление','nav.favPlus':'♡ Избранное','nav.profilePlus':'👤 Профиль',
     'hero.tag':'Медина, Саудовская Аравия','hero.title':'Жильё и транспорт в Медине','hero.sub':'Квартиры и машины в аренду. Быстро и прозрачно.','hero.happy':'довольных',
     'f.all':'Все',
-    'apt.studio':'Студия','apt.apartment':'Квартира','apt.house':'Дом','apt.villa':'Вилла','apt.short':'Посуточно','apt.furnished':'С мебелью',
+    'apt.studio':'Студия','apt.apartment':'Квартира','apt.house':'Дом','apt.villa':'Вилла','apt.hostel':'Хостел','apt.short':'Посуточно','apt.furnished':'С мебелью',
     'apt.view.map':'Карта','apt.view.list':'Список','apt.filter':'Фильтр','apt.title':'Квартиры','apt.titleAll':'Все квартиры',
     'car.sedan':'Седан','car.suv':'Внедорожник','car.van':'Минивэн','car.luxury':'Премиум','car.daily':'Посуточно','car.monthly':'Помесячно','car.title':'Аренда машин',
     'filter.priceFrom':'Цена от (SAR)','filter.priceTo':'Цена до (SAR)','filter.sort':'Сортировка',
@@ -2043,7 +2057,9 @@ var I18N = {
     'common.back':'← Назад','common.save':'Сохранить',
     'add.typeApt':'🏠 Квартира','add.typeCar':'🚗 Машина','add.tip':'✓ Бесплатно. Объявление появится после модерации.',
     'add.f.title':'Заголовок','add.f.title.ph':'Уютная студия у Мечети Пророка',
-    'add.f.type':'Тип жилья','add.f.rooms':'Комнат',
+    'add.f.type':'Тип жилья','add.f.rooms':'Комнат','add.f.roomsHostel':'Мест в комнате',
+    'add.f.roomKind':'Тип комнаты','add.f.roomKind.dorm':'Общий дорм','add.f.roomKind.private':'Отдельная комната',
+    'add.f.kb':'Кухня и санузел','add.f.kb.shared':'Общие','add.f.kb.private':'Свои',
     'add.f.period':'Период','add.f.period.daily':'Посуточно','add.f.period.weekly':'Еженедельно','add.f.period.monthly':'Месячно','add.f.period.yearly':'Годовое','add.f.period.long':'Долгосрочная',
     'add.f.price':'Цена (SAR)','add.f.district':'Район Медины *','add.f.district.ph':'Напишите район (обязательно)',
     'add.f.desc':'Описание * (минимум 20 символов)','add.f.desc.ph':'Этаж, вид из окна, расстояние до мечети, транспорт, условия...','add.f.desc.hint':'Введено: 0 символов (минимум 20)',
@@ -2165,7 +2181,7 @@ var I18N = {
     'nav.addListing':'＋ Add listing','nav.favPlus':'♡ Favorites','nav.profilePlus':'👤 Profile',
     'hero.tag':'Medina, Saudi Arabia','hero.title':'Housing and transport in Medina','hero.sub':'Apartments and cars for rent. Fast and transparent.','hero.happy':'satisfied',
     'f.all':'All',
-    'apt.studio':'Studio','apt.apartment':'Apartment','apt.house':'House','apt.villa':'Villa','apt.short':'Daily','apt.furnished':'Furnished',
+    'apt.studio':'Studio','apt.apartment':'Apartment','apt.house':'House','apt.villa':'Villa','apt.hostel':'Hostel','apt.short':'Daily','apt.furnished':'Furnished',
     'apt.view.map':'Map','apt.view.list':'List','apt.filter':'Filter','apt.title':'Apartments','apt.titleAll':'All apartments',
     'car.sedan':'Sedan','car.suv':'SUV','car.van':'Van','car.luxury':'Luxury','car.daily':'Daily','car.monthly':'Monthly','car.title':'Car rental',
     'filter.priceFrom':'Price from (SAR)','filter.priceTo':'Price to (SAR)','filter.sort':'Sort',
@@ -2179,7 +2195,9 @@ var I18N = {
     'common.back':'← Back','common.save':'Save',
     'add.typeApt':'🏠 Apartment','add.typeCar':'🚗 Car','add.tip':'✓ Free. The listing will appear after moderation.',
     'add.f.title':'Title','add.f.title.ph':'Cozy studio near the Prophet\'s Mosque',
-    'add.f.type':'Housing type','add.f.rooms':'Rooms',
+    'add.f.type':'Housing type','add.f.rooms':'Rooms','add.f.roomsHostel':'Beds per room',
+    'add.f.roomKind':'Room type','add.f.roomKind.dorm':'Shared dorm','add.f.roomKind.private':'Private room',
+    'add.f.kb':'Kitchen & bathroom','add.f.kb.shared':'Shared','add.f.kb.private':'Private',
     'add.f.period':'Period','add.f.period.daily':'Daily','add.f.period.weekly':'Weekly','add.f.period.monthly':'Monthly','add.f.period.yearly':'Yearly','add.f.period.long':'Long-term',
     'add.f.price':'Price (SAR)','add.f.district':'Medina district *','add.f.district.ph':'Write the district (required)',
     'add.f.desc':'Description * (minimum 20 characters)','add.f.desc.ph':'Floor, view, distance to the mosque, transport, conditions...','add.f.desc.hint':'Entered: 0 characters (minimum 20)',
@@ -2541,6 +2559,18 @@ async function doSignup(){
   var btn=document.getElementById('signup-btn');
   btn.disabled=true; btn.textContent=t('btn.creatingAccount');
   var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});
+  // Встроенный отправитель писем Supabase держит лимит в несколько штук
+  // в час на весь проект — и уже упирались в него. Пока не подключён
+  // настоящий SMTP, при этой ошибке создаём аккаунт в обход почты вовсе
+  // (сразу подтверждённым) и входим — человек не должен упираться в чужой лимит.
+  if(result.error&&/rate limit/i.test(result.error.message||'')){
+    var fb=await sb.functions.invoke('admin-signup',{body:{email:email,password:pass,name:name}});
+    if(!fb.error){
+      result=await sb.auth.signInWithPassword({email:email,password:pass});
+    } else {
+      result.error=new Error(fb.error.message||result.error.message);
+    }
+  }
   btn.disabled=false; btn.textContent=t('auth.createAccount');
   if(result.error){ showErr(result.error.message||(lang==='en'?'Sign up error':'Ошибка регистрации')); return; }
   document.getElementById('auth-overlay').classList.remove('open');
@@ -2687,11 +2717,23 @@ async function submitApt(){
   var btn=document.getElementById('apt-submit-btn');
   btn.disabled=true; btn.textContent=t('btn.publishing');
   var am=pickedAm('am-apt');
+  var roomsNum=parseInt(document.getElementById('f-rooms').value)||1;
+  var aptType=document.getElementById('f-type').value;
+  if(aptType==='hostel'){
+    var roomKind=segVal('f-room-kind','dorm'), kb=segVal('f-kb','shared');
+    var a=roomsNum%100, b=roomsNum%10;
+    var bedsWordRu=(a>10&&a<20)?'мест':(b===1?'место':(b>=2&&b<=4?'места':'мест'));
+    am.ru=[roomKind==='dorm'?'Общий дорм':'Отдельная комната', roomsNum+' '+bedsWordRu+' в комнате',
+      kb==='shared'?'Общая кухня и санузел':'Своя кухня и санузел'].concat(am.ru);
+    am.en=[roomKind==='dorm'?'Shared dorm':'Private room', roomsNum+' '+(roomsNum===1?'bed':'beds')+' per room',
+      kb==='shared'?'Shared kitchen & bathroom':'Private kitchen & bathroom'].concat(am.en);
+  }
   var photoUrls=await uploadMedia('apt',function(n,total){ btn.textContent=t('btn.compressing')+' '+n+'/'+total; });
   btn.textContent=t('btn.publishing');
   var data={
     user_id:currentUser.id,
-    title_ru:title, type:document.getElementById('f-type').value,
+    title_ru:title, type:aptType,
+    rooms:roomsNum,
     price:parseInt(price),
     description_ru:document.getElementById('f-desc').value,
     phone:phone,
@@ -2910,7 +2952,12 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc','f-title-en','f-district-en','f-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); }
+function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc','f-title-en','f-district-en','f-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset();
+  document.getElementById('f-type').value='studio'; document.getElementById('f-rooms').value='1';
+  pickSeg(document.querySelector('#f-room-kind button[data-v="dorm"]'),'f-room-kind');
+  pickSeg(document.querySelector('#f-kb button[data-v="shared"]'),'f-kb');
+  onAptTypeChange();
+}
 function clearCarForm(){ resetOwnerMode(); showStep('car',1); ['fc-model','fc-year','fc-price','fc-phone','fc-desc','fc-specs-en','fc-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-car .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('car-previews').innerHTML=''; photoFiles.car=[]; }
 
 // Фильтры/сортировка определены ниже, в блоке «RENDER APTS».
@@ -3454,10 +3501,10 @@ var LEGAL={
    ['Какие данные мы собираем','При регистрации: адрес электронной почты, имя, при желании телефон и фотографию профиля. При публикации объявления: его описание, цена, фотографии, координаты объекта на карте, контактные телефоны. При использовании: какие объявления вы открывали, избранное, выбранный язык.'],
    ['Зачем','Чтобы показывать объявления, связывать гостей с владельцами, считать просмотры для владельца, вести модерацию и защищать сервис от злоупотреблений.'],
    ['Что видно другим','Всем посетителям видны: содержание опубликованного объявления, фотографии, район и точка на карте, имя и фотография профиля владельца, указанные им телефоны. Ваша электронная почта другим пользователям не показывается. Владелец объявления видит имя и телефон того, кто отправил заявку.'],
-   ['Где хранятся данные','Данные хранятся в облачной базе Supabase (инфраструктура Amazon Web Services, регион Токио). Сайт и приложение размещены на Vercel. Карта использует тайлы OpenStreetMap и CARTO — им передаётся только область карты, которую вы смотрите, без ваших личных данных.'],
+   ['Где хранятся данные','Данные хранятся в облачной базе Supabase (инфраструктура Amazon Web Services, регион Франкфурт). Сайт и приложение размещены на Vercel. Карта использует тайлы OpenStreetMap и CARTO — им передаётся только область карты, которую вы смотрите, без ваших личных данных.'],
    ['Геолокация','Приложение запрашивает доступ к вашему местоположению только когда вы сами нажимаете кнопку «Моё местоположение» при публикации объявления, и использует его исключительно для установки метки. Мы не отслеживаем перемещения и не храним историю местоположения.'],
    ['Передача третьим лицам','Мы не продаём и не передаём ваши данные третьим лицам для рекламы. Данные могут быть раскрыты по законному требованию уполномоченных органов.'],
-   ['Удаление','Вы можете удалить свои объявления в профиле. Для удаления аккаунта и связанных с ним данных напишите на adilrentsa@gmail.com — мы удалим их в течение 30 дней.'],
+   ['Удаление','Вы можете удалить свои объявления в профиле. Удалить аккаунт и все связанные с ним данные можно там же, кнопкой «Удалить аккаунт» — это происходит сразу и без возможности восстановления.'],
    ['Дети','Сервис не предназначен для лиц младше 18 лет, и мы сознательно не собираем их данные.'],
    ['Вопросы','По любым вопросам о данных: adilrentsa@gmail.com']
   ]
@@ -3487,10 +3534,10 @@ var LEGAL={
    ['What we collect','At sign-up: email address, name, and optionally a phone number and profile photo. When publishing a listing: its description, price, photos, map coordinates, and contact phone numbers. During use: which listings you opened, your favourites, and your chosen language.'],
    ['Why','To display listings, connect guests with owners, count views for owners, run moderation, and protect the service from abuse.'],
    ['What others see','All visitors can see: the contents of a published listing, its photos, district and map pin, the owner’s name and profile photo, and the phone numbers they provided. Your email address is not shown to other users. A listing owner sees the name and phone number of whoever sends a booking request.'],
-   ['Where data is stored','Data is stored in the Supabase cloud database (Amazon Web Services infrastructure, Tokyo region). The site and app are hosted on Vercel. The map uses OpenStreetMap and CARTO tiles — only the map area you are viewing is sent to them, without your personal data.'],
+   ['Where data is stored','Data is stored in the Supabase cloud database (Amazon Web Services infrastructure, Frankfurt region). The site and app are hosted on Vercel. The map uses OpenStreetMap and CARTO tiles — only the map area you are viewing is sent to them, without your personal data.'],
    ['Location','The app requests access to your location only when you tap the “My location” button while publishing a listing, and uses it solely to place the pin. We do not track your movements and do not store location history.'],
    ['Sharing','We do not sell or share your data with third parties for advertising. Data may be disclosed upon a lawful request from authorised authorities.'],
-   ['Deletion','You can delete your listings from your profile. To delete your account and associated data, write to adilrentsa@gmail.com — we will remove it within 30 days.'],
+   ['Deletion','You can delete your listings from your profile. You can delete your account and all associated data there too, with the "Delete account" button — it happens immediately and cannot be undone.'],
    ['Children','The service is not intended for people under 18, and we do not knowingly collect their data.'],
    ['Questions','For any questions about data: adilrentsa@gmail.com']
   ]
@@ -3724,6 +3771,29 @@ function pickFurn(v){
   document.querySelectorAll('#f-furn button').forEach(function(b){
     b.classList.toggle('on', String(v)===b.dataset.v);
   });
+}
+// Универсальный сегмент-переключатель (используется для полей хостела):
+// сохраняет выбор прямо в data-v активной кнопки, читаем через segVal().
+function pickSeg(btn,groupId){
+  document.querySelectorAll('#'+groupId+' button').forEach(function(b){
+    b.classList.toggle('on', b===btn);
+  });
+}
+function segVal(groupId,fallback){
+  var on=document.querySelector('#'+groupId+' button.on');
+  return on?on.dataset.v:fallback;
+}
+// Хостел живёт по своим правилам: вместо «Комнат» — вместимость комнаты,
+// плюс тип комнаты и кухня/санузел. Остальным типам эти поля не нужны.
+function onAptTypeChange(){
+  var isHostel=document.getElementById('f-type').value==='hostel';
+  var hf=document.getElementById('hostel-fields');
+  if(hf) hf.style.display=isHostel?'block':'none';
+  var lbl=document.getElementById('f-rooms-label');
+  if(lbl){
+    lbl.setAttribute('data-i18n', isHostel?'add.f.roomsHostel':'add.f.rooms');
+    lbl.textContent=t(isHostel?'add.f.roomsHostel':'add.f.rooms');
+  }
 }
 function formStep(delta){
   var kind=addType;
@@ -4224,8 +4294,8 @@ async function sendLead(kind){
   tap(true);
 }
 function cardHtml(item,kind){
-  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
-  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'Apartment','2room':'Apartment','3room':'Apartment','4room':'Apartment',sedan:'Sedan',suv:'SUV',crossover:'Crossover',van:'Van',luxury:'Luxury',hatch:'Hatchback',coupe:'Coupe',pickup:'Pickup',wagon:'Wagon',bus:'Van',truck:'Truck',convertible:'Convertible'};
+  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла',hostel:'Хостел','1room':'Квартира','2room':'Квартира','3room':'Квартира','4room':'Квартира',sedan:'Седан',suv:'Внедорожник',crossover:'Кроссовер',van:'Минивэн',luxury:'Премиум',hatch:'Хэтчбек',coupe:'Купе',pickup:'Пикап',wagon:'Универсал',bus:'Минивэн',truck:'Грузовик',convertible:'Кабриолет'};
+  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa',hostel:'Hostel','1room':'Apartment','2room':'Apartment','3room':'Apartment','4room':'Apartment',sedan:'Sedan',suv:'SUV',crossover:'Crossover',van:'Van',luxury:'Luxury',hatch:'Hatchback',coupe:'Coupe',pickup:'Pickup',wagon:'Wagon',bus:'Van',truck:'Truck',convertible:'Convertible'};
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   var catKey = kind==='car' ? (item.cat||item.body_type||'') : (item.type||'');
   var typeLabel = typeMap[catKey] || catKey;
@@ -4261,6 +4331,7 @@ function getFilteredApts(){
       ||aptF==='apartment'&&(a.type==='apartment'||a.type==='1room'||a.type==='2room'||a.type==='3room'||a.type==='4room')
       ||aptF==='house'&&a.type==='house'
       ||aptF==='villa'&&a.type==='villa'
+      ||aptF==='hostel'&&a.type==='hostel'
       ||aptF==='short'&&a.is_short_term
       ||aptF==='furnished'&&a.is_furnished;
     var priceOk=a.price>=priceFrom&&a.price<=priceTo;
@@ -4397,8 +4468,8 @@ function openDetail(kind,id,noPush){
   document.getElementById('m-price').textContent=pStr(item);
   var mp=document.getElementById('m-promo');
   if(mp) mp.innerHTML=promoBadges(item,'m-promo').replace(/^<div class="m-promo">|<\/div>$/g,'');
-  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
-  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
+  var typeMapRu={studio:'Студия',apartment:'Квартира',house:'Дом',villa:'Вилла',hostel:'Хостел','1room':'1 комн.','2room':'2 комн.','3room':'3 комн.',sedan:'Седан',suv:'Внедорожник',van:'Минивэн',luxury:'Премиум'};
+  var typeMapEn={studio:'Studio',apartment:'Apartment',house:'House',villa:'Villa',hostel:'Hostel','1room':'1 room','2room':'2 rooms','3room':'3 rooms',sedan:'Sedan',suv:'SUV',van:'Van',luxury:'Luxury'};
   var typeMap = lang==='en' ? typeMapEn : typeMapRu;
   if(kind==='apt'){
     var wl=walkLabel(item);
@@ -4611,6 +4682,11 @@ async function copyText(text){
 // страница превью после того, как отдала мессенджеру фото и цену.
 function openFromUrl(){
   if(!canRoute()) return;
+  // Прямая ссылка на политику конфиденциальности/условия — её просят
+  // App Store Connect и Google Play Console, и она должна открываться
+  // сразу, без входа и без блуждания по профилю.
+  var legalQ=new URLSearchParams(location.search).get('legal');
+  if(legalQ==='privacy'||legalQ==='terms'||legalQ==='about'){ openLegal(legalQ); return; }
   var m=location.pathname.match(/^\/(a|c)\/(\d+)/);
   var kind=null,id=null;
   if(m){ kind=m[1]==='a'?'apt':'car'; id=m[2]; }
@@ -4888,13 +4964,21 @@ var AM_ICON={
   'Apple CarPlay':'🍏','Android Auto':'🤖','Подключение к интернету':'🌐',
   'Шторки на окнах':'🪟','Тонировка':'🕶️',
   // Метки из прежних версий формы — они до сих пор лежат в объявлениях.
-  'Мебель':'🛋️','Камера зад. вида':'📹','Люк':'🌤️'
+  'Мебель':'🛋️','Камера зад. вида':'📹','Люк':'🌤️',
+  // Хостел: тип комнаты и кухня/санузел — фиксированные строки, значок точный.
+  'Общий дорм':'🛏️','Shared dorm':'🛏️','Отдельная комната':'🚪','Private room':'🚪',
+  'Общая кухня и санузел':'🤝','Shared kitchen & bathroom':'🤝',
+  'Своя кухня и санузел':'🔑','Private kitchen & bathroom':'🔑'
 };
 // Значок ищем по русскому названию: оно же ключ и для английской версии.
 function amIcon(label){
   if(AM_ICON[label]) return AM_ICON[label];
   var ru=AM_EN2RU&&AM_EN2RU[label];
-  return (ru&&AM_ICON[ru])||'✓';
+  if(ru&&AM_ICON[ru]) return AM_ICON[ru];
+  // «3 места в комнате» / «3 beds per room» — число каждый раз своё,
+  // точную строку в словарь не занести, ловим по ключевому слову.
+  if(/мест|коек|bed/i.test(label)) return '🛏️';
+  return '✓';
 }
 function badgeIcons(item,kind,limit){
   var ru=item.badges_ru||[];
