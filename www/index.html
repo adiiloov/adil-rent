@@ -58,16 +58,16 @@
   --ok:#1B7A52;--ok-bg:#EAF5EF;--ok-bd:#C6E4D5;
   --warn:#8E620A;--warn-bg:#FCF4E2;--warn-bd:#EEDCAE;
   --info:#1D4ED8;--info-bg:#EEF3FE;--info-bd:#CCD9FA;
-  --dark:#060C18;--text:#0C1526;--muted:#5A6880;
-  --border:#E2E7F1;--bg:#F4F6FA;--white:#FFFFFF;--surface-2:#EFF2F8;
+  --dark:#060C18;--text:#14171C;--muted:#6B675F;
+  --border:#E8E2D8;--bg:#F8F6F2;--white:#FFFFFF;--surface-2:#F3EFE8;
   --green:#25D366;--blue:#2563EB;
   /* подложки и тени — своими значениями в каждой теме */
   --nav-bg:rgba(255,255,255,.94);
   --g-1:rgba(255,255,255,.72);--g-2:rgba(255,255,255,.9);
   --g-line:rgba(12,21,38,.09);--g-inset:rgba(255,255,255,.95);
-  --g-chip-1:rgba(255,255,255,.92);--g-chip-2:rgba(246,248,252,.78);
+  --g-chip-1:rgba(255,255,255,.92);--g-chip-2:rgba(250,248,243,.78);
   --g-chip-line:rgba(12,21,38,.1);--g-chip-inset:rgba(255,255,255,1);
-  --g-elev-1:rgba(255,255,255,.96);--g-elev-2:rgba(246,248,252,.92);
+  --g-elev-1:rgba(255,255,255,.96);--g-elev-2:rgba(250,248,243,.92);
   --g-sh-nav:inset 0 -1px 0 rgba(12,21,38,.05);
   --g-sh-bot:inset 0 1px 0 rgba(255,255,255,.9),0 -8px 28px rgba(16,32,64,.10);
   --g-sh-panel:inset 0 1px 0 rgba(255,255,255,1),0 12px 36px rgba(16,32,64,.16);
@@ -76,11 +76,11 @@
   --g-vbtn-sh:inset 0 1px 0 #fff,0 2px 8px rgba(16,32,64,.12);
   --chip-bg:rgba(255,255,255,.96);--chip-fg:var(--muted);
   --attr-bg:rgba(255,255,255,.72);
-  --map-bg:#E8EAED;
-  --skel-1:#E9EDF4;--skel-2:#DCE3EE;
-  --sh-1:0 1px 2px rgba(16,32,64,.06),0 2px 8px rgba(16,32,64,.05);
-  --sh-2:0 6px 24px rgba(16,32,64,.12);
-  --sh-3:0 -8px 40px rgba(16,32,64,.16);
+  --map-bg:#EFEAE2;
+  --skel-1:#EFEBE4;--skel-2:#E3DDD2;
+  --sh-1:0 1px 2px rgba(60,50,35,.06),0 2px 8px rgba(60,50,35,.05);
+  --sh-2:0 6px 24px rgba(60,50,35,.13);
+  --sh-3:0 -8px 40px rgba(60,50,35,.16);
   --glass-bd:rgba(255,255,255,.7);
   color-scheme:light;
   --radius:12px;--nav-h:56px;--bot-h:60px;
@@ -238,7 +238,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 
 /* MAP */
 .map-box{position:relative;height:52vw;max-height:300px;min-height:200px}
-#leafmap{width:100%;height:100%;background:#0B1626}
+#leafmap{width:100%;height:100%;background:var(--map-bg)}
 .map-hint{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(16,29,51,.95);backdrop-filter:blur(8px);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--muted);pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:400;transition:opacity .3s;border:1px solid var(--border)}
 .leaflet-container{font-family:var(--fb)}
 /* Свои элементы Leaflet кладёт на слой 1000 и перекрывает ими баннер
@@ -267,7 +267,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 
 /* MAP PICKER (add form) */
 .pick-wrap{position:relative;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;height:230px}
-#pickmap{width:100%;height:100%;background:#0B1626}
+#pickmap{width:100%;height:100%;background:var(--map-bg)}
 .pick-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(16,29,51,.95);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--muted);pointer-events:none;white-space:nowrap;z-index:500;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:opacity .3s}
 .pick-geo{position:absolute;right:10px;bottom:14px;z-index:500;width:38px;height:38px;border-radius:50%;background:var(--white);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .pick-geo svg{width:19px;height:19px;stroke:var(--brand);fill:none;stroke-width:2}
@@ -306,7 +306,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .bk-err{background:var(--red-light);border:1px solid var(--red-bd);color:var(--red);border-radius:10px;padding:9px 12px;font-size:13px;margin-bottom:12px;display:none}
 .bk-err.on{display:block}
 .btn-book{background:var(--brand);color:var(--on-brand);border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:var(--fh)}
-.btn-book:disabled{background:#2A3B58;color:#6B7C99;cursor:not-allowed}
+.btn-book:disabled{background:var(--surface-2);color:var(--muted);box-shadow:none;cursor:not-allowed}
 
 /* карточки заявок */
 .bk-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:10px}
@@ -567,7 +567,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .auth-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(212,162,87,.18)}
 .auth-btn{width:100%;background:var(--brand);color:var(--on-brand);border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--fh);margin-top:6px;transition:background .15s}
 .auth-btn:hover{background:var(--brand-h)}
-.auth-btn:disabled{background:#2A3B58;color:#6B7C99;cursor:not-allowed}
+.auth-btn:disabled{background:var(--surface-2);color:var(--muted);box-shadow:none;cursor:not-allowed}
 .auth-err{background:var(--red-light);border:1px solid var(--red-bd);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
 .auth-err.show{display:block}
 .auth-divider{text-align:center;font-size:12px;color:var(--muted);margin:14px 0;position:relative}
@@ -666,7 +666,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .am{display:flex;align-items:center;gap:5px;padding:7px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;cursor:pointer;background:var(--white);transition:all .12s;user-select:none}
 .am.on{border-color:var(--brand);background:var(--brand-light);color:var(--brand);font-weight:500}
 .f-sub{width:100%;background:var(--brand);color:var(--on-brand);border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--fh);margin-top:6px}
-.f-sub:disabled{background:#2A3B58;color:#6B7C99;cursor:not-allowed}
+.f-sub:disabled{background:var(--surface-2);color:var(--muted);box-shadow:none;cursor:not-allowed}
 
 /* PHOTO UPLOAD */
 .photo-upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:8px;position:relative}
@@ -674,6 +674,12 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .photo-upload-icon{font-size:32px;margin-bottom:8px}
 .photo-upload-text{font-size:13px;color:var(--muted)}
+.m-video-btn{position:absolute;left:10px;bottom:10px;z-index:2;display:flex;align-items:center;gap:6px;
+  background:rgba(6,12,24,.62);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:20px;
+  padding:7px 13px;font-size:12px;font-weight:600;font-family:var(--fb);cursor:pointer;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.m-video-btn:active{background:rgba(6,12,24,.82)}
+.vid-mark{position:absolute;left:4px;bottom:4px;background:rgba(6,12,24,.7);color:#fff;font-size:10px;line-height:1;padding:3px 6px;border-radius:6px;pointer-events:none}
 .photo-upload-text strong{color:var(--brand)}
 .photo-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .photo-preview{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
@@ -1442,9 +1448,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         <div class="fg">
           <label class="fl" data-i18n="add.f.photos">Фотографии</label>
           <div class="photo-upload-area" id="apt-upload-area">
-            <input type="file" accept="image/*" multiple onchange="handleMedia(event,'apt',15)">
+            <input type="file" accept="image/*,video/*" multiple onchange="handleMedia(event,'apt',15)">
             <div class="photo-upload-icon">📷</div>
-            <div class="photo-upload-text" data-i18n="add.f.photos.apt.hint">Фотографии жилья<br><strong>до 15 фото</strong></div>
+            <div class="photo-upload-text" data-i18n="add.f.photos.apt.hint">Фото и видео жилья<br><strong>до 15 фото и 2 видео</strong></div>
           </div>
           <div class="photo-previews" id="apt-previews"></div>
         </div>
@@ -1697,6 +1703,9 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         </div>
       </div>
       <button class="logout-btn" onclick="logout()" data-i18n="profile.logout">Выйти из аккаунта</button>
+      <div class="profile-menu-item" style="justify-content:center;margin-top:6px" onclick="deleteAccount()">
+        <span style="color:var(--red);font-size:14px;font-weight:600" data-i18n="profile.deleteAccount">Удалить аккаунт</span>
+      </div>
       <div style="height:16px"></div>
     </div>
   </div>
@@ -1779,6 +1788,10 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         <img id="m-img" src="" alt="" decoding="async" onclick="openGallery(detailItem&&detailItem.photos?detailItem.photos:[],imgIdx)">
         <button class="m-nav prev" id="m-prev" onclick="stepImg(event,-1)" aria-label="Предыдущее фото">‹</button>
         <button class="m-nav next" id="m-next" onclick="stepImg(event,1)" aria-label="Следующее фото">›</button>
+        <button class="m-video-btn" id="m-video-btn" style="display:none" aria-label="Смотреть видео">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span data-i18n="detail.video">Видео</span>
+        </button>
         <div class="m-dots" id="m-dots"></div>
       </div>
       <div class="m-body">
@@ -2055,8 +2068,9 @@ var I18N = {
     'profile.settings':'Настройки','profile.editProfile':'Редактировать профиль','profile.editProfile.sub':'Имя, телефон','profile.lang':'Язык',
     'profile.admin':'Панель администратора','profile.admin.sub':'Модерация объявлений','profile.support':'Поддержка',
     'profile.support.telegram':'Написать в поддержку','profile.support.email':'Email поддержки','profile.logout':'Выйти из аккаунта',
+    'profile.deleteAccount':'Удалить аккаунт','profile.deleteAccount.warn':'Все ваши объявления, брони и заявки на продвижение будут удалены безвозвратно. Это нельзя отменить.',
     'admin.title':'⚙️ Панель администратора','admin.sub':'Управление объявлениями','admin.noAccess':'Нет доступа','admin.adminsOnly':'Только для администраторов',
-    'detail.whatsapp':'Написать в WhatsApp','detail.call':'Позвонить','detail.maps':'Открыть в навигаторе','detail.owner':'Владелец','detail.landlord':'Арендодатель','detail.ownerFallback':'Хозяин','detail.shortTerm':'Посуточно',
+    'detail.video':'Видео','detail.whatsapp':'Написать в WhatsApp','detail.call':'Позвонить','detail.maps':'Открыть в навигаторе','detail.owner':'Владелец','detail.landlord':'Арендодатель','detail.ownerFallback':'Хозяин','detail.shortTerm':'Посуточно',
     'auth.welcome':'Добро пожаловать в Adil','auth.welcome.sub':'Войди или создай аккаунт','auth.email':'Email','auth.pass':'Пароль','auth.or':'или',
     'auth.noAccount':'Нет аккаунта?','auth.signupLink':'Зарегистрируйся','auth.name':'Имя','auth.pass.min.ph':'Минимум 8 символов, буквы и цифры',
     'auth.createAccount':'Создать аккаунт','auth.haveAccount':'Уже есть аккаунт?','auth.phone':'Телефон',
@@ -2135,9 +2149,12 @@ var I18N = {
     'promo.days':'На сколько дней?','toast.promoOn':'✓ Продвижение включено','toast.promoOff':'Продвижение снято',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
+    'toast.mediaOnly':'⚠️ Можно загружать только фото и видео',
+    'toast.videoTooBig':'⚠️ Видео тяжелее 50 МБ — сними покороче',
+    'toast.videoTooLong':'⚠️ Видео длиннее минуты — сними покороче',
     'toast.photosOnly':'⚠️ Можно загружать только фотографии','auth.avatar.remove':'Удалить фото',
     'toast.avatarUpdated':'✓ Фото профиля обновлено','toast.avatarRemoved':'Фото профиля удалено','toast.avatarFailed':'⚠️ Не удалось обработать фото','toast.photoTooBig':'⚠️ Файл слишком большой — принимаем до 25 МБ',
-    'toast.favAdded':'❤️ Добавлено в избранное','toast.loggedOut':'Вы вышли из аккаунта','toast.listingDeleted':'Объявление удалено','toast.deleted':'Удалено',
+    'toast.favAdded':'❤️ Добавлено в избранное','toast.loggedOut':'Вы вышли из аккаунта','toast.listingDeleted':'Объявление удалено','toast.deleted':'Удалено','toast.accountDeleted':'Аккаунт удалён',
     'toast.welcome':'✓ Добро пожаловать!','toast.accountCreated':'✓ Аккаунт создан! Проверь email для подтверждения.','toast.published':'✓ Объявление отправлено на модерацию!',
     'toast.profileUpdated':'✓ Профиль обновлён','toast.notAuthed':'⚠️ Не авторизован',
     'btn.publishing':'Публикуем...','btn.compressing':'Готовим фото','btn.saving':'Сохраняем...','btn.loggingIn':'Входим...','btn.creatingAccount':'Создаём аккаунт...'
@@ -2187,8 +2204,9 @@ var I18N = {
     'profile.settings':'Settings','profile.editProfile':'Edit profile','profile.editProfile.sub':'Name, phone','profile.lang':'Language',
     'profile.admin':'Admin panel','profile.admin.sub':'Listing moderation','profile.support':'Support',
     'profile.support.telegram':'Contact support','profile.support.email':'Support email','profile.logout':'Log out',
+    'profile.deleteAccount':'Delete account','profile.deleteAccount.warn':'All your listings, bookings and promotion orders will be permanently deleted. This cannot be undone.',
     'admin.title':'⚙️ Admin panel','admin.sub':'Listing management','admin.noAccess':'No access','admin.adminsOnly':'Admins only',
-    'detail.whatsapp':'Message on WhatsApp','detail.call':'Call','detail.maps':'Open in maps','detail.owner':'Owner','detail.landlord':'Landlord','detail.ownerFallback':'Owner','detail.shortTerm':'Daily',
+    'detail.video':'Video','detail.whatsapp':'Message on WhatsApp','detail.call':'Call','detail.maps':'Open in maps','detail.owner':'Owner','detail.landlord':'Landlord','detail.ownerFallback':'Owner','detail.shortTerm':'Daily',
     'auth.welcome':'Welcome to Adil','auth.welcome.sub':'Log in or create an account','auth.email':'Email','auth.pass':'Password','auth.or':'or',
     'auth.noAccount':'No account?','auth.signupLink':'Sign up','auth.name':'Name','auth.pass.min.ph':'At least 8 characters, letters and digits',
     'auth.createAccount':'Create account','auth.haveAccount':'Already have an account?','auth.phone':'Phone',
@@ -2267,9 +2285,12 @@ var I18N = {
     'promo.days':'For how many days?','toast.promoOn':'✓ Promotion enabled','toast.promoOff':'Promotion removed',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
+    'toast.mediaOnly':'⚠️ Only photos and videos can be uploaded',
+    'toast.videoTooBig':'⚠️ Video is over 50 MB — record a shorter one',
+    'toast.videoTooLong':'⚠️ Video is longer than a minute — record a shorter one',
     'toast.photosOnly':'⚠️ Only photos can be uploaded','auth.avatar.remove':'Remove photo',
     'toast.avatarUpdated':'✓ Profile photo updated','toast.avatarRemoved':'Profile photo removed','toast.avatarFailed':'⚠️ Could not process the photo','toast.photoTooBig':'⚠️ File is too large — up to 25 MB',
-    'toast.favAdded':'❤️ Added to favorites','toast.loggedOut':'You have logged out','toast.listingDeleted':'Listing deleted','toast.deleted':'Deleted',
+    'toast.favAdded':'❤️ Added to favorites','toast.loggedOut':'You have logged out','toast.listingDeleted':'Listing deleted','toast.deleted':'Deleted','toast.accountDeleted':'Account deleted',
     'toast.welcome':'✓ Welcome!','toast.accountCreated':'✓ Account created! Check your email to confirm.','toast.published':'✓ Listing sent for moderation!',
     'toast.profileUpdated':'✓ Profile updated','toast.notAuthed':'⚠️ Not logged in',
     'btn.publishing':'Publishing...','btn.compressing':'Processing photos','btn.saving':'Saving...','btn.loggingIn':'Logging in...','btn.creatingAccount':'Creating account...'
@@ -2411,7 +2432,7 @@ async function loadMyListings(){
     var expHtml=ex?('<div class="mlc-exp'+(ex.expired?' gone':(parseInt(ex.left)<=2?' soon':''))+'">'
       +(ex.expired?t('exp.gone'):(t('exp.left')+' '+ex.left))+'</div>'):'';
     return '<div class="my-listing-card">'+imgHtml+'<div class="mlc-body">'+status+'<div class="mlc-title">'+esc(locTitle(item)||(lang==='en'?'Untitled':'Без названия'))+'</div><div class="mlc-price">'+(item.price||0)+' SAR</div>'+promo+expHtml+stats+'<div class="mlc-actions">'
-      +(promoUnlocked()?'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>':'')
+      +(promoUnlocked()&&!isNativeApp()?'<button class="mlc-btn" style="background:var(--gold-light);color:var(--gold-soft);border:1px solid rgba(212,162,87,.35)" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="openPromo(this.dataset.kind,this.dataset.id)">★ '+t('promo.promote')+'</button>':'')
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="renewListing(this.dataset.kind,this.dataset.id)">'+t('exp.renew')+'</button>'
       +'<button class="mlc-btn edit" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="shareListing(this.dataset.kind,this.dataset.id)">↗ '+t('share.btn')+'</button>'
       +'<button class="mlc-btn del" data-kind="'+item._kind+'" data-id="'+item.id+'" onclick="deleteMyListing(this.dataset.kind,this.dataset.id)">'+(lang==='en'?'Delete':'Удалить')+'</button></div></div></div>';
@@ -2530,6 +2551,20 @@ async function logout(){
   currentUser=null; onLogout();
   goSection('apt');
   showToast(t('toast.loggedOut'));
+}
+async function deleteAccount(){
+  if(!sb||!currentUser) return;
+  if(!await askConfirm(t('profile.deleteAccount'),t('profile.deleteAccount.warn'),{okText:t('profile.deleteAccount'),danger:true})) return;
+  var session=(await sb.auth.getSession()).data.session;
+  if(!session){ showToast(t('toast.loginRequired')); return; }
+  var res=await sb.functions.invoke('delete-account',{
+    headers:{Authorization:'Bearer '+session.access_token}
+  });
+  if(res.error){ showToast((lang==='en'?'Error: ':'Ошибка: ')+res.error.message); return; }
+  await sb.auth.signOut();
+  currentUser=null; onLogout();
+  goSection('apt');
+  showToast(t('toast.accountDeleted'));
 }
 function showErr(msg){ var el=document.getElementById('auth-err'); el.textContent=msg; el.classList.add('show'); }
 function requireAuth(cb){
@@ -2738,21 +2773,58 @@ var WEBP_OK=(function(){
   catch(e){ return false; }
 })();
 
-function handleMedia(e, kind, max){
+// Видео принимаем только у квартир: обход комнат словами не заменишь.
+// Сжать видео в браузере нельзя — библиотека перекодирования весит
+// несколько мегабайт и работает минуту, поэтому вместо сжатия ставим
+// пределы по размеру, длительности и количеству.
+var MAX_VIDEO_BYTES=50*1024*1024, MAX_VIDEO_SEC=60, MAX_VIDEOS=2;
+function videoDuration(file){
+  return new Promise(function(res){
+    var v=document.createElement('video'), url=URL.createObjectURL(file);
+    var done=function(d){ URL.revokeObjectURL(url); res(d); };
+    v.preload='metadata';
+    v.onloadedmetadata=function(){ done(v.duration||0); };
+    v.onerror=function(){ done(0); };   // не прочиталось — пропускаем проверку
+    v.src=url;
+    setTimeout(function(){ done(0); },4000);
+  });
+}
+async function handleMedia(e, kind, max){
   max = max || 10;
   var picked = Array.from(e.target.files);
+  var allowVideo = (kind==='apt');
   var images = picked.filter(function(f){ return f.type.indexOf('image/')===0; });
-  var rejected = picked.length - images.length;
+  var videos = allowVideo ? picked.filter(function(f){ return f.type.indexOf('video/')===0; }) : [];
+  var rejected = picked.length - images.length - videos.length;
   var tooBig = images.filter(function(f){ return f.size>MAX_SRC_BYTES; });
   images = images.filter(function(f){ return f.size<=MAX_SRC_BYTES; });
-  if(rejected>0) showToast(t('toast.photosOnly'));
+
+  var heavy=0, long=0;
+  var okVideos=[];
+  for(var vi=0; vi<videos.length && okVideos.length<MAX_VIDEOS; vi++){
+    if(videos[vi].size>MAX_VIDEO_BYTES){ heavy++; continue; }
+    var dur=await videoDuration(videos[vi]);
+    if(dur>MAX_VIDEO_SEC+1){ long++; continue; }
+    okVideos.push(videos[vi]);
+  }
+
+  if(rejected>0) showToast(t(allowVideo?'toast.mediaOnly':'toast.photosOnly'));
+  else if(heavy) showToast(t('toast.videoTooBig'));
+  else if(long) showToast(t('toast.videoTooLong'));
   else if(tooBig.length) showToast(t('toast.photoTooBig'));
-  var files = images.slice(0, max);
+
+  var files = images.slice(0, max).concat(okVideos);
   photoFiles[kind] = files;
   var prev = document.getElementById(kind+'-previews');
   if(!prev) return;
   prev.innerHTML = files.map(function(f, i){
     var url = URL.createObjectURL(f);
+    if(f.type.indexOf('video/')===0){
+      return '<div class="photo-preview" style="position:relative">'
+        +'<video src="'+url+'" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></video>'
+        +'<div class="vid-mark">▶</div>'
+        +'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
+    }
     return '<div class="photo-preview" style="position:relative">'
       +'<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onload="URL.revokeObjectURL(this.src)">'
       +'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
@@ -2799,8 +2871,15 @@ async function uploadMedia(kind, onProgress){
   var urls=[];
   for(var i=0;i<files.length;i++){
     if(onProgress) onProgress(i+1, files.length);
-    var out=await compressImage(files[i]);
-    var path='photos/'+Date.now()+'-'+i+'.'+out.ext;
+    var f=files[i], out, path;
+    if(f.type.indexOf('video/')===0){
+      var ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'');
+      out={blob:f, type:f.type||'video/mp4', ext:(ext.length>4?'mp4':ext)};
+      path='videos/'+Date.now()+'-'+i+'.'+out.ext;
+    } else {
+      out=await compressImage(f);
+      path='photos/'+Date.now()+'-'+i+'.'+out.ext;
+    }
     var result=await sb.storage.from('adil-photos').upload(path,out.blob,{
       cacheControl:CACHE_YEAR, contentType:out.type, upsert:false
     });
@@ -2917,7 +2996,7 @@ function isAdmin(){ return currentUser && ADMIN_EMAILS.indexOf(currentUser.email
 // Никакой ручной правки для этого не нужно.
 var PROMO_MIN=20;
 function promoUnlocked(){
-  return (liveApts.length + liveCars.length) >= PROMO_MIN;
+  return PROMO_ENABLED && (liveApts.length + liveCars.length) >= PROMO_MIN;
 }
 // Карта окупает свой экран раньше, чем платное продвижение: как только
 // объявлений становится с десяток, выбирать по районам уже осмысленно.
@@ -3100,7 +3179,7 @@ function renderAdminList(){
     } else {
       btns+='<button class="admin-btn" style="background:#2A2110;color:#FBBF24" data-kind="'+kind+'" data-id="'+id+'" onclick="adminUnarchive(this.dataset.kind,this.dataset.id)">↩ Восстановить</button>';
     }
-    if(!isArchived){
+    if(!isArchived && PROMO_ENABLED){
       btns+='<button class="admin-btn" style="background:#2A2114;color:#E8CFA0" data-kind="'+kind+'" data-id="'+id+'" onclick="adminPromo(this.dataset.kind,this.dataset.id,\'top\')">'
         +(isTop(item)?'★ '+t('promo.top')+' · '+promoLeft(item.top_until):'★ '+t('promo.top'))+'</button>';
       btns+='<button class="admin-btn" style="background:#2A1D0C;color:#F3A952" data-kind="'+kind+'" data-id="'+id+'" onclick="adminPromo(this.dataset.kind,this.dataset.id,\'hot\')">'
@@ -3659,6 +3738,10 @@ var PROMO_PRICE={top:5,hot:3}, PROMO_HOURS=24;
 var promoItem=null, promoKind='apt';
 
 function openPromo(kind,id){
+  // Покупка продвижения идёт мимо приложения (WhatsApp) — цифровая услуга
+  // внутри iOS/Android-приложения обязана продаваться через IAP/Play Billing,
+  // поэтому в нативной оболочке эта функция недоступна вовсе.
+  if(isNativeApp()) return;
   var list=kind==='apt'?liveApts:liveCars;
   var item=list.find(function(x){return x.id==id;});
   if(!item||!currentUser) return;
@@ -3709,7 +3792,7 @@ function renderPromoOrders(){
   var sec=document.getElementById('promo-orders-section');
   if(!box||!sec) return;
   var pending=myPromoOrders.filter(function(o){return o.status==='pending';});
-  sec.style.display=myPromoOrders.length?'block':'none';
+  sec.style.display=(PROMO_ENABLED&&myPromoOrders.length)?'block':'none';
   box.innerHTML=myPromoOrders.slice(0,6).map(function(o){
     var st=o.status==='paid'?'confirmed':(o.status==='cancelled'?'declined':'pending');
     return '<div class="bk-card"><div class="bk-card-top">'
@@ -3748,7 +3831,10 @@ async function renewListing(kind,id){
 // ─── ПРОДВИЖЕНИЕ ─────────────────────────────────────────────────
 // ТОП поднимает объявление над остальными, Горячее — только подсвечивает.
 // Срок хранится датой окончания, поэтому снимается сам.
-function promoActive(until){ return !!until && new Date(until).getTime() > Date.now(); }
+// Продвижение временно выключено целиком: ТОП, Горячее, заказы и оплата.
+// Данные в базе не тронуты — чтобы включить обратно, поставить true.
+var PROMO_ENABLED=false;
+function promoActive(until){ return PROMO_ENABLED && !!until && new Date(until).getTime() > Date.now(); }
 function isTop(item){ return promoActive(item && item.top_until); }
 function isHot(item){ return promoActive(item && item.hot_until); }
 function promoBadges(item, cls){
@@ -4287,7 +4373,9 @@ function openDetail(kind,id,noPush){
   var item=kind==='apt'?liveApts.find(function(x){return x.id==id;}):liveCars.find(function(x){return x.id==id;});
   if(!item) return;
   detailItem=item; detailKind=kind; imgIdx=0;
-  var photos=item.photos||[];
+  var allMedia=item.photos||[];
+  var photos=allMedia.filter(function(u){ return !isVideoUrl(u); });
+  var vids=allMedia.filter(isVideoUrl);
   var firstPhoto=photos.length?photos[0]:'';
   var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
   var mi=document.getElementById('m-imgs');
@@ -4297,6 +4385,11 @@ function openDetail(kind,id,noPush){
   document.getElementById('m-dots').innerHTML=multi?photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'" onclick="event.stopPropagation();showImg('+i+')"></div>';}).join(''):'';
   document.getElementById('m-prev').style.display=multi?'flex':'none';
   document.getElementById('m-next').style.display=multi?'flex':'none';
+  var vb=document.getElementById('m-video-btn');
+  if(vb){
+    vb.style.display=vids.length?'flex':'none';
+    vb.onclick=function(ev){ ev.stopPropagation(); openGallery(allMedia, allMedia.indexOf(vids[0])); };
+  }
   document.getElementById('m-title').textContent=locTitle(item);
   paintAva(document.getElementById('m-ava'),item.owner_name||'',item.owner_avatar||'');
   document.getElementById('m-owner').textContent=item.owner_name||t('detail.ownerFallback');
@@ -4348,7 +4441,7 @@ function openDetail(kind,id,noPush){
 // не вызывал: точки под фото были нарисованы и ни на что не реагировали.
 function showImg(i){
   if(!detailItem) return;
-  var photos=detailItem.photos||[];
+  var photos=(detailItem.photos||[]).filter(function(u){ return !isVideoUrl(u); });
   if(!photos.length) return;
   imgIdx=(i+photos.length)%photos.length;
   var p=photos[imgIdx]||'';
