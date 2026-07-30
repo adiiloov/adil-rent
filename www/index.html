@@ -1631,14 +1631,6 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         <div class="profile-section-title" data-i18n="promo.orders">Заказы на продвижение</div>
         <div id="promo-orders-area"></div>
       </div>
-      <div class="profile-section" id="incoming-section" style="display:none">
-        <div class="profile-section-title"><span data-i18n="bk.incoming">Заявки на мои объявления</span><span class="sec-badge" id="incoming-badge" style="display:none"></span></div>
-        <div id="incoming-area"></div>
-      </div>
-      <div class="profile-section">
-        <div class="profile-section-title" data-i18n="bk.mine">Мои брони</div>
-        <div id="mybookings-area"></div>
-      </div>
       <div class="profile-section">
         <div class="profile-section-title" data-i18n="profile.settings">Настройки</div>
         <div class="profile-menu-item" onclick="openAuth('profile-edit')">
@@ -1766,7 +1758,7 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
     <div class="bn-plus-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><div class="bn-plus-lbl" data-i18n="nav.add.plain">Сдать</div>
   </button>
   <button class="bn" onclick="goSection('fav')" id="bn-fav"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.5-4.6-9.8-9.3C.7 7.6 2.3 4.5 5.4 4a4.6 4.6 0 0 1 6.6 2 4.6 4.6 0 0 1 6.6-2c3.1.5 4.7 3.6 3.2 6.9-2.3 4.7-9.8 9.3-9.8 9.3Z"/></svg></div><div class="bn-badge" id="fav-badge" style="display:none">0</div><div class="bn-lbl" data-i18n="fav.title">Избранное</div></button>
-  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-badge" id="bookings-badge" style="display:none">0</div><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl" data-i18n="nav.profile">Профиль</div></button>
+  <button class="bn" onclick="requireAuth(function(){goSection('profile');})" id="bn-profile"><div class="bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.4"/><path d="M4.5 20c1.3-3.5 4.2-5.5 7.5-5.5s6.2 2 7.5 5.5"/></svg></div><div class="bn-lbl" data-i18n="nav.profile">Профиль</div></button>
 </nav>
 
 <!-- DESKTOP FOOTER -->
@@ -1826,10 +1818,6 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         <div class="m-tags" id="m-tags"></div>
         <div class="m-desc" id="m-desc"></div>
         <div class="m-actions">
-          <button class="btn-book" id="m-book-btn" onclick="openBooking()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
-            <span data-i18n="bk.cta">Забронировать</span>
-          </button>
           <button class="btn-wa" onclick="openWA()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             <span data-i18n="detail.whatsapp">Написать в WhatsApp</span>
@@ -1922,42 +1910,6 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
 </div>
 
 <!-- BOOKING -->
-<div class="overlay" id="booking-overlay" onclick="closeBooking(event)">
-  <div class="bk-sheet" onclick="event.stopPropagation()">
-    <div class="drag-line"></div>
-    <div class="bk-title" id="bk-title" data-i18n="bk.title">Забронировать</div>
-    <div class="bk-sub" id="bk-obj"></div>
-    <div class="bk-busy" id="bk-busy" style="display:none"></div>
-    <div class="bk-err" id="bk-err"></div>
-    <div class="row2">
-      <div class="fg"><label class="fl" data-i18n="bk.from">Заезд</label><input class="fi" type="date" id="bk-from" onchange="updateBkTotal()"></div>
-      <div class="fg"><label class="fl" data-i18n="bk.to">Выезд</label><input class="fi" type="date" id="bk-to" onchange="updateBkTotal()"></div>
-    </div>
-    <div class="fg" id="bk-guests-wrap"><label class="fl" data-i18n="bk.guests">Гостей</label>
-      <select class="fi" id="bk-guests"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select>
-    </div>
-    <div class="bk-total"><span id="bk-total-lbl" data-i18n="bk.total">Итого</span><b id="bk-total">—</b></div>
-    <div class="fg"><label class="fl" data-i18n="bk.msg">Сообщение хозяину</label>
-      <textarea class="fi fi-ta" id="bk-msg" data-i18n-ph="bk.msg.ph" placeholder="Сколько человек, во сколько заезд, вопросы..."></textarea>
-    </div>
-    <button class="btn-book" id="bk-submit" onclick="submitBooking()" data-i18n="bk.send">Отправить заявку</button>
-    <div id="bk-done" style="display:none">
-      <div style="text-align:center;padding:6px 0 14px">
-        <div style="font-size:38px;line-height:1">✓</div>
-        <div style="font-family:var(--fh);font-size:17px;font-weight:700;margin-top:6px" data-i18n="bk.done">Заявка отправлена</div>
-        <div style="font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6" data-i18n="bk.done.sub">Хозяин увидит её в приложении. Чтобы ответили быстрее — продублируй в WhatsApp, там сообщение придёт сразу.</div>
-      </div>
-      <button class="btn-wa" onclick="bookingToWhatsApp()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        <span data-i18n="bk.wa">Сообщить хозяину в WhatsApp</span>
-      </button>
-      <button class="bk-btn gray" style="width:100%;margin-top:8px;padding:12px" onclick="closeBooking()" data-i18n="bk.later">Позже</button>
-    </div>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5" data-i18n="bk.note">Оплата напрямую хозяину. Adil не берёт деньги за аренду и не участвует в расчётах.</div>
-    <div style="height:12px"></div>
-  </div>
-</div>
-
 <!-- БАННЕР УСТАНОВКИ (только мобильный браузер, не внутри приложения) -->
 <div class="ib" id="install-banner">
   <img class="ib-ico" src="/icons/icon-192.png" alt="" width="44" height="44">
@@ -2391,7 +2343,6 @@ function onLogin(){
     avaMarkup(name, myAvatar(), 'nav-ava') +
     '<div class="nav-user-name">'+esc(name)+'</div></div>';
   updateProfileUI();
-  loadBookings();
 }
 function onLogout(){
   document.getElementById('nav-auth-area').innerHTML =
@@ -2411,7 +2362,6 @@ function updateProfileUI(){
   document.getElementById('p-stat-favs').textContent=favs.length;
   document.getElementById('p-fav-count').textContent=cntListings(favs.length);
   loadMyListings();
-  loadBookings();
   loadMyPromoOrders();
 }
 async function loadMyListings(){
@@ -3956,18 +3906,6 @@ function walkLabel(item){
 // ─── БРОНИРОВАНИЕ ────────────────────────────────────────────────
 // Деньги через приложение не проходят: заявка фиксирует даты и контакты,
 // расчёт остаётся между людьми.
-var bkItem=null, bkKind='apt', bkBusy=[], lastBooking=null;
-function ymd(d){ return d.toISOString().slice(0,10); }
-function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
-function fmtDate(s){
-  var d=new Date(s+'T00:00:00');
-  return d.toLocaleDateString(lang==='en'?'en-GB':'ru-RU',{day:'numeric',month:'short'});
-}
-// Посуточная аренда считается по ночам, помесячная — целиком.
-function isDailyRate(item){
-  var n=item.price_note||'';
-  return n==='/сутки'||n==='/day'||!!item.is_daily||!!item.is_short_term;
-}
 // Счётчики над списками. Раньше там стояло «1 объявлений» — мелочь, но
 // именно по таким мелочам видно, что приложение писали наспех.
 function cntListings(n){ return n+' '+(lang==='en'?plural(n,'listing','listings'):plural(n,'объявление','объявления','объявлений')); }
@@ -3980,174 +3918,6 @@ function plural(n,one,few,many){
   if(b>=2&&b<=4) return few;
   return many;
 }
-async function openBooking(){
-  if(!detailItem) return;
-  if(!currentUser){ openAuth('login'); showToast(t('toast.loginToBook')); return; }
-  if(currentUser.id===detailItem.user_id){ showToast(t('toast.ownListing')); return; }
-  bkItem=detailItem; bkKind=detailKind; bkBusy=[];
-  document.getElementById('bk-obj').textContent=locTitle(bkItem)+' · '+pStr(bkItem);
-  document.getElementById('bk-err').classList.remove('on');
-  document.getElementById('bk-msg').value='';
-  document.getElementById('bk-done').style.display='none';
-  document.getElementById('bk-submit').style.display='flex';
-  document.querySelector('.bk-total').style.display='flex';
-  document.querySelectorAll('.bk-sheet .row2, .bk-sheet .fg').forEach(function(e){ e.style.display=''; });
-  document.getElementById('bk-guests-wrap').style.display=bkKind==='apt'?'block':'none';
-  var today=ymd(new Date());
-  var f=document.getElementById('bk-from'), tt=document.getElementById('bk-to');
-  f.min=today; tt.min=today; f.value=''; tt.value='';
-  document.getElementById('bk-total').textContent='—';
-  document.getElementById('bk-total-lbl').textContent=t('bk.total');
-  document.getElementById('booking-overlay').classList.add('open');
-  var busyEl=document.getElementById('bk-busy');
-  busyEl.style.display='none';
-  if(sb){
-    var res=await sb.rpc('busy_dates',{p_kind:bkKind,p_id:bkItem.id});
-    if(!res.error&&res.data&&res.data.length){
-      bkBusy=res.data;
-      busyEl.textContent=t('bk.busy')+' '+res.data.map(function(b){return fmtDate(b.date_from)+' — '+fmtDate(b.date_to);}).join(', ');
-      busyEl.style.display='block';
-    }
-  }
-}
-function closeBooking(e){ if(!e||e.target===document.getElementById('booking-overlay')) document.getElementById('booking-overlay').classList.remove('open'); }
-function overlapsBusy(from,to){ return bkBusy.some(function(b){ return from<=b.date_to && to>=b.date_from; }); }
-function updateBkTotal(){
-  var f=document.getElementById('bk-from').value, tt=document.getElementById('bk-to').value;
-  var el=document.getElementById('bk-total'), lbl=document.getElementById('bk-total-lbl');
-  if(!f||!tt||!bkItem||daysBetween(f,tt)<0){ el.textContent='—'; lbl.textContent=t('bk.total'); return; }
-  if(isDailyRate(bkItem)){
-    var nights=Math.max(daysBetween(f,tt),1);
-    lbl.textContent=t('bk.total')+' · '+nights+' '+plural(nights,t('bk.nights1'),t('bk.nights2'),t('bk.nights5'));
-    el.textContent=(nights*(bkItem.price||0)).toLocaleString()+' SAR';
-  } else {
-    lbl.textContent=t('bk.total');
-    el.textContent=pStr(bkItem);
-  }
-}
-function bkErr(msg){ var e=document.getElementById('bk-err'); e.textContent=msg; e.classList.add('on'); }
-async function submitBooking(){
-  if(!bkItem||!currentUser||!sb) return;
-  var from=document.getElementById('bk-from').value, to=document.getElementById('bk-to').value;
-  if(!from||!to){ bkErr(t('bk.err.dates')); return; }
-  if(daysBetween(from,to)<0){ bkErr(t('bk.err.order')); return; }
-  if(from<ymd(new Date())){ bkErr(t('bk.err.past')); return; }
-  if(overlapsBusy(from,to)){ bkErr(t('bk.err.busy')); return; }
-  var btn=document.getElementById('bk-submit');
-  btn.disabled=true; btn.textContent=t('bk.sending');
-  var res=await sb.from('bookings').insert([{
-    listing_kind:bkKind, listing_id:bkItem.id, listing_title:bkItem.title_ru||'',
-    owner_id:bkItem.user_id, renter_id:currentUser.id,
-    renter_name:myName(), renter_phone:(currentUser.user_metadata&&currentUser.user_metadata.phone)||null,
-    date_from:from, date_to:to,
-    guests:bkKind==='apt'?parseInt(document.getElementById('bk-guests').value)||1:null,
-    message:document.getElementById('bk-msg').value.trim()||null,
-    price:bkItem.price||0, price_note:bkItem.price_note||null, status:'pending'
-  }]);
-  btn.disabled=false; btn.textContent=t('bk.send');
-  if(res.error){ bkErr(res.error.message); return; }
-  // Не закрываем окно: предлагаем сразу продублировать заявку в WhatsApp —
-  // push и почту без внешних ключей не сделать, а WhatsApp у всех и так открыт.
-  lastBooking={item:bkItem, from:from, to:to,
-    guests:bkKind==='apt'?document.getElementById('bk-guests').value:null,
-    msg:document.getElementById('bk-msg').value.trim()};
-  ['bk-from','bk-to','bk-guests-wrap','bk-msg','bk-submit','bk-total','bk-busy'].forEach(function(id){
-    var e=document.getElementById(id); if(e&&e.parentNode) (id==='bk-from'||id==='bk-to'?e.closest('.row2'):e.closest('.fg')||e).style.display='none';
-  });
-  document.querySelector('.bk-total').style.display='none';
-  document.getElementById('bk-done').style.display='block';
-  closeDetail();
-  loadBookings();
-}
-
-// ─── СПИСКИ ЗАЯВОК ───────────────────────────────────────────────
-var myBookings=[], incoming=[];
-async function loadBookings(){
-  if(!sb||!currentUser){ myBookings=[]; incoming=[]; renderBookings(); return; }
-  var r1=await sb.from('bookings').select('*').eq('renter_id',currentUser.id).order('created_at',{ascending:false});
-  var r2=await sb.from('bookings').select('*').eq('owner_id',currentUser.id).order('created_at',{ascending:false});
-  myBookings=r1.data||[]; incoming=r2.data||[];
-  renderBookings();
-}
-function bkCard(b,asOwner){
-  var nights=Math.max(daysBetween(b.date_from,b.date_to),1);
-  var who=asOwner?'<div class="bk-row">'+t('bk.renter')+' <b>'+esc(b.renter_name||'—')+'</b></div>':'';
-  var acts='';
-  if(asOwner){
-    if(b.status==='pending'){
-      acts='<button class="bk-btn ok" data-id="'+b.id+'" onclick="setBookingStatus(this.dataset.id,\'confirmed\')">'+t('bk.confirm')+'</button>'
-          +'<button class="bk-btn no" data-id="'+b.id+'" onclick="setBookingStatus(this.dataset.id,\'declined\')">'+t('bk.decline')+'</button>';
-    } else if(b.status==='confirmed'){
-      acts='<button class="bk-btn gray" data-id="'+b.id+'" onclick="setBookingStatus(this.dataset.id,\'completed\')">'+t('bk.complete')+'</button>'
-          +'<button class="bk-btn no" data-id="'+b.id+'" onclick="setBookingStatus(this.dataset.id,\'cancelled\')">'+t('bk.cancel')+'</button>';
-    }
-    if(b.renter_phone&&(b.status==='pending'||b.status==='confirmed')){
-      acts+='<button class="bk-btn wa" data-p="'+esc(b.renter_phone)+'" onclick="waTo(this.dataset.p)">WhatsApp</button>';
-    }
-  } else if(b.status==='pending'||b.status==='confirmed'){
-    acts='<button class="bk-btn gray" data-id="'+b.id+'" onclick="setBookingStatus(this.dataset.id,\'cancelled\')">'+t('bk.cancel')+'</button>';
-  }
-  return '<div class="bk-card">'
-    +'<div class="bk-card-top"><div class="bk-card-title">'+esc(b.listing_title||'')+'</div>'
-    +'<div class="bk-st '+b.status+'">'+t('bk.st.'+b.status)+'</div></div>'
-    +'<div class="bk-row">'+fmtDate(b.date_from)+' — '+fmtDate(b.date_to)+' · <b>'+nights+' '+plural(nights,t('bk.nights1'),t('bk.nights2'),t('bk.nights5'))+'</b>'
-    +(b.guests?' · '+b.guests+' '+t('bk.guestsShort'):'')+'</div>'
-    +who
-    +(b.message?'<div class="bk-msg">'+esc(b.message)+'</div>':'')
-    +(b.owner_note?'<div class="bk-msg">'+t('bk.ownerNote')+' '+esc(b.owner_note)+'</div>':'')
-    +(acts?'<div class="bk-acts">'+acts+'</div>':'')
-    +'</div>';
-}
-function bookingToWhatsApp(){
-  if(!lastBooking) return;
-  var b=lastBooking, num=waDigits(b.item.phone);
-  if(!num){ showToast(t('toast.noPhone')); return; }
-  var lines=[
-    (lang==='en'?'Hello! I sent a booking request on Adil.':'Здравствуйте! Я отправил заявку на бронь через Adil.'),
-    (lang==='en'?'Listing: ':'Объявление: ')+locTitle(b.item),
-    (lang==='en'?'Dates: ':'Даты: ')+fmtDate(b.from)+' — '+fmtDate(b.to),
-    b.guests?((lang==='en'?'Guests: ':'Гостей: ')+b.guests):'',
-    (lang==='en'?'Name: ':'Имя: ')+myName(),
-    b.msg||''
-  ].filter(Boolean);
-  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
-  closeBooking();
-  showToast(t('toast.bookingSent'));
-}
-function waTo(phone){
-  var num=waDigits(phone);
-  if(!num){ showToast(t('toast.noPhone')); return; }
-  window.open('https://wa.me/'+num,'_blank');
-}
-function renderBookings(){
-  var inc=document.getElementById('incoming-area'), mine=document.getElementById('mybookings-area');
-  var pend=incoming.filter(function(b){return b.status==='pending';}).length;
-  var badge=document.getElementById('incoming-badge');
-  if(badge){ badge.textContent=pend||''; badge.style.display=pend?'inline-block':'none'; }
-  var navBadge=document.getElementById('bookings-badge');
-  if(navBadge){ navBadge.textContent=pend||''; navBadge.style.display=pend?'block':'none'; }
-  var incSec=document.getElementById('incoming-section');
-  if(incSec) incSec.style.display=incoming.length?'block':'none';
-  if(inc) inc.innerHTML=incoming.map(function(b){return bkCard(b,true);}).join('');
-  if(mine) mine.innerHTML=myBookings.length
-    ? myBookings.map(function(b){return bkCard(b,false);}).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:8px 0">'+t('bk.none')+'</div>';
-}
-async function setBookingStatus(id,status){
-  if(!sb) return;
-  if(status==='cancelled'&&!await askConfirm(t('bk.confirmCancel'),'',{danger:true})) return;
-  var patch={status:status};
-  if(status==='confirmed'||status==='declined'){
-    var note=await askText(t('bk.notePrompt'), {placeholder:t('bk.notePh')});
-    if(note===null) return;
-    if(note.trim()) patch.owner_note=note.trim();
-  }
-  var res=await sb.from('bookings').update(patch).eq('id',id);
-  if(res.error){ showToast(res.error.message); return; }
-  showToast(t('bk.st.'+status));
-  loadBookings();
-}
-
 // ─── АНАЛИТИКА ХОЗЯИНА ───────────────────────────────────────────
 var ownerStats={}, myListingsCache={};
 async function loadOwnerStats(){
@@ -4492,10 +4262,6 @@ function openDetail(kind,id,noPush){
   if(callBtn){ callBtn.style.display=hasCall?'flex':'none'; }
   var miniRow=document.getElementById('m-mini-row');
   if(miniRow) miniRow.style.display=(hasMaps||hasCall)?'flex':'none';
-  // Бронь оставлена только для жилья: у машин даты заезда и число гостей
-  // не имеют смысла, договариваются напрямую.
-  var bookBtn=document.getElementById('m-book-btn');
-  if(bookBtn) bookBtn.style.display=(kind!=='apt'||(currentUser&&currentUser.id===item.user_id))?'none':'flex';
   var barT=document.getElementById('m-bar-title');
   var barP=document.getElementById('m-bar-price');
   if(barT) barT.textContent=locTitle(item);
@@ -5058,7 +4824,6 @@ function tap(strong){
     try{
       await loadApts();
       await loadCars();
-      if(currentUser){ await loadBookings(); }
       updateFavBadge();
       if(section==='fav') renderFavs();
       if(section==='profile') updateProfileUI();
@@ -5245,8 +5010,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   await loadCars();
   updateFavBadge();
   applyTheme();
-  // Владелец узнаёт о новых заявках, вернувшись в приложение.
-  document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadBookings(); });
   // Каталог загружен — решаем, с чего открываться.
   setAptView(mapWorthIt()?'map':'list');
   goSection('apt');
@@ -5294,7 +5057,6 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0
       // сначала закрываем то, что открыто поверх
       var layers = [
         ['gallery-overlay', closeGallery],
-        ['booking-overlay', function(){ closeBooking(); }],
         ['detail-overlay',  function(){ closeDetail(); }],
         ['auth-overlay',    function(){ document.getElementById('auth-overlay').classList.remove('open'); }]
       ];
@@ -5309,8 +5071,6 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0
       // и только с главной выходим, если действительно некуда
       if(e && e.canGoBack) window.history.back(); else App.exitApp();
     });
-    // вернулись в приложение — перечитываем заявки
-    App.addListener('appStateChange', function(st){ if(st && st.isActive) loadBookings(); });
   }
 })();
 </script>
