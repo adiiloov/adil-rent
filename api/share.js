@@ -10,8 +10,8 @@
 // og-разметкой, а живому человеку — сразу перенаправление в приложение,
 // чтобы он не видел промежуточный экран.
 
-const SUPABASE_URL = 'https://ylfbwvgvcflhmswfpvdt.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_SvPwDGTPWrX6JqhVY2Iedg_NR6axhKL';
+const SUPABASE_URL = 'https://bqtpoxksmlxnatxrrhva.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
 const SITE = 'https://www.adilrent.com';
 
 // Координаты Мечети Пророка и поправки на дорогу — те же, что в приложении,
