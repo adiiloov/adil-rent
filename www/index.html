@@ -38,12 +38,21 @@
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin>
+<!-- Снимки объявлений лежат в хранилище Supabase. Без preconnect браузер
+     начинает знакомиться с этим доменом (DNS + TLS) только когда встретит
+     первый <img> — на мобильном интернете это лишние полсекунды до того,
+     как поедет хотя бы один байт картинки. -->
+<link rel="preconnect" href="https://bqtpoxksmlxnatxrrhva.supabase.co" crossorigin>
+<link rel="dns-prefetch" href="https://bqtpoxksmlxnatxrrhva.supabase.co">
 <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 <script src="/vendor/leaflet/leaflet.js" defer></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- defer: библиотека нужна только в DOMContentLoaded, а без него она
+     останавливала разбор страницы, пока едет с чужого CDN. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -265,6 +274,16 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .leaflet-tooltip.pin-tip b{display:block;font-size:12px;margin-bottom:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leaflet-tooltip.pin-tip span{color:var(--brand);font-weight:700}
 
+/* ССЫЛКА НА GOOGLE MAPS (форма подачи) */
+.gm-row{display:flex;gap:8px;align-items:stretch;margin-bottom:6px}
+.gm-row .fi{flex:1;min-width:0}
+.gm-paste{flex-shrink:0;padding:0 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer}
+.gm-paste:active{background:var(--bg)}
+.gm-note{font-size:11px;line-height:1.45;color:var(--muted);margin-bottom:10px}
+.gm-note.ok{color:var(--ok)}
+.gm-note.bad{color:var(--red)}
+.gm-note.busy{color:var(--muted)}
+
 /* MAP PICKER (add form) */
 .pick-wrap{position:relative;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;height:230px}
 #pickmap{width:100%;height:100%;background:var(--map-bg)}
@@ -477,6 +496,8 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
 .l-card-img{width:100%;height:100%;object-fit:cover;display:block;object-position:center}
 .tag-new{position:absolute;top:10px;left:10px;background:var(--brand);color:var(--on-brand);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;z-index:2}
 .tag-type{position:absolute;top:10px;right:44px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;backdrop-filter:blur(4px);z-index:2}
+/* «Есть видео» — внизу слева, чтобы не спорить с ценой и метками сверху */
+.tag-vid{position:absolute;left:10px;bottom:10px;background:rgba(6,12,24,.72);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2}
 .fav-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(6,12,24,.55);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:3;backdrop-filter:blur(4px)}
 .fav-btn.on{background:rgba(248,113,113,.22);color:var(--red)}
 .l-card-body{padding:14px 16px}
@@ -680,6 +701,7 @@ body{font-family:var(--fb);color:var(--text);background:var(--bg);display:flex;f
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .m-video-btn:active{background:rgba(6,12,24,.82)}
 .vid-mark{position:absolute;left:4px;bottom:4px;background:rgba(6,12,24,.7);color:#fff;font-size:10px;line-height:1;padding:3px 6px;border-radius:6px;pointer-events:none}
+.cover-mark{position:absolute;left:4px;bottom:4px;background:var(--brand);color:var(--on-brand);font-size:9px;font-weight:700;line-height:1;padding:3px 6px;border-radius:6px;pointer-events:none;letter-spacing:.02em}
 .photo-upload-text strong{color:var(--brand)}
 .photo-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .photo-preview{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
@@ -1445,6 +1467,13 @@ var SUPABASE_ANON_KEY = 'sb_publishable_rfMc_DEldXr8hN-hrb63cg_fOFFTW8G';
         </div>
         <div class="fg">
           <label class="fl" data-i18n="add.f.point">Расположение на карте *</label>
+          <div class="gm-row">
+            <input class="fi" id="f-gmaps" type="url" inputmode="url" autocomplete="off"
+                   data-i18n-ph="add.f.gmaps.ph" placeholder="Вставь ссылку из Google Maps"
+                   oninput="onGmapsInput()">
+            <button type="button" class="gm-paste" id="gm-paste-btn" onclick="pasteGmaps()" data-i18n="add.f.gmaps.paste">Вставить</button>
+          </div>
+          <div class="gm-note" id="gm-note" data-i18n="add.f.gmaps.note">Открой дом в Google Maps → «Поделиться» → скопируй ссылку. Метку на карте ниже поставим сами.</div>
           <div class="pick-wrap">
             <div id="pickmap"></div>
             <div class="pick-hint" id="pick-hint" data-i18n="add.f.point.hint">Нажми на карту, чтобы поставить метку</div>
@@ -2016,12 +2045,20 @@ var I18N = {
     'add.f.price':'Цена (SAR)','add.f.district':'Район Медины *','add.f.district.ph':'Напишите район (обязательно)',
     'add.f.desc':'Описание * (минимум 20 символов)','add.f.desc.ph':'Этаж, вид из окна, расстояние до мечети, транспорт, условия...','add.f.desc.hint':'Введено: 0 символов (минимум 20)',
     'add.f.callPhone':'📞 Телефон для звонков','add.f.whatsapp':'💬 WhatsApp',
-    'add.f.point':'Расположение на карте *','add.f.point.hint':'Нажми на карту, чтобы поставить метку',
+    'add.f.point':'Где находится жильё *','add.f.point.hint':'Нажми на карту, чтобы поставить метку',
     'add.f.point.none':'Метка не поставлена — нажми на карту','add.f.point.set':'✓ Метка поставлена — можно перетащить',
     'add.f.point.geo':'Моё местоположение','add.f.point.reset':'Сбросить',
     'add.f.point.geoFail':'⚠️ Не удалось определить местоположение — поставь метку вручную',
     'add.f.point.geoDenied':'⚠️ Доступ к геолокации запрещён — поставь метку вручную',
-    'add.f.photos':'Фотографии','add.f.photos.apt.hint':'Фотографии жилья<br><strong>до 15 фото</strong>',
+    'add.f.gmaps.ph':'Вставь ссылку из Google Maps',
+    'add.f.gmaps.paste':'Вставить',
+    'add.f.gmaps.note':'Открой дом в Google Maps → «Поделиться» → скопируй ссылку. Метку на карте ниже поставим сами. Либо просто нажми на карту.',
+    'add.f.gmaps.checking':'Читаю ссылку…',
+    'add.f.gmaps.ok':'✓ Нашли место по ссылке — метка стоит на карте',
+    'add.f.gmaps.far':'⚠️ Ссылка ведёт далеко от Медины — проверь, ту ли скопировал',
+    'add.f.gmaps.noCoords':'Из этой ссылки координаты не читаются — поставь метку на карте сам',
+    'add.f.gmaps.notLink':'Это не похоже на ссылку Google Maps',
+    'add.f.photos':'Фотографии и видео','add.f.photos.apt.hint':'Фото и видео жилья<br><strong>до 15 фото и 2 видео по минуте</strong>',
     'add.f.amenities':'Удобства','add.f.submit':'Опубликовать бесплатно','add.f.photos.car.hint':'Фотографии машины<br><strong>до 10 фото</strong>',
     'add.fc.make':'Марка','add.fc.make.other':'Другое','add.fc.make.custom.ph':'Напишите марку','add.fc.model':'Модель',
     'add.fc.year':'Год','add.fc.body':'Тип кузова','add.fc.body.suv':'Внедорожник / SUV','add.fc.body.hatch':'Хэтчбек','add.fc.body.crossover':'Кроссовер',
@@ -2044,7 +2081,7 @@ var I18N = {
     'auth.createAccount':'Создать аккаунт','auth.haveAccount':'Уже есть аккаунт?','auth.phone':'Телефон',
     'auth.editTitle':'Редактировать профиль','auth.editSub':'Имя и телефон',
     'support.telegram.title':'Поддержка в Telegram',
-    'card.new':'Новое','card.notFound':'Ничего не найдено','card.notFoundCar':'Ничего не найдено',
+    'card.new':'Новое','card.video':'Видео','card.notFound':'Ничего не найдено','card.notFoundCar':'Ничего не найдено',
     'fav.empty':'Пока ничего нет.<br>Нажми ♡ на объявлении','fav.viewApts':'Смотреть квартиры',
     'fav.gone':'Сохранённые объявления больше недоступны —<br>их сняли с публикации','profile.lang.switch':'Переключить на English',
     'price.month':'/мес','price.day':'/сутки','price.week':'/неделя','price.year':'/год',
@@ -2117,6 +2154,10 @@ var I18N = {
     'promo.days':'На сколько дней?','toast.promoOn':'✓ Продвижение включено','toast.promoOff':'Продвижение снято',
     'toast.loginRequired':'Войдите чтобы продолжить','toast.loginToAdd':'Войдите чтобы добавить объявление',
     'toast.needPoint':'⚠️ Отметь расположение жилья на карте',
+    'toast.needPlace':'⚠️ Вставь ссылку на Google Maps или поставь метку на карте',
+    'toast.uploadPartial':'⚠️ Не удалось загрузить файлов: {n}. Остальное сохранено',
+    'toast.photoLimit':'Взяли первые {n} фото — больше в одно объявление не поместится',
+    'add.f.cover':'ОБЛОЖКА',
     'toast.mediaOnly':'⚠️ Можно загружать только фото и видео',
     'toast.videoTooBig':'⚠️ Видео тяжелее 50 МБ — сними покороче',
     'toast.videoTooLong':'⚠️ Видео длиннее минуты — сними покороче',
@@ -2154,12 +2195,20 @@ var I18N = {
     'add.f.price':'Price (SAR)','add.f.district':'Medina district *','add.f.district.ph':'Write the district (required)',
     'add.f.desc':'Description * (minimum 20 characters)','add.f.desc.ph':'Floor, view, distance to the mosque, transport, conditions...','add.f.desc.hint':'Entered: 0 characters (minimum 20)',
     'add.f.callPhone':'📞 Phone for calls','add.f.whatsapp':'💬 WhatsApp',
-    'add.f.point':'Location on the map *','add.f.point.hint':'Tap the map to drop a pin',
+    'add.f.point':'Where the place is *','add.f.point.hint':'Tap the map to drop a pin',
     'add.f.point.none':'No pin yet — tap the map','add.f.point.set':'✓ Pin placed — you can drag it',
     'add.f.point.geo':'My location','add.f.point.reset':'Reset',
     'add.f.point.geoFail':'⚠️ Could not detect your location — drop the pin manually',
     'add.f.point.geoDenied':'⚠️ Location access denied — drop the pin manually',
-    'add.f.photos':'Photos','add.f.photos.apt.hint':'Photos of the place<br><strong>up to 15 photos</strong>',
+    'add.f.gmaps.ph':'Paste a Google Maps link',
+    'add.f.gmaps.paste':'Paste',
+    'add.f.gmaps.note':'Open the place in Google Maps → Share → copy the link. We will drop the pin below for you. Or just tap the map.',
+    'add.f.gmaps.checking':'Reading the link…',
+    'add.f.gmaps.ok':'✓ Found the place — the pin is on the map',
+    'add.f.gmaps.far':'⚠️ This link points far from Medina — check that you copied the right one',
+    'add.f.gmaps.noCoords':'No coordinates in this link — please drop the pin on the map yourself',
+    'add.f.gmaps.notLink':'That does not look like a Google Maps link',
+    'add.f.photos':'Photos and video','add.f.photos.apt.hint':'Photos and video of the place<br><strong>up to 15 photos and 2 clips of one minute</strong>',
     'add.f.amenities':'Amenities','add.f.submit':'Publish for free','add.f.photos.car.hint':'Photos of the car<br><strong>up to 10 photos</strong>',
     'add.fc.make':'Make','add.fc.make.other':'Other','add.fc.make.custom.ph':'Write the make','add.fc.model':'Model',
     'add.fc.year':'Year','add.fc.body':'Body type','add.fc.body.suv':'SUV','add.fc.body.hatch':'Hatchback','add.fc.body.crossover':'Crossover',
@@ -2182,7 +2231,7 @@ var I18N = {
     'auth.createAccount':'Create account','auth.haveAccount':'Already have an account?','auth.phone':'Phone',
     'auth.editTitle':'Edit profile','auth.editSub':'Name and phone',
     'support.telegram.title':'Support on Telegram',
-    'card.new':'New','card.notFound':'Nothing found','card.notFoundCar':'Nothing found',
+    'card.new':'New','card.video':'Video','card.notFound':'Nothing found','card.notFoundCar':'Nothing found',
     'fav.empty':'Nothing here yet.<br>Tap ♡ on a listing','fav.viewApts':'Browse apartments',
     'fav.gone':'Saved listings are no longer available —<br>they were unpublished','profile.lang.switch':'Переключить на русский',
     'price.month':'/mo','price.day':'/day','price.week':'/week','price.year':'/year',
@@ -2255,6 +2304,10 @@ var I18N = {
     'promo.days':'For how many days?','toast.promoOn':'✓ Promotion enabled','toast.promoOff':'Promotion removed',
     'toast.loginRequired':'Log in to continue','toast.loginToAdd':'Log in to add a listing',
     'toast.needPoint':'⚠️ Mark the location on the map',
+    'toast.needPlace':'⚠️ Paste a Google Maps link or drop a pin on the map',
+    'toast.uploadPartial':'⚠️ Could not upload {n} file(s). Everything else was saved',
+    'toast.photoLimit':'Kept the first {n} photos — that is the most one listing can hold',
+    'add.f.cover':'COVER',
     'toast.mediaOnly':'⚠️ Only photos and videos can be uploaded',
     'toast.videoTooBig':'⚠️ Video is over 50 MB — record a shorter one',
     'toast.videoTooLong':'⚠️ Video is longer than a minute — record a shorter one',
@@ -2380,7 +2433,7 @@ async function loadMyListings(){
   if(!all.length){ area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">'+(lang==='en'?'You have no listings yet':'У тебя пока нет объявлений')+'</div>'; return; }
   area.innerHTML=all.map(function(item){
     var img=item.photos&&item.photos[0]?item.photos[0]:'';
-    var imgHtml=img?'<img class="mlc-img ph" src="'+img+'" loading="lazy" decoding="async">':'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
+    var imgHtml=img?thumbImg(img,'mlc-img',''):'<div class="mlc-img" style="display:flex;align-items:center;justify-content:center;font-size:40px">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var status=item.is_active?'<div class="mlc-status active">● '+(lang==='en'?'Active':'Активно')+'</div>':'<div class="mlc-status pending">● '+(lang==='en'?'Pending review':'Проверяется')+'</div>';
     if(item.added_by_admin) status+='<div class="mlc-owner-tag">'+t('own.tag')+'</div>';
     var s=ownerStats[item._kind+'#'+item.id]||{};
@@ -2646,6 +2699,108 @@ function pickUseMyLocation(){
   },{enableHighAccuracy:true,timeout:10000,maximumAge:60000});
 }
 
+// ─── ССЫЛКА НА GOOGLE MAPS ───────────────────────────────────────
+// Ставить метку пальцем по карте умеет не каждый, а вот «Поделиться» в
+// Google Maps нажимали все. Поэтому даём второй путь: человек вставляет
+// ссылку, мы достаём из неё координаты и сами ставим метку на карте.
+// Сама ссылка тоже сохраняется — гость откроет её и пойдёт по навигатору
+// Google, даже если наша карта покажется ему непривычной.
+//
+// В браузере за короткими ссылками ходим на свой же адрес; внутри
+// приложения из магазина страница живёт на localhost, поэтому там нужен
+// полный адрес сайта.
+var API_BASE=/(^|\.)adilrent\.com$/i.test(location.hostname) ? '' : 'https://www.adilrent.com';
+var gmapsPoint=null;      // координаты, вытащенные из ссылки
+var gmapsTimer=null, gmapsSeq=0;
+
+// Разбор ссылки прямо в телефоне. Покрывает всё, кроме коротких ссылок:
+// в них координат нет, за ними идёт /api/geo.
+function parseGmapsCoords(raw){
+  var s='';
+  try{ s=decodeURIComponent(String(raw||'')); }catch(e){ s=String(raw||''); }
+  var m;
+  // !3d<lat>!4d<lng> — координаты самого места. Идут первыми: @ в ссылке
+  // указывает лишь на центр экрана и может стоять в стороне от дома.
+  if((m=s.match(/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/))) return [+m[1],+m[2]];
+  if((m=s.match(/[?&](?:q|query|destination|center)=(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/))) return [+m[1],+m[2]];
+  if((m=s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))) return [+m[1],+m[2]];
+  if((m=s.match(/[?&]ll=(-?\d+\.\d+),(-?\d+\.\d+)/))) return [+m[1],+m[2]];
+  // Голая пара чисел: её удобно скопировать из карточки места в Google Maps.
+  if((m=s.match(/^\s*(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})\s*$/))) return [+m[1],+m[2]];
+  // Градусы-минуты-секунды: 24°28'01.9"N 39°36'40.7"E
+  m=s.match(/(\d{1,3})°\s*(\d{1,2})'\s*([\d.]+)"?\s*([NS])[,\s]+(\d{1,3})°\s*(\d{1,2})'\s*([\d.]+)"?\s*([EW])/i);
+  if(m){
+    var dms=function(d,mi,se,h){
+      var v=+d + (+mi)/60 + (+se)/3600;
+      return /[SW]/i.test(h) ? -v : v;
+    };
+    return [dms(m[1],m[2],m[3],m[4]), dms(m[5],m[6],m[7],m[8])];
+  }
+  return null;
+}
+function validPoint(p){
+  return !!p && isFinite(p[0]) && isFinite(p[1])
+    && Math.abs(p[0])<=90 && Math.abs(p[1])<=180 && !(p[0]===0&&p[1]===0);
+}
+function isShortGmaps(s){ return /(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)/i.test(s||''); }
+function looksLikeGmaps(s){ return /(google\.[a-z.]{2,6}\/maps|maps\.google\.|maps\.app\.goo\.gl|goo\.gl\/maps)/i.test(s||''); }
+
+function gmNote(key, cls){
+  var el=document.getElementById('gm-note');
+  if(!el) return;
+  el.textContent=t(key);
+  el.className='gm-note'+(cls?' '+cls:'');
+}
+function gmapsValue(){
+  var el=document.getElementById('f-gmaps');
+  return el?el.value.trim():'';
+}
+function onGmapsInput(){
+  clearTimeout(gmapsTimer);
+  gmapsTimer=setTimeout(resolveGmaps, 400);
+}
+async function resolveGmaps(){
+  var raw=gmapsValue();
+  var seq=++gmapsSeq;
+  if(!raw){ gmapsPoint=null; gmNote('add.f.gmaps.note'); return; }
+
+  var p=parseGmapsCoords(raw);
+  if(validPoint(p)){ applyGmapsPoint(p); return; }
+
+  if(!looksLikeGmaps(raw)){ gmapsPoint=null; gmNote('add.f.gmaps.notLink','bad'); return; }
+
+  gmNote('add.f.gmaps.checking','busy');
+  try{
+    var r=await fetch(API_BASE+'/api/geo?url='+encodeURIComponent(raw));
+    var j=await r.json();
+    if(seq!==gmapsSeq) return;              // пока ждали, текст успели поменять
+    if(j&&j.ok&&validPoint([j.lat,j.lng])){ applyGmapsPoint([j.lat,j.lng]); return; }
+  }catch(e){ if(seq!==gmapsSeq) return; }
+  // Ссылка похожа на карту, но координат в ней нет. Не отвергаем: её всё
+  // равно сохраним и гость по ней перейдёт — просто просим поставить метку.
+  gmapsPoint=null;
+  gmNote('add.f.gmaps.noCoords','bad');
+}
+function applyGmapsPoint(p){
+  gmapsPoint={lat:p[0],lng:p[1]};
+  setPickedPoint(p[0],p[1],false);
+  if(pickMap) setTimeout(function(){ pickMap.invalidateSize(); pickMap.setView([p[0],p[1]],16); },60);
+  // Медина — единственный город приложения. Если ссылка увела за сотню
+  // километров, скорее всего скопировали не тот адрес.
+  var far=haversineM(p[0],p[1],MOSQUE[0],MOSQUE[1])>120000;
+  gmNote(far?'add.f.gmaps.far':'add.f.gmaps.ok', far?'bad':'ok');
+}
+async function pasteGmaps(){
+  var el=document.getElementById('f-gmaps');
+  if(!el) return;
+  try{
+    var txt=await navigator.clipboard.readText();
+    if(txt&&txt.trim()){ el.value=txt.trim(); resolveGmaps(); tap(true); return; }
+  }catch(e){}
+  // Доступ к буферу обмена дают не везде — тогда просто открываем клавиатуру.
+  el.focus();
+}
+
 async function submitApt(){
   if(!currentUser){ openAuth('login'); showToast(t('toast.loginToAdd')); return; }
   var title=document.getElementById('f-title').value.trim();
@@ -2658,9 +2813,15 @@ async function submitApt(){
   if(forOwner&&!ownerName){ showToast(t('own.needName')); return; }
   if(!district){ showToast(lang==='en'?'⚠️ Specify a district in Medina':'⚠️ Укажи район Медины'); return; }
   if(desc.length<20){ showToast(lang==='en'?'⚠️ Description must be at least 20 characters':'⚠️ Описание минимум 20 символов'); return; }
-  if(!pickedPoint){
-    showToast(t('toast.needPoint'));
-    var pw=document.querySelector('.pick-wrap');
+  // Место обязательно, но путей к нему два: метка на карте или ссылка из
+  // Google Maps. Если человек только что вставил ссылку и не дождался
+  // ответа сервера — дожидаемся здесь, чтобы не отправить объявление без
+  // координат из-за лишней доли секунды.
+  var gmaps=gmapsValue();
+  if(gmaps && !pickedPoint){ clearTimeout(gmapsTimer); await resolveGmaps(); }
+  if(!pickedPoint && !gmaps){
+    showToast(t('toast.needPlace'));
+    var pw=document.querySelector('.gm-row')||document.querySelector('.pick-wrap');
     if(pw) pw.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
@@ -2693,8 +2854,9 @@ async function submitApt(){
     added_by_admin:forOwner,
     district_ru:district,
     title_en:enVal('f-title-en'), district_en:enVal('f-district-en'), description_en:enVal('f-desc-en'),
-    lat:pickedPoint.lat,
-    lng:pickedPoint.lng,
+    lat:pickedPoint?pickedPoint.lat:null,
+    lng:pickedPoint?pickedPoint.lng:null,
+    gmaps_url:gmaps||null,
     price_note:({daily:'/сутки',weekly:'/неделя',monthly:'/мес',yearly:'/год',long:'/мес'})[document.getElementById('f-period').value]||'/мес',
     is_furnished:furnished===1,
     is_short_term:document.getElementById('f-period').value==='daily',
@@ -2734,11 +2896,12 @@ async function submitCar(){
     is_daily:period!=='monthly', is_monthly:period!=='daily',
     description_ru:document.getElementById('fc-desc').value,
     phone:phone,
-    call_phone:(document.getElementById('f-call-phone')?document.getElementById('f-call-phone').value.trim():phone)||phone,
+    // Раньше здесь по ошибке читалось поле из формы квартиры (f-call-phone),
+    // а не из формы машины.
+    call_phone:callPhone||phone,
     owner_name:forOwner?ownerName:(currentUser.user_metadata?.name||currentUser.email.split('@')[0]),
     owner_avatar:forOwner?null:(myAvatar()||null),
     added_by_admin:forOwner,
-    call_phone:callPhone||phone,
     fuel_type:(function(){ var f=document.getElementById('fc-fuel'); if(!f) return 'petrol'; return f.value==='other'?(document.getElementById('fc-fuel-custom')?document.getElementById('fc-fuel-custom').value||'Другое':'Другое'):f.value; })(),
     badges_ru:am.ru, badges_en:am.en, photos:photoUrls, is_active:forOwner, cat:document.getElementById('fc-body').value,
     specs_en:enVal('fc-specs-en'), description_en:enVal('fc-desc-en')
@@ -2781,19 +2944,38 @@ function videoDuration(file){
     setTimeout(function(){ done(0); },4000);
   });
 }
+function mediaMax(kind){ return kind==='apt'?15:10; }
+function isVideoFile(f){ return f && f.type.indexOf('video/')===0; }
+
+// Файлы ДОБАВЛЯЮТСЯ к уже выбранным, а не заменяют их. На телефоне снимки
+// одной квартиры обычно лежат в разных альбомах, и до этой правки второй
+// заход в галерею молча стирал всё, что человек выбрал в первый.
 async function handleMedia(e, kind, max){
-  max = max || 10;
+  max = max || mediaMax(kind);
   var picked = Array.from(e.target.files);
   var allowVideo = (kind==='apt');
+  var have = photoFiles[kind] || [];
+  var haveImgs = have.filter(function(f){ return !isVideoFile(f); }).length;
+  var haveVids = have.filter(isVideoFile).length;
+
+  // Один и тот же файл, выбранный дважды, добавлять не нужно.
+  var seen = {};
+  have.forEach(function(f){ seen[f.name+':'+f.size]=1; });
+  picked = picked.filter(function(f){
+    var k=f.name+':'+f.size;
+    if(seen[k]) return false;
+    seen[k]=1; return true;
+  });
+
   var images = picked.filter(function(f){ return f.type.indexOf('image/')===0; });
-  var videos = allowVideo ? picked.filter(function(f){ return f.type.indexOf('video/')===0; }) : [];
+  var videos = allowVideo ? picked.filter(isVideoFile) : [];
   var rejected = picked.length - images.length - videos.length;
   var tooBig = images.filter(function(f){ return f.size>MAX_SRC_BYTES; });
   images = images.filter(function(f){ return f.size<=MAX_SRC_BYTES; });
 
   var heavy=0, long=0;
   var okVideos=[];
-  for(var vi=0; vi<videos.length && okVideos.length<MAX_VIDEOS; vi++){
+  for(var vi=0; vi<videos.length && (haveVids+okVideos.length)<MAX_VIDEOS; vi++){
     if(videos[vi].size>MAX_VIDEO_BYTES){ heavy++; continue; }
     var dur=await videoDuration(videos[vi]);
     if(dur>MAX_VIDEO_SEC+1){ long++; continue; }
@@ -2804,22 +2986,34 @@ async function handleMedia(e, kind, max){
   else if(heavy) showToast(t('toast.videoTooBig'));
   else if(long) showToast(t('toast.videoTooLong'));
   else if(tooBig.length) showToast(t('toast.photoTooBig'));
+  else if(images.length > max-haveImgs) showToast(t('toast.photoLimit').replace('{n}', max));
 
-  var files = images.slice(0, max).concat(okVideos);
-  photoFiles[kind] = files;
+  // Снимки идут перед видео: первый снимок становится обложкой объявления.
+  var imgs = have.filter(function(f){ return !isVideoFile(f); }).concat(images).slice(0, max);
+  var vids = have.filter(isVideoFile).concat(okVideos).slice(0, MAX_VIDEOS);
+  photoFiles[kind] = imgs.concat(vids);
+
+  // Поле ввода чистим, иначе выбор того же файла второй раз не вызовет
+  // событие change, и человек решит, что приложение зависло.
+  if(e.target && 'value' in e.target) e.target.value='';
+  renderMediaPreviews(kind);
+}
+function renderMediaPreviews(kind){
   var prev = document.getElementById(kind+'-previews');
   if(!prev) return;
+  var files = photoFiles[kind] || [];
   prev.innerHTML = files.map(function(f, i){
     var url = URL.createObjectURL(f);
-    if(f.type.indexOf('video/')===0){
+    var del = '<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button>';
+    if(isVideoFile(f)){
       return '<div class="photo-preview" style="position:relative">'
         +'<video src="'+url+'" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></video>'
-        +'<div class="vid-mark">▶</div>'
-        +'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
+        +'<div class="vid-mark">▶</div>'+del+'</div>';
     }
+    // Обложку видно в списке — стоит подписать, какая именно фотография ею станет.
     return '<div class="photo-preview" style="position:relative">'
       +'<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onload="URL.revokeObjectURL(this.src)">'
-      +'<button class="del-photo" data-kind="'+kind+'" data-idx="'+i+'" onclick="removeMedia(this.dataset.kind,this.dataset.idx)">×</button></div>';
+      +(i===0?'<div class="cover-mark">'+t('add.f.cover')+'</div>':'')+del+'</div>';
   }).join('');
 }
 function handlePhotos(e,kind,max){ handleMedia(e,kind,max); }
@@ -2827,58 +3021,108 @@ function removeMedia(kind,idx){
   idx=parseInt(idx);
   if(!photoFiles[kind]) return;
   photoFiles[kind].splice(idx,1);
-  var inp=document.getElementById(kind+'-upload-area');
-  if(inp) inp.querySelector('input').value='';
-  handleMedia({target:{files:photoFiles[kind]}},kind,15);
+  renderMediaPreviews(kind);
 }
 
-// Уменьшает снимок с телефона (3–4 МБ) до ~200–400 КБ. Если браузер не может
-// декодировать формат (например HEIC вне Safari) — отдаём оригинал как есть.
-async function compressImage(file){
+// Одна отрисовка снимка в canvas нужного размера. Возвращает null, если
+// браузер не смог декодировать файл (например HEIC вне Safari).
+async function renderToBlob(file, maxSide, quality){
   var bmp;
   try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
   catch(e){
     try{ bmp=await createImageBitmap(file); }
-    catch(e2){ return {blob:file, type:file.type, ext:(file.name.split('.').pop()||'jpg').toLowerCase()}; }
+    catch(e2){ return null; }
   }
-  var scale=Math.min(1, MAX_SIDE/Math.max(bmp.width,bmp.height));
+  var scale=Math.min(1, maxSide/Math.max(bmp.width,bmp.height));
   var w=Math.max(1,Math.round(bmp.width*scale)), h=Math.max(1,Math.round(bmp.height*scale));
   var canvas=document.createElement('canvas');
   canvas.width=w; canvas.height=h;
-  canvas.getContext('2d').drawImage(bmp,0,0,w,h);
+  var ctx=canvas.getContext('2d');
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(bmp,0,0,w,h);
   if(bmp.close) bmp.close();
   var type=WEBP_OK?'image/webp':'image/jpeg';
-  var blob=await new Promise(function(res){ canvas.toBlob(res,type,IMG_QUALITY); });
+  var blob=await new Promise(function(res){ canvas.toBlob(res,type,quality); });
   canvas.width=canvas.height=0;
+  if(!blob) return null;
+  return {blob:blob, type:type, ext:(type==='image/webp'?'webp':'jpg'), w:w, h:h};
+}
+
+// Уменьшает снимок с телефона (3–4 МБ) до ~200–400 КБ. Если браузер не может
+// декодировать формат — отдаём оригинал как есть.
+async function compressImage(file){
+  var out=await renderToBlob(file, MAX_SIDE, IMG_QUALITY);
   // если «сжатие» вышло больше оригинала (мелкие или уже оптимизированные файлы) — берём оригинал
-  if(!blob||blob.size>=file.size) return {blob:file, type:file.type, ext:(file.name.split('.').pop()||'jpg').toLowerCase()};
-  return {blob:blob, type:type, ext:(type==='image/webp'?'webp':'jpg')};
+  if(!out||out.blob.size>=file.size) return {blob:file, type:file.type, ext:(file.name.split('.').pop()||'jpg').toLowerCase()};
+  return out;
 }
 
 async function uploadPhotos(kind){ return uploadMedia(kind); }
 
+// ─── ЗАГРУЗКА МЕДИА ──────────────────────────────────────────────
+// Что здесь важно, кроме самой отправки файлов:
+//
+// 1. У каждого снимка делаем ещё и превью в THUMB_SIDE пикселей. В списке
+//    карточка показывает картинку шириной с экран телефона, а грузила она
+//    полноразмерный файл на 1600 px — впустую примерно в десять раз больше
+//    байт. Превью лежит рядом, по тому же имени в папке thumbs/, поэтому
+//    хранить его отдельной колонкой в базе не нужно: адрес выводится из
+//    адреса снимка.
+// 2. Файлы уходят по три параллельно. Пятнадцать снимков по очереди на
+//    мобильном интернете — это минута ожидания с занесённым пальцем.
+// 3. Порядок снимков сохраняем: результат раскладываем по исходным местам,
+//    а не в порядке, в котором ответило хранилище.
+var THUMB_SIDE=560, THUMB_QUALITY=0.7, UPLOAD_PARALLEL=3;
+
 async function uploadMedia(kind, onProgress){
   var files=photoFiles[kind];
   if(!files||!files.length||!sb) return [];
-  var urls=[];
-  for(var i=0;i<files.length;i++){
-    if(onProgress) onProgress(i+1, files.length);
-    var f=files[i], out, path;
-    if(f.type.indexOf('video/')===0){
-      var ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'');
-      out={blob:f, type:f.type||'video/mp4', ext:(ext.length>4?'mp4':ext)};
-      path='videos/'+Date.now()+'-'+i+'.'+out.ext;
-    } else {
-      out=await compressImage(f);
-      path='photos/'+Date.now()+'-'+i+'.'+out.ext;
-    }
-    var result=await sb.storage.from('adil-photos').upload(path,out.blob,{
-      cacheControl:CACHE_YEAR, contentType:out.type, upsert:false
+  var slots=new Array(files.length);
+  var done=0, failed=0;
+  var stamp=Date.now();
+
+  async function put(path, blob, type){
+    var res=await sb.storage.from('adil-photos').upload(path, blob, {
+      cacheControl:CACHE_YEAR, contentType:type, upsert:false
     });
-    if(result.error){ console.error('[upload]',result.error.message); continue; }
-    urls.push(sb.storage.from('adil-photos').getPublicUrl(path).data.publicUrl);
+    if(res.error) throw res.error;
+    return sb.storage.from('adil-photos').getPublicUrl(path).data.publicUrl;
   }
-  return urls;
+
+  async function one(i){
+    var f=files[i];
+    try{
+      if(f.type.indexOf('video/')===0){
+        var ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'');
+        slots[i]=await put('videos/'+stamp+'-'+i+'.'+(ext.length>4?'mp4':ext), f, f.type||'video/mp4');
+      } else {
+        var full=await compressImage(f);
+        var name=stamp+'-'+i+'.'+full.ext;
+        slots[i]=await put('photos/'+name, full.blob, full.type);
+        // Превью — вещь необязательная: если не получилось, список просто
+        // покажет полный снимок, как показывал раньше.
+        try{
+          var th=await renderToBlob(f, THUMB_SIDE, THUMB_QUALITY);
+          if(th) await put('thumbs/'+name, th.blob, th.type);
+        }catch(e){ console.warn('[thumb]', e && e.message); }
+      }
+    }catch(err){
+      failed++;
+      console.error('[upload]', err && err.message);
+    }
+    done++;
+    if(onProgress) onProgress(done, files.length);
+  }
+
+  var next=0;
+  await Promise.all(new Array(Math.min(UPLOAD_PARALLEL, files.length)).fill(0).map(async function(){
+    while(next<files.length) await one(next++);
+  }));
+
+  // Молчаливая потеря файла — худшее, что тут может случиться: человек
+  // публикует объявление и не понимает, куда делось видео.
+  if(failed) showToast(t('toast.uploadPartial').replace('{n}', failed));
+  return slots.filter(Boolean);
 }
 function checkDescLen(el){
   var len=el.value.length;
@@ -2902,7 +3146,7 @@ function toggleCustomMake(sel){
   custom.style.display=sel.value==='Другое'?'block':'none';
   if(sel.value==='Другое') custom.focus();
 }
-function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc','f-title-en','f-district-en','f-desc-en'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset();
+function clearAptForm(){ resetOwnerMode(); showStep('apt',1); pickFurn(1); ['f-title','f-price','f-phone','f-desc','f-title-en','f-district-en','f-desc-en','f-gmaps'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';}); document.querySelectorAll('#am-apt .am').forEach(function(a){a.classList.remove('on');}); document.getElementById('apt-previews').innerHTML=''; photoFiles.apt=[]; pickReset(); gmapsPoint=null; gmNote('add.f.gmaps.note');
   document.getElementById('f-type').value='studio'; document.getElementById('f-rooms').value='1';
   pickSeg(document.querySelector('#f-room-kind button[data-v="dorm"]'),'f-room-kind');
   pickSeg(document.querySelector('#f-kb button[data-v="shared"]'),'f-kb');
@@ -3160,7 +3404,7 @@ function renderAdminList(){
     var src=item.photos&&item.photos[0]?item.photos[0]:'';
     if(src&&!src.startsWith('http')) src='https://images.unsplash.com/'+src+'?w=160&q=70';
     var imgEl=src
-      ?'<img class="ph" style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0" src="'+src+'" loading="lazy" decoding="async">'
+      ?thumbImg(src,'','style="width:76px;height:76px;object-fit:cover;border-radius:10px;flex-shrink:0"')
       :'<div style="width:76px;height:76px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">'+(item._kind==='apt'?'🏠':'🚗')+'</div>';
     var isActive=!!item.is_active, isArchived=!!item.is_archived;
     var statusColor=isArchived?'#94A3B8':isActive?'#34D399':'#FBBF24';
@@ -3701,7 +3945,9 @@ function stepValid(kind,n){
       if(!v('f-district')){ showToast(t('step.err.district')); return false; }
       if(v('f-desc').length<20){ showToast(t('step.err.desc')); return false; }
       if(!v('f-phone')){ showToast(t('step.err.phone')); return false; }
-      if(!pickedPoint){ showToast(t('toast.needPoint')); return false; }
+      // Место можно задать двумя способами — меткой на карте или ссылкой
+      // из Google Maps. Достаточно любого.
+      if(!pickedPoint && !gmapsValue()){ showToast(t('toast.needPlace')); return false; }
     }
   } else {
     if(n===1){
@@ -3964,6 +4210,58 @@ function setImg(el,src){
   el.src=src||'';
   if(el.complete&&el.naturalWidth>0) el.classList.add('ok');
 }
+
+// ─── ПРЕВЬЮ СНИМКОВ ──────────────────────────────────────────────
+// Рядом с каждым загруженным снимком лежит его уменьшенная копия — тот же
+// файл в папке thumbs/ вместо photos/. В списке карточка занимает полосу
+// шириной с экран, и лёгкого файла ей хватает с запасом, а весит он в
+// восемь-десять раз меньше полного.
+//
+// Отдельной колонки в базе для этого нет намеренно: адрес превью
+// однозначно выводится из адреса снимка, значит старые объявления ничего
+// не ломают.
+//
+// Имя файла начинается с момента загрузки, и по нему видно, делалось ли
+// для снимка превью: у всего, что старше THUMBS_SINCE, папки thumbs/ ещё
+// не существовало, и просить её — значит зря ждать ответа 404. Проверка
+// в thumbFallback всё равно остаётся: она страхует объявления, поданные
+// в промежуток между этой правкой и выкладкой на сайт.
+var THUMBS_SINCE=1785473652228;
+function thumbUrl(url){
+  if(!url || url.indexOf('/adil-photos/photos/')<0) return '';
+  var m=url.match(/\/photos\/(\d{13})-/);
+  if(!m || +m[1] < THUMBS_SINCE) return '';
+  return url.replace('/adil-photos/photos/','/adil-photos/thumbs/');
+}
+function thumbFallback(el){
+  var full=el.getAttribute('data-full');
+  el.onerror=null;
+  el.removeAttribute('data-full');
+  el.classList.remove('fail');
+  if(full) el.src=full;
+}
+// Тег <img>, который сначала берёт превью, а полный снимок оставляет на
+// случай, если превью не нашлось.
+function thumbImg(src, cls, extra){
+  var th=thumbUrl(src);
+  return '<img class="'+cls+' ph" src="'+(th||src)+'"'
+    + (th ? ' data-full="'+src+'" onerror="thumbFallback(this)"' : '')
+    + ' loading="lazy" decoding="async" '+(extra||'')+'>';
+}
+// Крупный снимок в карточке объявления: сразу показываем лёгкое превью,
+// а когда доедет полный — подменяем без мигания. Человек видит картинку
+// почти мгновенно вместо серой заглушки на пару секунд.
+function setImgProgressive(el, full){
+  if(!el) return;
+  var th=thumbUrl(full);
+  setImg(el, th||full);
+  if(!th) return;
+  var hi=new Image();
+  hi.decoding='async';
+  hi.onload=function(){ if(el.dataset.want===full) el.src=full; };
+  el.dataset.want=full;
+  hi.src=full;
+}
 function imgSrc(item, size){
   if(!item) return '';
   var photos = item.photos;
@@ -4074,12 +4372,16 @@ function cardHtml(item,kind){
   // снималось, поэтому метка висела на всех объявлениях вечно.
   var isNew=isRecent(item);
   var src=imgSrc(item, 600);
-  var imgEl=src?'<img class="l-card-img ph" src="'+src+'" loading="lazy" decoding="async" alt="">':'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
+  var imgEl=src?thumbImg(src,'l-card-img','alt=""'):'<div class="l-card-img" style="display:flex;align-items:center;justify-content:center;font-size:52px">'+(kind==='apt'?'🏠':'🚗')+'</div>';
+  // Видео снимает половину вопросов в переписке — показываем, что оно есть,
+  // ещё в списке, а не только внутри карточки.
+  var hasVid=(item.photos||[]).some(isVideoUrl);
   var favOn=isFav(kind,item.id);
   var promoCls=(isTop(item)?' is-top':'')+(isHot(item)?' is-hot':'')+((isTop(item)||isHot(item))?' is-promo':'');
   return '<div class="l-card'+promoCls+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.kind,parseInt(this.dataset.id))">'
     +'<div class="l-card-img-wrap">'+imgEl
     +promoBadges(item,'promo')
+    +(hasVid?'<div class="tag-vid">▶ '+t('card.video')+'</div>':'')
     +(isNew?'<div class="tag-new">'+t('card.new')+'</div>':'')
     +'<div class="tag-type">'+typeLabel+'</div>'
     +'<button class="fav-btn'+(favOn?' on':'')+'" data-kind="'+kind+'" data-id="'+item.id+'" onclick="toggleFav(event,this.dataset.kind,this.dataset.id)">'+(favOn?'♥':'♡')+'</button>'
@@ -4220,7 +4522,7 @@ function openDetail(kind,id,noPush){
   var firstPhoto=photos.length?photos[0]:'';
   var firstSrc=firstPhoto?(firstPhoto.startsWith('http')?firstPhoto:(USP+firstPhoto+'?w=800&q=80&auto=format')):'';
   var mi=document.getElementById('m-imgs');
-  if(firstSrc){ mi.style.display='block'; setImg(document.getElementById('m-img'),firstSrc); }
+  if(firstSrc){ mi.style.display='block'; setImgProgressive(document.getElementById('m-img'),firstSrc); }
   else { mi.style.display='none'; }
   var multi=photos.length>1;
   document.getElementById('m-dots').innerHTML=multi?photos.map(function(_,i){return '<div class="m-dot'+(i===0?' on':'')+'" onclick="event.stopPropagation();showImg('+i+')"></div>';}).join(''):'';
@@ -4281,8 +4583,15 @@ function showImg(i){
   var photos=(detailItem.photos||[]).filter(function(u){ return !isVideoUrl(u); });
   if(!photos.length) return;
   imgIdx=(i+photos.length)%photos.length;
-  var p=photos[imgIdx]||'';
-  setImg(document.getElementById('m-img'),p?(p.startsWith('http')?p:(USP+p+'?w=800&q=80&auto=format')):'');
+  var resolve=function(u){ return u?(u.startsWith('http')?u:(USP+u+'?w=800&q=80&auto=format')):''; };
+  setImgProgressive(document.getElementById('m-img'),resolve(photos[imgIdx]||''));
+  // Пока смотрят текущий снимок, соседний тихо едет в кэш — листание
+  // получается без пауз.
+  if(photos.length>1){
+    var nx=new Image(); nx.decoding='async';
+    var nu=resolve(photos[(imgIdx+1)%photos.length]);
+    nx.src=thumbUrl(nu)||nu;
+  }
   document.querySelectorAll('#m-dots .m-dot').forEach(function(d,n){d.classList.toggle('on',n===imgIdx);});
 }
 function stepImg(e,d){ if(e) e.stopPropagation(); showImg(imgIdx+d); }
@@ -4552,10 +4861,12 @@ function openWA(){
 // перехватывается нативным приложением карт, в браузере откроется веб-версия.
 function openGMaps(){
   if(!detailItem) return;
-  if(hasPoint(detailItem)){
+  // Ссылка хозяина точнее координат: в ней остаётся название дома и въезд,
+  // который Google знает, а голая точка на карте — нет.
+  if(detailItem.gmaps_url){
+    window.open(detailItem.gmaps_url,'_blank');
+  } else if(hasPoint(detailItem)){
     window.open('https://www.google.com/maps/search/?api=1&query='+detailItem.lat+','+detailItem.lng,'_blank');
-  } else if(detailItem.gmaps_url){
-    window.open(detailItem.gmaps_url,'_blank'); // старые объявления
   }
 }
 function openCall(){

@@ -21,7 +21,14 @@ android/app/src/main/assets/public/
 android/.idea/
 *.iml
 
+# ключ подписи приложения — попадёт в репозиторий, и любой сможет
+# выпустить обновление от имени AdilRent. Храним только локально.
+*.keystore
+*.jks
+
 # прочее
 .env
 .env.local
 .vercel
+.idea/
+.claude/
