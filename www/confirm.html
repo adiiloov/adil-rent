@@ -5,38 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Подтверждение email — Adil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root{
+  --brand:#8A6116;--on-brand:#0A1424;
+  --ok:#1B7A52;--ok-bg:#EAF5EF;
+  --red:#B3352A;--red-light:#FDEEEC;--red-bd:#F5D3CD;
+  --text:#14171C;--muted:#6B675F;
+  --border:#E8E2D8;--bg:#F8F6F2;--white:#FFFFFF;--surface-2:#F3EFE8;
+  --info:#1D4ED8;--warn:#8E620A;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --brand:#D4A257;--on-brand:#0A1424;
+    --ok:#34D399;--ok-bg:#10281F;
+    --red:#F87171;--red-light:#2A1618;--red-bd:#4A2226;
+    --text:#EDF2F9;--muted:#92A1B9;
+    --border:#1F304D;--bg:#0A1424;--white:#101D33;--surface-2:#16243C;
+    --info:#60A5FA;--warn:#FBBF24;
+  }
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#f8f7f5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.card{background:#fff;border-radius:20px;padding:40px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.1)}
-.logo{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:#111;margin-bottom:32px}
-.logo em{color:#D94F3B;font-style:normal}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:40px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(20,23,28,.08)}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px}
+.logo span{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+.logo em{color:var(--brand);font-style:normal}
 
 /* Success state */
-.success-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 24px rgba(34,197,94,.35);animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
+.success-circle{width:88px;height:88px;border-radius:50%;background:var(--ok-bg);border:1px solid var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
 @keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
-.checkmark{width:40px;height:40px}
-.checkmark path{stroke:#fff;stroke-width:3;fill:none;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .4s ease .3s forwards}
+.checkmark{width:38px;height:38px}
+.checkmark path{stroke:var(--ok);stroke-width:3;fill:none;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .4s ease .3s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 
 /* Loading state */
-.loading-circle{width:90px;height:90px;border-radius:50%;border:4px solid #f0f0f0;border-top:4px solid #D94F3B;margin:0 auto 24px;animation:spin 1s linear infinite}
+.loading-circle{width:88px;height:88px;border-radius:50%;border:4px solid var(--surface-2);border-top:4px solid var(--brand);margin:0 auto 22px;animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Error state */
-.error-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 24px rgba(239,68,68,.3)}
-.error-x{font-size:40px;color:#fff}
+.error-circle{width:88px;height:88px;border-radius:50%;background:var(--red-light);border:1px solid var(--red-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
+.error-x{font-size:36px;color:var(--red);line-height:1}
 
-.title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#111;margin-bottom:10px}
-.subtitle{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:28px}
-.email-badge{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 16px;font-size:14px;color:#16a34a;font-weight:600;margin-bottom:24px;display:none}
-.btn{display:block;width:100%;background:#D94F3B;color:#fff;text-decoration:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;transition:background .15s;border:none;cursor:pointer;font-family:'Inter',sans-serif}
-.btn:hover{background:#bf3828}
-.btn-ghost{display:block;width:100%;background:#f8f7f5;color:#374151;text-decoration:none;border-radius:12px;padding:13px;font-size:14px;font-weight:500;margin-top:10px;border:1px solid #e5e7eb;cursor:pointer;font-family:'Inter',sans-serif}
-.btn-ghost:hover{background:#f0efe9}
-.footer-txt{margin-top:24px;font-size:12px;color:#9ca3af}
+.title{font-family:'Sora',sans-serif;font-size:21px;font-weight:700;color:var(--text);margin-bottom:9px}
+.subtitle{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:26px}
+.email-badge{background:var(--ok-bg);border:1px solid var(--ok);border-radius:10px;padding:10px 16px;font-size:13px;color:var(--ok);font-weight:600;margin-bottom:22px;display:none}
+.btn{display:block;width:100%;background:var(--brand);color:var(--on-brand);text-decoration:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:'Sora',sans-serif;transition:opacity .15s}
+.btn:hover{opacity:.88}
+.btn-ghost{display:block;width:100%;background:var(--surface-2);color:var(--text);text-decoration:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;margin-top:9px;border:1px solid var(--border);cursor:pointer;font-family:inherit}
+.btn-ghost:hover{background:var(--border)}
+.footer-txt{margin-top:22px;font-size:12px;color:var(--muted)}
 .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0}
 .piece{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
@@ -47,13 +67,23 @@ body{font-family:'Inter',sans-serif;background:#f8f7f5;min-height:100vh;display:
 <div class="confetti" id="confetti"></div>
 
 <div class="card" style="position:relative;z-index:1">
-  <div class="logo"><em>Adil</em></div>
+  <div class="logo">
+    <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Adil">
+      <defs><linearGradient id="agl" gradientUnits="userSpaceOnUse" x1="8" y1="6" x2="24" y2="26">
+        <stop offset="0" stop-color="#E8CFA0"/><stop offset="1" stop-color="#C08A2E"/>
+      </linearGradient></defs>
+      <rect width="32" height="32" rx="8" fill="#0C1728"/>
+      <path d="M10.5 25V13.2a5.5 5.5 0 0 1 11 0V25" stroke="url(#agl)" stroke-width="2.6" fill="none" stroke-linecap="square"/>
+      <path d="M7.6 19.4h16.8" stroke="url(#agl)" stroke-width="2.6" stroke-linecap="square"/>
+    </svg>
+    <span><em>Adil</em></span>
+  </div>
 
   <!-- LOADING -->
   <div id="state-loading">
     <div class="loading-circle"></div>
     <div class="title">Подтверждаем...</div>
-    <div class="subtitle">Пожалуйста подождите</div>
+    <div class="subtitle">Пожалуйста, подождите пару секунд</div>
   </div>
 
   <!-- SUCCESS -->
@@ -64,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:#f8f7f5;min-height:100vh;display:
       </svg>
     </div>
     <div class="title">Email подтверждён! 🎉</div>
-    <div class="subtitle">Ваш аккаунт активирован. Теперь вы можете размещать объявления на Adil.</div>
+    <div class="subtitle">Аккаунт активирован — теперь можно размещать объявления на Adil.</div>
     <div class="email-badge" id="email-badge">✓ <span id="confirmed-email"></span></div>
     <a href="/" class="btn">Перейти на сайт</a>
     <div class="footer-txt">Добро пожаловать в Adil 🏠🚗</div>
@@ -74,7 +104,7 @@ body{font-family:'Inter',sans-serif;background:#f8f7f5;min-height:100vh;display:
   <div id="state-error" style="display:none">
     <div class="error-circle"><div class="error-x">✕</div></div>
     <div class="title">Ссылка недействительна</div>
-    <div class="subtitle" id="error-msg">Ссылка для подтверждения устарела или уже использована. Попробуйте зарегистрироваться снова.</div>
+    <div class="subtitle" id="error-msg">Ссылка для подтверждения устарела или уже использована.</div>
     <a href="/" class="btn">На главную</a>
   </div>
 </div>
@@ -91,9 +121,10 @@ function showState(s){
 }
 
 function launchConfetti(){
-  var colors=['#D94F3B','#22c55e','#3b82f6','#f59e0b','#8b5cf6','#ec4899'];
+  // Цвета — из палитры сайта, а не случайный праздничный набор.
+  var colors=['#8A6116','#1B7A52','#1D4ED8','#8E620A','#B3352A'];
   var container=document.getElementById('confetti');
-  for(var i=0;i<80;i++){
+  for(var i=0;i<70;i++){
     var el=document.createElement('div');
     el.className='piece';
     el.style.left=Math.random()*100+'%';
@@ -108,7 +139,7 @@ function launchConfetti(){
 }
 
 async function handleConfirmation(){
-  // Get token from URL hash or query params
+  // Токен приходит либо в хэше (#access_token=...), либо в query (?token_hash=...)
   var hash = window.location.hash.substring(1);
   var params = new URLSearchParams(hash || window.location.search);
 
@@ -122,13 +153,11 @@ async function handleConfirmation(){
     var result;
 
     if(accessToken && type === 'signup'){
-      // Old format with access_token
       result = await sb.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken || ''
       });
     } else if(tokenHash){
-      // New format with token_hash
       result = await sb.auth.verifyOtp({
         token_hash: tokenHash,
         type: type || 'signup'
@@ -139,7 +168,6 @@ async function handleConfirmation(){
         type: type
       });
     } else {
-      // Try to get current session
       var sessionResult = await sb.auth.getSession();
       if(sessionResult.data && sessionResult.data.session){
         result = sessionResult;
@@ -163,7 +191,6 @@ async function handleConfirmation(){
       }
     }
 
-    // Redirect to main site after 4 seconds
     setTimeout(function(){ window.location.href = '/'; }, 4000);
 
   } catch(err){
@@ -172,9 +199,9 @@ async function handleConfirmation(){
     var msgEl = document.getElementById('error-msg');
     if(msgEl && err.message){
       if(err.message.includes('expired') || err.message.includes('устарел')){
-        msgEl.textContent = 'Ссылка для подтверждения устарела. Пожалуйста, зарегистрируйтесь снова.';
+        msgEl.textContent = 'Ссылка для подтверждения устарела. Зарегистрируйтесь ещё раз — прежние данные сохранятся.';
       } else if(err.message.includes('already')){
-        msgEl.textContent = 'Email уже подтверждён. Войдите в аккаунт.';
+        msgEl.textContent = 'Email уже подтверждён. Просто войдите в аккаунт.';
       }
     }
   }
