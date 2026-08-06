@@ -2561,7 +2561,10 @@ async function doSignup(){
   if(!/[0-9]/.test(pass)||!/[a-zA-Zа-яА-Я]/.test(pass)){ showErr(lang==='en'?'Password must contain letters and digits':'Пароль должен содержать буквы и цифры'); return; }
   var btn=document.getElementById('signup-btn');
   btn.disabled=true; btn.textContent=t('btn.creatingAccount');
-  var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});
+  // Адрес возврата указываем явно. Этот проект Supabase обслуживает не только
+  // AdilRent, и полагаться на общий Site URL нельзя: стоит соседнему приложению
+  // поменять его под себя — и ссылка из письма уведёт человека не туда.
+  var result=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name},emailRedirectTo:'https://www.adilrent.com/confirm.html'}});
   // Встроенный отправитель писем Supabase держит лимит в несколько штук
   // в час на весь проект — и уже упирались в него. Пока не подключён
   // настоящий SMTP, при этой ошибке создаём аккаунт в обход почты вовсе
