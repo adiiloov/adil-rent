@@ -2588,11 +2588,43 @@ async function logout(){
   goSection('apt');
   showToast(t('toast.loggedOut'));
 }
+// Снимки человека из хранилища. Прямое удаление из storage.objects Supabase
+// запрещает триггером, поэтому файлы уносит Storage API — и делать это надо
+// здесь, пока сессия жива: после удаления учётки ключа на них уже не будет.
+//
+// Список папки перечисляет только свои файлы: политика чтения на бакете
+// отдаёт строки с owner_id = auth.uid(). Так забираются и брошенные загрузки,
+// адреса которых в объявлениях не сохранились.
+async function purgeOwnPhotos(){
+  var folders=['photos','thumbs','avatars'];
+  var paths=[];
+  for(var i=0;i<folders.length;i++){
+    var offset=0;
+    while(true){
+      var page=await sb.storage.from('adil-photos').list(folders[i],{limit:100,offset:offset});
+      if(page.error||!page.data||!page.data.length) break;
+      page.data.forEach(function(o){
+        // У вложенных папок нет id — их пропускаем, удалять нужно файлы.
+        if(o.id) paths.push(folders[i]+'/'+o.name);
+      });
+      if(page.data.length<100) break;
+      offset+=100;
+    }
+  }
+  for(var k=0;k<paths.length;k+=100){
+    var out=await sb.storage.from('adil-photos').remove(paths.slice(k,k+100));
+    if(out.error) console.error('[delete-account] фото:',out.error.message);
+  }
+}
 async function deleteAccount(){
   if(!sb||!currentUser) return;
   if(!await askConfirm(t('profile.deleteAccount'),t('profile.deleteAccount.warn'),{okText:t('profile.deleteAccount'),danger:true})) return;
   var session=(await sb.auth.getSession()).data.session;
   if(!session){ showToast(t('toast.loginRequired')); return; }
+  // Осечка в хранилище не должна запирать человека в аккаунте, который он
+  // просил удалить: записи уходят в любом случае, снимки без них всё равно
+  // нигде не показываются.
+  try{ await purgeOwnPhotos(); }catch(e){ console.error('[delete-account] фото:',e); }
   var res=await sb.functions.invoke('delete-account',{
     headers:{Authorization:'Bearer '+session.access_token}
   });
